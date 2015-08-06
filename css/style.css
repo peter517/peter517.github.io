@@ -882,15 +882,15 @@ article .article-content .kb {
 }
 article .article-content h1 {
   font-size: 160%;
-  line-height: 1em;
+  line-height: 1.5em;
 }
 article .article-content h2 {
   font-size: 130%;
-  line-height: 0.8em;
+  line-height: 1em;
 }
 article .article-content h3 {
   font-size: 115%;
-  line-height: 0.4em;
+  line-height: 0.5em;
 }
 article .article-content h4 {
   font-size: 105%;
