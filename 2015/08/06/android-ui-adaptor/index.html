@@ -67,7 +67,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-06T01:01:06.000Z" itemprop="datePublished">2015-08-06</time>
-    更新日期:<time datetime="2015-08-07T10:30:03.000Z" itemprop="dateModified">2015-08-07</time>
+    更新日期:<time datetime="2015-08-10T01:35:01.000Z" itemprop="dateModified">2015-08-10</time>
     
   </p>
 </header>
@@ -76,21 +76,28 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#遇到的问题"><span class="toc-number">1.</span> <span class="toc-text">遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.1.</span> <span class="toc-text">分辨率布局的局限</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#几个概念"><span class="toc-number">2.</span> <span class="toc-text">几个概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决办法"><span class="toc-number">3.</span> <span class="toc-text">解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp缓解适配压力"><span class="toc-number">3.1.</span> <span class="toc-text">dp缓解适配压力</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
 		</div>
 		
-		<h1 id="遇到的问题">遇到的问题</h1><h2 id="分辨率布局的局限">分辨率布局的局限</h2><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
+		<h1 id="分辨率布局的局限">分辨率布局的局限</h1><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
 <p><img src="/img/android_ui_adaptor_01.png" alt="android_ui_adaptor_01"></p>
 <p>为减少开发人员的适配工作量，Android引入了dp的概念，在xml布局文件中可以直接设置单位为dp的值，要了解dp，先要了解下面几个概念。</p>
-<h1 id="几个概念">几个概念</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
+<h1 id="dip和desity">dip和desity</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，<code>这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力</code>，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
 <p>目前Android设备上dip的主要值是120 dpi、160 dpi、240 dpi、320 dpi 如果显示器尺寸大于或小于这个尺寸，显示器模块负责缩放。</p>
 <h2 id="desity">desity</h2><p><strong>desity</strong>：像素显示密度，基于dip的一个衍生概念，是dip归一化的值，计算方法为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">desity ＝ dip / <span class="number">160</span></span><br></pre></td></tr></table></figure></p>
-<p>目前Android设备上desity主要值为0.75,1,1.5,2和3</p>
-<h1 id="解决办法">解决办法</h1><h2 id="dp缓解适配压力">dp缓解适配压力</h2><p>dp的计算就是基于分辨率和desity的，如果一个Android设备分辨率为640*480，desity为1.5，那么屏幕的dp为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">1.5</span>) * (<span class="number">480</span>/<span class="number">1.5</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
-<p>屏幕之前用分辨率划分，引入dp的概念后，可以用dp来划分屏幕大小，如果屏幕大小为如果两个设备之间分辨率不一样，只要分辨率和desity的比例是一样的，就可以，比如之前的320*240的手机设备，如果它的desity为1，那么它屏幕的dp为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">320</span>/<span class="number">1</span>) * (<span class="number">240</span>/<span class="number">1</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
+<p>目前Android设备上desity主要值为0.75、1、1.5、2、3，Android中可以用代码来获取：<br><figure class="highlight ocaml"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> density = getContext<span class="literal">()</span>.getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>.density;</span><br></pre></td></tr></table></figure></p>
+<h1 id="dp表示缓解适配压力">dp表示缓解适配压力</h1><p>dp的计算就是基于分辨率和desity的，如果一个Android设备分辨率为640*480，desity为1.5，那么屏幕的dp为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">1.5</span>) * (<span class="number">480</span>/<span class="number">1.5</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
+<p>代码中可以根据分辨率和desity来计算dp<br>屏幕可以用分辨率划分，引入dp的概念后，可以用dp来划分屏幕大小，如果屏幕大小为如果两个设备之间分辨率不一样，只要分辨率和desity的比例是一样的，就可以，比如之前的320*240的手机设备，如果它的desity为1，那么它屏幕的dp为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">320</span>/<span class="number">1</span>) * (<span class="number">240</span>/<span class="number">1</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
 <p>这样两个Android设备对屏幕都有同样的表达方式：320dp * 240dp，基于dp的布局就可以这样：<br><img src="/img/android_ui_adaptor_02.png" alt="android_ui_adaptor_02"></p>
 <h1 id="没有完美解决方案">没有完美解决方案</h1><h2 id="dp也做不到的事情">dp也做不到的事情</h2><p>不同设备之间只有用拥有统一的dp大小才能共享同一个布局方案，如果dp不一样的情况，那么就需要针对不同的dp进行处理了，android下面有一个values目录，里面通过dimens.xml来设置布局的dp<br><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">values</span>-w540dp-hdpi</span><br></pre></td></tr></table></figure></p>
 <p>格式如上所示w540dp代表宽度为540dp,hdpi代表density为1，针对不同的dp，需要新建对应的目录，App会在运行时根据设备情况加载对应的目录里面的dp值</p>
+<h2 id="建议">建议</h2><ul>
+<li>如果可以不用数字来布局的尽量不要用，可以用百分比来代替：<a href="https://github.com/JulienGenoud/android-percent-support-lib-sample" target="_blank" rel="external">开源库</a></li>
+<li>不同的手机里面dp之间差距不大，布局之间的差异不明显，但是现在的智能电视和手机之间dp差距大，需要做好适配</li>
+</ul>
+<h1 id="参考资料">参考资料</h1><ul>
+<li><a href="http://developer.android.com/guide/practices/screens_support.html" target="_blank" rel="external">http://developer.android.com/guide/practices/screens_support.html</a></li>
+</ul>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
 	</div>
 		<footer class="article-footer clearfix">
@@ -114,6 +121,14 @@
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2015/08/10/git-configuration/" title="Git 个人配置">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Git 个人配置</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2015/08/04/mapreduce-thinking/"  title="MapReduce编程">
@@ -138,7 +153,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#遇到的问题"><span class="toc-number">1.</span> <span class="toc-text">遇到的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.1.</span> <span class="toc-text">分辨率布局的局限</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#几个概念"><span class="toc-number">2.</span> <span class="toc-text">几个概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决办法"><span class="toc-number">3.</span> <span class="toc-text">解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp缓解适配压力"><span class="toc-number">3.1.</span> <span class="toc-text">dp缓解适配压力</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -169,6 +184,8 @@
 		<ul class="clearfix">
 		
 			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
 		
 			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
 		
