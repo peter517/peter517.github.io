@@ -881,20 +881,20 @@ article .article-content .kb {
   white-space: nowrap;
 }
 article .article-content h1 {
-  font-size: 160%;
-  line-height: 1.5em;
-}
-article .article-content h2 {
-  font-size: 130%;
+  font-size: 170%;
   line-height: 1em;
 }
+article .article-content h2 {
+  font-size: 150%;
+  line-height: 0.8em;
+}
 article .article-content h3 {
-  font-size: 115%;
+  font-size: 130%;
   line-height: 0.5em;
 }
 article .article-content h4 {
-  font-size: 105%;
-  line-height: 0.2em;
+  font-size: 110%;
+  line-height: 0.4em;
 }
 article .article-content h5 {
   font-size: 102%;
@@ -941,7 +941,7 @@ article .article-content blockquote {
   margin: 0.65em 0 0.65em 4%;
   padding-left: 1%;
   line-height: 1.5;
-  font-size: 110%;
+  font-size: 100%;
 }
 article .article-content blockquote footer {
   background: #fafafa;
