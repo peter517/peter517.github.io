@@ -67,7 +67,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-10T08:16:08.000Z" itemprop="datePublished">2015-08-10</time>
-    更新日期:<time datetime="2015-08-14T08:36:28.000Z" itemprop="dateModified">2015-08-14</time>
+    更新日期:<time datetime="2015-08-14T08:38:57.000Z" itemprop="dateModified">2015-08-14</time>
     
   </p>
 </header>
@@ -88,13 +88,13 @@
 </ul>
 <h1 id="二进制文件格式">二进制文件格式</h1><p>主流二进制文件格式ELF和PE，是基于COFF(Common file format)而来，根据不同的操作系统有不同的特性</p>
 <h2 id="ELF">ELF</h2><p><strong>ELF(Executable And Linkable)</strong>是Unix体系中二进制文件格式，除了执行文件，还包括*.so,*.a，*.o等文件</p>
-<h2 id="PE">PE</h2><p><strong>PE(Portable Executable)</strong>是Windows平台的二进制格式，，除了exe执行文件，还包括*.lib,*.dll，*.obj文件</p>
-<h1 id="反编译工具">反编译工具</h1><p>反编译工具主要处理对象就是ELF和PE文件，更加平台划分，主要有以下一些工具</p>
-<h2 id="Unix(Linux_and_OSX)">Unix(Linux and OSX)</h2><h3 id="nm">nm</h3><p>读取ELF文件中的符号表(OSX也有该命令)<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nm <span class="variable">$elf_filename</span> | grep <span class="variable">$method_name</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="PE">PE</h2><p><strong>PE(Portable Executable)</strong>是Windows平台的二进制格式，，除了exe执行文件，还包括*.lib,*.dll，*.obj等文件</p>
+<h1 id="反编译工具">反编译工具</h1><p>反编译工具主要处理对象就是ELF和PE文件，根据平台划分，主要有以下一些工具</p>
+<h2 id="Unix(Linux_and_OSX)">Unix(Linux and OSX)</h2><h3 id="nm">nm</h3><p>读取ELF文件中的符号表<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nm <span class="variable">$elf_filename</span> | grep <span class="variable">$method_name</span></span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>查找ELF文件是否包含方法名$method_name</p>
 </blockquote>
-<h3 id="strings">strings</h3><p>读取ELF文件中的可打印的字符串表(OSX也有该命令)<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ strings <span class="variable">$elf_filename</span> | grep <span class="variable">$find_str</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="strings">strings</h3><p>读取ELF文件中的可打印的字符串表<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ strings <span class="variable">$elf_filename</span> | grep <span class="variable">$find_str</span></span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>查找ELF文件是否包含可打印的字符串$find_str </p>
 </blockquote>
