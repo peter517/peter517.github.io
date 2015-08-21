@@ -33,7 +33,7 @@
 				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
 				<a class="blog-motto">坚持写博客，沉淀！</a>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -67,7 +67,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-06T01:01:06.000Z" itemprop="datePublished">2015-08-06</time>
-    更新日期:<time datetime="2015-08-10T01:35:01.000Z" itemprop="dateModified">2015-08-10</time>
+    Updated:<time datetime="2015-08-21T09:20:29.000Z" itemprop="dateModified">2015-08-21</time>
     
   </p>
 </header>
@@ -75,14 +75,14 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
+			<strong class="toc-title">Contents</strong>
 		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
 		</div>
 		
 		<h1 id="分辨率布局的局限">分辨率布局的局限</h1><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
 <p><img src="/img/android_ui_adaptor_01.png" alt="android_ui_adaptor_01"></p>
 <p>为减少开发人员的适配工作量，Android引入了dp的概念，在xml布局文件中可以直接设置单位为dp的值，要了解dp，先要了解下面几个概念。</p>
-<h1 id="dip和desity">dip和desity</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，<code>这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力</code>，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
+<h1 id="dip和desity">dip和desity</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
 <p>目前Android设备上dip的主要值是120 dpi、160 dpi、240 dpi、320 dpi 如果显示器尺寸大于或小于这个尺寸，显示器模块负责缩放。</p>
 <h2 id="desity">desity</h2><p><strong>desity</strong>：像素显示密度，基于dip的一个衍生概念，是dip归一化的值，计算方法为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">desity ＝ dip / <span class="number">160</span></span><br></pre></td></tr></table></figure></p>
 <p>目前Android设备上desity主要值为0.75、1、1.5、2、3，Android中可以用代码来获取：<br><figure class="highlight ocaml"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> density = getContext<span class="literal">()</span>.getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>.density;</span><br></pre></td></tr></table></figure></p>
@@ -162,15 +162,15 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
+  <strong class="toc-title">Contents</strong>
   <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 <div id="authorInfo">
 	
@@ -208,6 +208,8 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
 		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>1</sup></a></li>
+		
 			<li><a href="/tags/Ubuntu/" title="Ubuntu">Ubuntu<sup>1</sup></a></li>
 		
 		</ul>
@@ -217,6 +219,9 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
   <div class="linkslist">
   <p class="asidetitle">最近文章</p>
     <ul>
+
+     <li><a href="https://peter517.github.io/2015/08/20/import-thing-easy-ignore-in-project/" target="_blank">开发中容易忽略的事情</a></li>
+
      <li><a href="https://peter517.github.io/2015/08/14/recursive-in-algorithm/" target="_blank">算法中的递归运用</a></li>
 
       <li><a href="https://peter517.github.io/2015/08/10/decompile-tools-on-all-platforms/" target="_blank">主流平台的反编译工具</a></li>
