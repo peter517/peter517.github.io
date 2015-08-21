@@ -33,7 +33,7 @@
 				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
 				<a class="blog-motto">坚持写博客，沉淀！</a>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -67,7 +67,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-20T03:20:19.000Z" itemprop="datePublished">2015-08-20</time>
-    Updated:<time datetime="2015-08-21T09:17:58.000Z" itemprop="dateModified">2015-08-21</time>
+    更新日期:<time datetime="2015-08-21T09:26:13.000Z" itemprop="dateModified">2015-08-21</time>
     
   </p>
 </header>
@@ -75,7 +75,7 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">Contents</strong>
+			<strong class="toc-title">文章目录</strong>
 		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#单元测试"><span class="toc-number">1.</span> <span class="toc-text">单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能未写，测试先行"><span class="toc-number">1.1.</span> <span class="toc-text">功能未写，测试先行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不仅仅是测试"><span class="toc-number">1.2.</span> <span class="toc-text">不仅仅是测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完善单元测试"><span class="toc-number">1.3.</span> <span class="toc-text">完善单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动化"><span class="toc-number">1.4.</span> <span class="toc-text">自动化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#框架"><span class="toc-number">1.5.</span> <span class="toc-text">框架</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Code_Review"><span class="toc-number">2.</span> <span class="toc-text">Code Review</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#没人可以review"><span class="toc-number">2.1.</span> <span class="toc-text">没人可以review</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Code_Owner"><span class="toc-number">2.2.</span> <span class="toc-text">Code Owner</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reivew方式"><span class="toc-number">2.3.</span> <span class="toc-text">reivew方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#模块化"><span class="toc-number">3.</span> <span class="toc-text">模块化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖抽象而不是过程"><span class="toc-number">3.1.</span> <span class="toc-text">依赖抽象而不是过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续模块化"><span class="toc-number">3.2.</span> <span class="toc-text">持续模块化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#跨平台"><span class="toc-number">4.</span> <span class="toc-text">跨平台</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统原生语言"><span class="toc-number">4.1.</span> <span class="toc-text">操作系统原生语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#跨平台技术"><span class="toc-number">4.2.</span> <span class="toc-text">跨平台技术</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#可配置"><span class="toc-number">5.</span> <span class="toc-text">可配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#测试人员的可配置"><span class="toc-number">5.1.</span> <span class="toc-text">测试人员的可配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最终用户的可配置"><span class="toc-number">5.2.</span> <span class="toc-text">最终用户的可配置</span></a></li></ol></li></ol>
 		</div>
 		
@@ -94,9 +94,8 @@
 </ul>
 <h1 id="Code_Review">Code Review</h1><h2 id="没人可以review">没人可以review</h2><p>平时在做项目时，一个功能模块可能就一个人写，完成后没有相关的人可以review，或者可以review，但是review的质量不高。review的目的其实是保证代码的质量，反过来想，开发中哪个行为最容易破坏代码的质量呢？</p>
 <blockquote>
-<p>不要让不熟悉这个模块的人来改这个模块的代码</p>
+<p>不熟悉这个模块的人的代码提交没有被review</p>
 </blockquote>
-<p>我们要避免不熟悉这个模块的人的代码提交没有被review，需要有一种机制防止它发生</p>
 <h2 id="Code_Owner">Code Owner</h2><p>引入Code Owner机制，每个模块需要至少有一个Owner，对这个模块的代码负责，Owner自己提交的代码，如果有条件，可以找对应的人review一下（比如两个Owner的时候，互相review），其他开发人员如果有需求需要改这个模块的代码，必须向Owner提供review申请</p>
 <h2 id="reivew方式">reivew方式</h2><p>Android通过repo和gerrit来管理代码，gerrit是一个代码审核服务器的概念，可以确保所有人都要向Owner发起reivew进程，但大多数git实现，比如gitlab和github，都没有代码审核服务器，所以尽量每个模块单独建立一个仓库，而不是所有模块共享一个仓库，这样太多人有master权限了</p>
 <blockquote>
@@ -182,15 +181,15 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">Contents</strong>
+  <strong class="toc-title">文章目录</strong>
   <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#单元测试"><span class="toc-number">1.</span> <span class="toc-text">单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#功能未写，测试先行"><span class="toc-number">1.1.</span> <span class="toc-text">功能未写，测试先行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不仅仅是测试"><span class="toc-number">1.2.</span> <span class="toc-text">不仅仅是测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完善单元测试"><span class="toc-number">1.3.</span> <span class="toc-text">完善单元测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动化"><span class="toc-number">1.4.</span> <span class="toc-text">自动化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#框架"><span class="toc-number">1.5.</span> <span class="toc-text">框架</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Code_Review"><span class="toc-number">2.</span> <span class="toc-text">Code Review</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#没人可以review"><span class="toc-number">2.1.</span> <span class="toc-text">没人可以review</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Code_Owner"><span class="toc-number">2.2.</span> <span class="toc-text">Code Owner</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reivew方式"><span class="toc-number">2.3.</span> <span class="toc-text">reivew方式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#模块化"><span class="toc-number">3.</span> <span class="toc-text">模块化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖抽象而不是过程"><span class="toc-number">3.1.</span> <span class="toc-text">依赖抽象而不是过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#持续模块化"><span class="toc-number">3.2.</span> <span class="toc-text">持续模块化</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#跨平台"><span class="toc-number">4.</span> <span class="toc-text">跨平台</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统原生语言"><span class="toc-number">4.1.</span> <span class="toc-text">操作系统原生语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#跨平台技术"><span class="toc-number">4.2.</span> <span class="toc-text">跨平台技术</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#可配置"><span class="toc-number">5.</span> <span class="toc-text">可配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#测试人员的可配置"><span class="toc-number">5.1.</span> <span class="toc-text">测试人员的可配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最终用户的可配置"><span class="toc-number">5.2.</span> <span class="toc-text">最终用户的可配置</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
 <aside class="clearfix">
 <div id="authorInfo">
 	
