@@ -1,0 +1,400 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>宏在c++中的正确使用 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" content="宏在c++里面应该是最有个性的一个特点，虽然只是简单的文本替换，但
+
+用的巧妙，它可以让代码行数变短，如果乱用，则代码会完全丧失可读性
+
+正确的使用宏非常重要,宏主要作用是两点：
+
+用来表达一般语法无法表达的内容，如通过一行语句，简洁的定义一个自定义类
+用来标示一种状态，根据不同的状态来减少编译代码">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+     
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					
+					
+					</li>
+				</ul>
+                            </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/10/12/how-to-used-macro-in-c/" title="宏在c++中的正确使用" itemprop="url">宏在c++中的正确使用</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="peter517.github.io" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-10-12T08:19:02.000Z" itemprop="datePublished">2015-10-12</time>
+    更新日期:<time datetime="2015-10-12T12:42:30.000Z" itemprop="dateModified">2015-10-12</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#尽量不使用宏"><span class="toc-number">1.</span> <span class="toc-text">尽量不使用宏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定义新的类或函数"><span class="toc-number">2.</span> <span class="toc-text">定义新的类或函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内置宏"><span class="toc-number">3.</span> <span class="toc-text">内置宏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU类型"><span class="toc-number">3.2.</span> <span class="toc-text">CPU类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器类型"><span class="toc-number">3.3.</span> <span class="toc-text">编译器类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#c++实现版本"><span class="toc-number">3.4.</span> <span class="toc-text">c++实现版本</span></a></li></ol></li></ol>
+		</div>
+		
+		<p>宏在c++里面应该是最有个性的一个特点，虽然只是简单的文本替换，但</p>
+<blockquote>
+<p>用的巧妙，它可以让代码行数变短，如果乱用，则代码会完全丧失可读性</p>
+</blockquote>
+<p>正确的使用宏非常重要,宏主要作用是两点：</p>
+<ul>
+<li>用来表达一般语法无法表达的内容，如通过一行语句，简洁的定义一个自定义类</li>
+<li>用来标示一种状态，根据不同的状态来减少编译代码</li>
+</ul>
+<h1 id="尽量不使用宏">尽量不使用宏</h1><p>文本替换操作可以使用的场景很多，但是代码里面到处是宏，其他开发人员也很难阅读代码，《Effective C++》里面明确表示通过const、emum、inline语法来替代宏的使用。<br>如下所示，相对于VAR_INT宏，使用var_int会写入符号表，编译起来报错会有“VAR_INT”信息，而不是单纯的一个“1”</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> VAR_INT <span class="number">1</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> VAR_INT = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="定义新的类或函数">定义新的类或函数</h1><p>那什么时候应该使用宏呢？有些内容，比如定义一个新的类或函数，c++里面只有模版可以对一个类进行抽象，还是有一些需求无法满足，使用宏会让代码更加简洁。<br>如下面代码，单元测试框架代码，用P_TEST_宏来定义个一个<em>部分</em>新测试类，每次定义时动用register_test_case方法来注册到TestManager中，这样就可以在main函数中执行队列中所有的测试案例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> TestClass&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//register test case to TestManager</span></span><br><span class="line"><span class="function">TestCase* <span class="title">register_test_case</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* test_case_name, <span class="keyword">const</span> <span class="keyword">char</span>* test_name,TestFactoryBase* factory)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> TestFactoryBase&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> TestCase* <span class="title">CreateTest</span><span class="params">()</span></span>=<span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> TestClass&gt;</span><br><span class="line"><span class="keyword">class</span> TestFactoryImpl : <span class="keyword">public</span> TestFactoryBase&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> TestCase* <span class="title">CreateTest</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">new</span> TestClass; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> P_TEST_CLASS_NAME_(test_case_name, test_name) \</span><br><span class="line">test_case_name##_##test_name##_Test</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> P_TEST_(test_case_name, test_name, parent_class)\</span><br><span class="line">class P_TEST_CLASS_NAME_(test_case_name, test_name) : public parent_class &#123;\</span><br><span class="line">public:\</span><br><span class="line">    P_TEST_CLASS_NAME_(test_case_name, test_name)() &#123;&#125;\</span><br><span class="line">private:\</span><br><span class="line">    virtual void Run();\</span><br><span class="line">    static ptest::TestCase* test_case_;\</span><br><span class="line">&#125;;\</span><br><span class="line">\</span><br><span class="line">ptest::TestCase* P_TEST_CLASS_NAME_(test_case_name, test_name)::test_case_ =\</span><br><span class="line">ptest::register_test_case(#test_case_name, #test_name, \</span><br><span class="line">new ptest::TestFactoryImpl&lt;P_TEST_CLASS_NAME_(test_case_name, test_name)&gt;);\</span><br><span class="line">void P_TEST_CLASS_NAME_(test_case_name, test_name)::Run()</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PTEST(test_case_name, test_name) \</span><br><span class="line">P_TEST_(test_case_name, test_name, ptest::TestCase)</span></span><br></pre></td></tr></table></figure></p>
+<p>利用宏定义一个测试案例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">PTEST(MyTestCase, Macro_Test_Name)&#123;</span><br><span class="line">    assert(<span class="number">1</span>,<span class="number">3</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>执行所有测试案例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    ptest::TestManager::GetInstance()-&gt;Run();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="内置宏">内置宏</h1><p>内置宏就是来表达一种状态，表达在编译时刻，编译环境的一些信息</p>
+<h2 id="操作系统">操作系统</h2><p>表达编译时刻的操作系统：比如__WIN64__代表64位windows；__CYGWIN__代表windows上面的CYGWIN虚拟环境；ANDROID代表Android环境；__linux__或者__linux代表linux环境</p>
+<h2 id="CPU类型">CPU类型</h2><p>表达编译时刻的CPU架构类型：比如__arm__表达移动平台arm芯片；__i386__表示的i386架构；__x86_64__表示x86架构</p>
+<h2 id="编译器类型">编译器类型</h2><p>表达编译代码的编译器类型：比如__GNUC__表示GNU C++编译平台；_MSC_VER表示windows的Microsoft Visual C/C++平台；__clang__表示Mac下面的LLVM编译平台</p>
+<h2 id="c++实现版本">c++实现版本</h2><p>表达实现c++规范的版本，也可以用来区分c和c++，根据__cplusplus来判断是否支持某种特性，如qt源码中qcompilerdetection.h的代码片段，表示如果c++版本晚于是2011年3月份，intel的编译器值大于1200，则支持LAMBDA等特性<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#  <span class="keyword">if</span> __cplusplus &gt;= <span class="number">201103L</span> || defined(__INTEL_CXX11_MODE__)</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">if</span> __INTEL_COMPILER &gt;= <span class="number">1200</span></span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_AUTO_TYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_CLASS_ENUM</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DECLTYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DEFAULT_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DELETE_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_EXTERN_TEMPLATES</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_LAMBDA</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_RVALUE_REFS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_STATIC_ASSERT</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_VARIADIC_MACROS</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">endif</span></span></span><br><span class="line"><span class="preprocessor">#   <span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/C/">C++</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+<div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">
+<a class="bds_qzone"></a>
+<a class="bds_tsina"></a>
+<a class="bds_tqq"></a>
+<a class="bds_renren"></a>
+<a class="bds_t163"></a>
+<span class="bds_more"></span>
+<a class="shareCount"></a>
+</div>
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=3326447" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/08/28/the-function-of-software/"  title="一个完整软件产品需要的功能">
+ <strong>NEXT:</strong><br/> 
+ <span>一个完整软件产品需要的功能
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	
+	<div class="ds-thread" data-title="宏在c++中的正确使用" data-thread-key="how-to-used-macro-in-c" data-author-key="Peng Jun" data-url="peter517.github.io/post/how-to-used-macro-in-c"></div>
+	
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#尽量不使用宏"><span class="toc-number">1.</span> <span class="toc-text">尽量不使用宏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定义新的类或函数"><span class="toc-number">2.</span> <span class="toc-text">定义新的类或函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内置宏"><span class="toc-number">3.</span> <span class="toc-text">内置宏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU类型"><span class="toc-number">3.2.</span> <span class="toc-text">CPU类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器类型"><span class="toc-number">3.3.</span> <span class="toc-text">编译器类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#c++实现版本"><span class="toc-number">3.4.</span> <span class="toc-text">c++实现版本</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		<a href="http://weibo.com/2178110505" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/peter517" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Ubuntu/" title="Ubuntu">Ubuntu<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">最近文章</p>
+    <ul>
+     <li><a href="https://peter517.github.io/2015/08/28/the-function-of-software/" target="_blank">一个完整软件产品需要的功能</a></li>
+
+     <li><a href="https://peter517.github.io/2015/08/20/import-thing-easy-ignore-in-project/" target="_blank">开发中容易忽略的事情</a></li>
+
+     <li><a href="https://peter517.github.io/2015/08/14/recursive-in-algorithm/" target="_blank">算法中的递归运用</a></li>
+
+      <li><a href="https://peter517.github.io/2015/08/10/decompile-tools-on-all-platforms/" target="_blank">主流平台的反编译工具</a></li>
+
+      <li><a href="http://peter517.github.io/2015/08/10/ubuntu-self-define-service/" target="_blank">Ubuntu中自定义服务</a></li>
+
+       <li><a href="http://peter517.github.io/2015/08/10/git-configuration/" target="_blank">Git 个人配置</a></li>
+
+      <li><a href="http://peter517.github.io/2015/08/06/android-ui-adaptor/" target="_blank">基于dp的Android UI 布局适配</a></li>
+
+      <li><a href="https://peter517.github.io/2015/08/04/mapreduce-thinking/" target="_blank">MapReduce编程</a></li>
+      
+      <li><a href="https://peter517.github.io/2015/08/04/shell-useful-commands/" target="_blank">实用shell命令</a></li>
+    </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2015 
+		
+		<a href="peter517.github.io" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+</html>
+
+
+<a href="https://github.com/peter517"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
