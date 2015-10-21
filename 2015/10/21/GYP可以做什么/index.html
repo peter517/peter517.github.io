@@ -7,12 +7,12 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>Git 个人配置 | Pengjun&#39;s Blog</title>
+    <title>GYP可以做什么？ | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" itemprop="description" content="Git中比较方便的优化配置">
+    <meta name="description" itemprop="description" content="介绍GYP的基本功能以及和同类工具的对比">
     
     
     
@@ -33,7 +33,7 @@
 				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
 				<a class="blog-motto">坚持写博客，沉淀！</a>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -59,15 +59,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/10/git-configuration/" title="Git 个人配置" itemprop="url">Git 个人配置</a>
+      <a href="/2015/10/21/GYP可以做什么/" title="GYP可以做什么？" itemprop="url">GYP可以做什么？</a>
   </h1>
   <p class="article-author">By
     
       <a href="peter517.github.io" title="Peng Jun">Peng Jun</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-10T06:18:28.000Z" itemprop="datePublished">2015-08-10</time>
-    更新日期:<time datetime="2015-08-10T07:19:52.000Z" itemprop="dateModified">2015-08-10</time>
+    <time datetime="2015-10-21T02:17:37.000Z" itemprop="datePublished">2015-10-21</time>
+    Updated:<time datetime="2015-10-21T02:28:24.000Z" itemprop="dateModified">2015-10-21</time>
     
   </p>
 </header>
@@ -75,24 +75,17 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#快捷键配置"><span class="toc-number">1.</span> <span class="toc-text">快捷键配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git自带alias配置"><span class="toc-number">1.1.</span> <span class="toc-text">Git自带alias配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义alias配置"><span class="toc-number">1.2.</span> <span class="toc-text">自定义alias配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在命令行提示符后面显示Git分支"><span class="toc-number">2.</span> <span class="toc-text">在命令行提示符后面显示Git分支</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix"><span class="toc-number">2.1.</span> <span class="toc-text">Unix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.2.</span> <span class="toc-text">OSX</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#meld配置"><span class="toc-number">3.</span> <span class="toc-text">meld配置</span></a></li></ol>
+			<strong class="toc-title">Contents</strong>
+		
 		</div>
 		
-		<h1 id="快捷键配置">快捷键配置</h1><h2 id="Git自带alias配置">Git自带alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global alias.st status</span><br><span class="line">git config --global alias.co checkout</span><br><span class="line">git config --global alias.ci commit</span><br><span class="line">git config --global alias.br branch</span><br></pre></td></tr></table></figure>
-<h2 id="自定义alias配置">自定义alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> gitcommit=<span class="string">"git commit -m"</span></span><br><span class="line"><span class="built_in">alias</span> gitlog=<span class="string">"git log"</span></span><br><span class="line"><span class="built_in">alias</span> gitshow=<span class="string">"git show"</span><span class="comment">#查看修改内容</span></span><br><span class="line"><span class="built_in">alias</span> gitcat=<span class="string">"git cat-file"</span></span><br><span class="line"><span class="built_in">alias</span> gitloggraph=<span class="string">"git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset'"</span><span class="comment">#以图形方式显示提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitinfo=<span class="string">"git remote show origin"</span><span class="comment">#查看仓库信息</span></span><br><span class="line"><span class="built_in">alias</span> gitshortlog=<span class="string">"git shortlog --since=1.day.ago"</span><span class="comment">#查看最近一天的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitweekshortlog=<span class="string">"git shortlog --since=1.week.ago --author='pengjun' | grep -v Merge | uniq"</span><span class="comment">#查看最近一周pengjun的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitfilelog=<span class="string">"git log --follow -p"</span><span class="comment">#查看文件的修改日志</span></span><br></pre></td></tr></table></figure>
-<h1 id="在命令行提示符后面显示Git分支">在命令行提示符后面显示Git分支</h1><p>明确当前的Git分支很重要，之前也不知道有这个功能，开发者频繁的需要查看当前分支，就觉得这个问题其他开发人员也遇到过，应该有解决办法<br>Unix环境一般是服务器，需要显示登录名和主机名</p>
-<h2 id="Unix">Unix</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">parse_git_branch</span></span>() &#123;</span><br><span class="line">    git branch <span class="number">2</span>&gt; /dev/null | sed <span class="operator">-e</span> <span class="string">'/^[^*]/d'</span> <span class="operator">-e</span> <span class="string">'s/* \(.*\)/ (\1)/'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\u@\h \w\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "</span></span><br></pre></td></tr></table></figure>
-<h2 id="OSX">OSX</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">parse_git_branch</span></span>() &#123;</span><br><span class="line">    git branch <span class="number">2</span>&gt; /dev/null | sed <span class="operator">-e</span> <span class="string">'/^[^*]/d'</span> <span class="operator">-e</span> <span class="string">'s/* \(.*\)/ (\1)/'</span></span><br><span class="line">&#125;</span><br><span class="line">RED=<span class="string">"\[\033[0;31m\]"</span></span><br><span class="line">YELLOW=<span class="string">"\[\033[0;33m\]"</span></span><br><span class="line">GREEN=<span class="string">"\[\033[0;32m\]"</span></span><br><span class="line">NO_COLOR=<span class="string">"\[\033[0m\]"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\w<span class="variable">$GREEN</span>\$(parse_git_branch)<span class="variable">$NO_COLOR</span>\$ "</span></span><br></pre></td></tr></table></figure>
-<h1 id="meld配置">meld配置</h1><p>meld是Git本地合并冲突时候的UI界面，在~/.gitconfig里面进行如下配置<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[difftool <span class="string">"meld"</span>]</span><br><span class="line">path = /usr/<span class="built_in">local</span>/bin/meld</span><br><span class="line">trustExitCode = <span class="literal">false</span></span><br><span class="line">[difftool]</span><br><span class="line">prompt = <span class="literal">false</span></span><br><span class="line">[diff]</span><br><span class="line">tool = meld</span><br><span class="line">[mergetool <span class="string">"meld"</span>]</span><br><span class="line">path = /usr/<span class="built_in">local</span>/bin/meld</span><br><span class="line">trustExitCode = <span class="literal">false</span></span><br><span class="line">[mergetool]</span><br><span class="line">keepBackup = <span class="literal">false</span></span><br><span class="line">[merge]</span><br><span class="line">tool = meld</span><br></pre></td></tr></table></figure></p>
-<p>git merge操作后执行git mergetools，如果本地有冲突，就会可以通过meld界面来进行冲突合并</p>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+		<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Git/">Git</a>
+  <span></span> <a href="/tags/GYP/">GYP</a>
   </div>
 
 
@@ -122,19 +115,11 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/08/10/ubuntu-self-define-service/" title="Ubuntu中自定义服务">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Ubuntu中自定义服务</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/08/06/android-ui-adaptor/"  title="基于dp的Android UI 布局适配">
+<a href="/2015/10/12/宏在c++中的正确使用/"  title="宏在c++中的正确使用">
  <strong>NEXT:</strong><br/> 
- <span>基于dp的Android UI 布局适配
+ <span>宏在c++中的正确使用
 </span>
 </a>
 </div>
@@ -144,21 +129,21 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="Git 个人配置" data-thread-key="git-configuration" data-author-key="Peng Jun" data-url="peter517.github.io/post/git-configuration"></div>
+	<div class="ds-thread" data-title="GYP可以做什么？" data-thread-key="GYP可以做什么" data-author-key="Peng Jun" data-url="peter517.github.io/post/GYP可以做什么"></div>
 	
 </section>
 
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#快捷键配置"><span class="toc-number">1.</span> <span class="toc-text">快捷键配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git自带alias配置"><span class="toc-number">1.1.</span> <span class="toc-text">Git自带alias配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义alias配置"><span class="toc-number">1.2.</span> <span class="toc-text">自定义alias配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在命令行提示符后面显示Git分支"><span class="toc-number">2.</span> <span class="toc-text">在命令行提示符后面显示Git分支</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix"><span class="toc-number">2.1.</span> <span class="toc-text">Unix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.2.</span> <span class="toc-text">OSX</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#meld配置"><span class="toc-number">3.</span> <span class="toc-text">meld配置</span></a></li></ol>
+  <strong class="toc-title">Contents</strong>
+  
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 <div id="authorInfo">
 	
@@ -191,6 +176,8 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
 		

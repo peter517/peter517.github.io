@@ -7,12 +7,12 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>基于dp的Android UI 布局适配 | Pengjun&#39;s Blog</title>
+    <title>Git个人配置 | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" itemprop="description" content="用dp来做Android适配">
+    <meta name="description" itemprop="description" content="Git中比较方便的优化配置">
     
     
     
@@ -33,7 +33,7 @@
 				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
 				<a class="blog-motto">坚持写博客，沉淀！</a>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -59,15 +59,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/06/android-ui-adaptor/" title="基于dp的Android UI 布局适配" itemprop="url">基于dp的Android UI 布局适配</a>
+      <a href="/2015/08/10/Git个人配置/" title="Git个人配置" itemprop="url">Git个人配置</a>
   </h1>
   <p class="article-author">By
     
       <a href="peter517.github.io" title="Peng Jun">Peng Jun</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-06T01:01:06.000Z" itemprop="datePublished">2015-08-06</time>
-    更新日期:<time datetime="2015-08-21T09:20:29.000Z" itemprop="dateModified">2015-08-21</time>
+    <time datetime="2015-08-10T06:18:28.000Z" itemprop="datePublished">2015-08-10</time>
+    Updated:<time datetime="2015-10-21T02:21:14.000Z" itemprop="dateModified">2015-10-21</time>
     
   </p>
 </header>
@@ -75,36 +75,24 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#快捷键配置"><span class="toc-number">1.</span> <span class="toc-text">快捷键配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git自带alias配置"><span class="toc-number">1.1.</span> <span class="toc-text">Git自带alias配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义alias配置"><span class="toc-number">1.2.</span> <span class="toc-text">自定义alias配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在命令行提示符后面显示Git分支"><span class="toc-number">2.</span> <span class="toc-text">在命令行提示符后面显示Git分支</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix"><span class="toc-number">2.1.</span> <span class="toc-text">Unix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.2.</span> <span class="toc-text">OSX</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#meld配置"><span class="toc-number">3.</span> <span class="toc-text">meld配置</span></a></li></ol>
 		</div>
 		
-		<h1 id="分辨率布局的局限">分辨率布局的局限</h1><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
-<p><img src="/img/android_ui_adaptor_01.png" alt="android_ui_adaptor_01"></p>
-<p>为减少开发人员的适配工作量，Android引入了dp的概念，在xml布局文件中可以直接设置单位为dp的值，要了解dp，先要了解下面几个概念。</p>
-<h1 id="dip和desity">dip和desity</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
-<p>目前Android设备上dip的主要值是120 dpi、160 dpi、240 dpi、320 dpi 如果显示器尺寸大于或小于这个尺寸，显示器模块负责缩放。</p>
-<h2 id="desity">desity</h2><p><strong>desity</strong>：像素显示密度，基于dip的一个衍生概念，是dip归一化的值，计算方法为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">desity ＝ dip / <span class="number">160</span></span><br></pre></td></tr></table></figure></p>
-<p>目前Android设备上desity主要值为0.75、1、1.5、2、3，Android中可以用代码来获取：<br><figure class="highlight ocaml"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> density = getContext<span class="literal">()</span>.getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>.density;</span><br></pre></td></tr></table></figure></p>
-<h1 id="dp表示缓解适配压力">dp表示缓解适配压力</h1><p>dp的计算就是基于分辨率和desity的，如果一个Android设备分辨率为640*480，desity为1.5，那么屏幕的dp为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">1.5</span>) * (<span class="number">480</span>/<span class="number">1.5</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
-<p>代码中可以根据分辨率和desity来计算dp<br>屏幕可以用分辨率划分，引入dp的概念后，可以用dp来划分屏幕大小，如果屏幕大小为如果两个设备之间分辨率不一样，只要分辨率和desity的比例是一样的，就可以，比如之前的320*240的手机设备，如果它的desity为1，那么它屏幕的dp为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">320</span>/<span class="number">1</span>) * (<span class="number">240</span>/<span class="number">1</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
-<p>这样两个Android设备对屏幕都有同样的表达方式：320dp * 240dp，基于dp的布局就可以这样：<br><img src="/img/android_ui_adaptor_02.png" alt="android_ui_adaptor_02"></p>
-<h1 id="没有完美解决方案">没有完美解决方案</h1><h2 id="dp也做不到的事情">dp也做不到的事情</h2><p>不同设备之间只有用拥有统一的dp大小才能共享同一个布局方案，如果dp不一样的情况，那么就需要针对不同的dp进行处理了，android下面有一个values目录，里面通过dimens.xml来设置布局的dp<br><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">values</span>-w540dp-hdpi</span><br></pre></td></tr></table></figure></p>
-<p>格式如上所示w540dp代表宽度为540dp,hdpi代表density为1，针对不同的dp，需要新建对应的目录，App会在运行时根据设备情况加载对应的目录里面的dp值</p>
-<h2 id="建议">建议</h2><ul>
-<li>如果可以不用数字来布局的尽量不要用，可以用百分比来代替：<a href="https://github.com/JulienGenoud/android-percent-support-lib-sample" target="_blank" rel="external">开源库</a></li>
-<li>不同的手机里面dp之间差距不大，布局之间的差异不明显，但是现在的智能电视和手机之间dp差距大，需要做好适配</li>
-</ul>
-<h1 id="参考资料">参考资料</h1><ul>
-<li><a href="http://developer.android.com/guide/practices/screens_support.html" target="_blank" rel="external">http://developer.android.com/guide/practices/screens_support.html</a></li>
-</ul>
+		<h1 id="快捷键配置">快捷键配置</h1><h2 id="Git自带alias配置">Git自带alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global alias.st status</span><br><span class="line">git config --global alias.co checkout</span><br><span class="line">git config --global alias.ci commit</span><br><span class="line">git config --global alias.br branch</span><br></pre></td></tr></table></figure>
+<h2 id="自定义alias配置">自定义alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> gitcommit=<span class="string">"git commit -m"</span></span><br><span class="line"><span class="built_in">alias</span> gitlog=<span class="string">"git log"</span></span><br><span class="line"><span class="built_in">alias</span> gitshow=<span class="string">"git show"</span><span class="comment">#查看修改内容</span></span><br><span class="line"><span class="built_in">alias</span> gitcat=<span class="string">"git cat-file"</span></span><br><span class="line"><span class="built_in">alias</span> gitloggraph=<span class="string">"git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset'"</span><span class="comment">#以图形方式显示提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitinfo=<span class="string">"git remote show origin"</span><span class="comment">#查看仓库信息</span></span><br><span class="line"><span class="built_in">alias</span> gitshortlog=<span class="string">"git shortlog --since=1.day.ago"</span><span class="comment">#查看最近一天的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitweekshortlog=<span class="string">"git shortlog --since=1.week.ago --author='pengjun' | grep -v Merge | uniq"</span><span class="comment">#查看最近一周pengjun的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitfilelog=<span class="string">"git log --follow -p"</span><span class="comment">#查看文件的修改日志</span></span><br></pre></td></tr></table></figure>
+<h1 id="在命令行提示符后面显示Git分支">在命令行提示符后面显示Git分支</h1><p>明确当前的Git分支很重要，之前也不知道有这个功能，开发者频繁的需要查看当前分支，就觉得这个问题其他开发人员也遇到过，应该有解决办法<br>Unix环境一般是服务器，需要显示登录名和主机名</p>
+<h2 id="Unix">Unix</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">parse_git_branch</span></span>() &#123;</span><br><span class="line">    git branch <span class="number">2</span>&gt; /dev/null | sed <span class="operator">-e</span> <span class="string">'/^[^*]/d'</span> <span class="operator">-e</span> <span class="string">'s/* \(.*\)/ (\1)/'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\u@\h \w\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "</span></span><br></pre></td></tr></table></figure>
+<h2 id="OSX">OSX</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">parse_git_branch</span></span>() &#123;</span><br><span class="line">    git branch <span class="number">2</span>&gt; /dev/null | sed <span class="operator">-e</span> <span class="string">'/^[^*]/d'</span> <span class="operator">-e</span> <span class="string">'s/* \(.*\)/ (\1)/'</span></span><br><span class="line">&#125;</span><br><span class="line">RED=<span class="string">"\[\033[0;31m\]"</span></span><br><span class="line">YELLOW=<span class="string">"\[\033[0;33m\]"</span></span><br><span class="line">GREEN=<span class="string">"\[\033[0;32m\]"</span></span><br><span class="line">NO_COLOR=<span class="string">"\[\033[0m\]"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\w<span class="variable">$GREEN</span>\$(parse_git_branch)<span class="variable">$NO_COLOR</span>\$ "</span></span><br></pre></td></tr></table></figure>
+<h1 id="meld配置">meld配置</h1><p>meld是Git本地合并冲突时候的UI界面，在~/.gitconfig里面进行如下配置<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[difftool <span class="string">"meld"</span>]</span><br><span class="line">path = /usr/<span class="built_in">local</span>/bin/meld</span><br><span class="line">trustExitCode = <span class="literal">false</span></span><br><span class="line">[difftool]</span><br><span class="line">prompt = <span class="literal">false</span></span><br><span class="line">[diff]</span><br><span class="line">tool = meld</span><br><span class="line">[mergetool <span class="string">"meld"</span>]</span><br><span class="line">path = /usr/<span class="built_in">local</span>/bin/meld</span><br><span class="line">trustExitCode = <span class="literal">false</span></span><br><span class="line">[mergetool]</span><br><span class="line">keepBackup = <span class="literal">false</span></span><br><span class="line">[merge]</span><br><span class="line">tool = meld</span><br></pre></td></tr></table></figure></p>
+<p>git merge操作后执行git mergetools，如果本地有冲突，就会可以通过meld界面来进行冲突合并</p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Android/">Android</a>
+  <span></span> <a href="/tags/Git/">Git</a>
   </div>
 
 
@@ -135,18 +123,18 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/08/10/git-configuration/" title="Git 个人配置">
+ <a href="/2015/08/10/Ubuntu中自定义服务/" title="Ubuntu中自定义服务">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  Git 个人配置</span>
+  Ubuntu中自定义服务</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/08/04/mapreduce-thinking/"  title="MapReduce编程">
+<a href="/2015/08/06/基于dp的Android UI 布局适配/"  title="基于dp的Android UI 布局适配">
  <strong>NEXT:</strong><br/> 
- <span>MapReduce编程
+ <span>基于dp的Android UI 布局适配
 </span>
 </a>
 </div>
@@ -156,21 +144,21 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="基于dp的Android UI 布局适配" data-thread-key="android-ui-adaptor" data-author-key="Peng Jun" data-url="peter517.github.io/post/android-ui-adaptor"></div>
+	<div class="ds-thread" data-title="Git个人配置" data-thread-key="Git个人配置" data-author-key="Peng Jun" data-url="peter517.github.io/post/Git个人配置"></div>
 	
 </section>
 
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#快捷键配置"><span class="toc-number">1.</span> <span class="toc-text">快捷键配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git自带alias配置"><span class="toc-number">1.1.</span> <span class="toc-text">Git自带alias配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义alias配置"><span class="toc-number">1.2.</span> <span class="toc-text">自定义alias配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在命令行提示符后面显示Git分支"><span class="toc-number">2.</span> <span class="toc-text">在命令行提示符后面显示Git分支</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix"><span class="toc-number">2.1.</span> <span class="toc-text">Unix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.2.</span> <span class="toc-text">OSX</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#meld配置"><span class="toc-number">3.</span> <span class="toc-text">meld配置</span></a></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 <div id="authorInfo">
 	
@@ -203,6 +191,8 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
 		
