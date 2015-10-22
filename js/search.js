@@ -17,7 +17,7 @@ var searchFunc = function(path, search_id, content_id) {
             var $resultContent = document.getElementById(content_id);
 
             $input.addEventListener('input', function(){
-                var str='<ul class=\"search-result-list\">';                
+                var str='<ul padding-left: 10px;>';                
                 var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
                 $resultContent.innerHTML = "";
                 if (this.value.trim().length <= 0) {
@@ -54,7 +54,7 @@ var searchFunc = function(path, search_id, content_id) {
                     }
                     // show search results
                     if (isMatch) {
-                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        str += "<li><a href='"+ data_url +"' style=\"color:#ff8c00\">"+ data_title +"</a>";
                         var content = data.content.trim().replace(/<[^>]+>/g,"");
                         if (first_occur >= 0) {
                             // cut out 100 characters
@@ -78,7 +78,7 @@ var searchFunc = function(path, search_id, content_id) {
                             // highlight all keywords
                             keywords.forEach(function(keyword){
                                 var regS = new RegExp(keyword, "gi");
-                                match_content = match_content.replace(regS, "<em class=\"search-keyword\">"+keyword+"</em>");
+                                match_content = match_content.replace(regS, "<I style=\"font-weight: bold;color:#000000\" >"+keyword+"</I>");
                             });
                             
                             str += "<p class=\"search-result\">" + match_content +"...</p>"

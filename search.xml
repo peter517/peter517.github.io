@@ -40,8 +40,8 @@
     </entry>
     
     <entry>
-      <title><![CDATA[宏在c++中的正确使用]]></title>
-      <url>/2015/10/12/%E5%AE%8F%E5%9C%A8c++%E4%B8%AD%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8/</url>
+      <title><![CDATA[宏在C++中的正确使用]]></title>
+      <url>/2015/10/12/%E5%AE%8F%E5%9C%A8C++%E4%B8%AD%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8/</url>
       <content type="html"><![CDATA[<p>宏在c++里面应该是最有个性的一个特点，虽然只是简单的文本替换，但</p>
 <blockquote>
 <p>用的巧妙，它可以让代码行数变短，如果乱用，则代码会完全丧失可读性</p>
