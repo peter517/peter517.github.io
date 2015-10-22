@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+    
+    <entry>
+      <title><![CDATA[GYP可以做什么？]]></title>
+      <url>peter517.github.io/2015/10/21/GYP%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88/</url>
+      <content type="html"><![CDATA[<p>写的一手好代码固然难得，代码写好后可以方便的在各个平台完成编译部署，也需要找到好的工具，GYP就是其中一个，类似于CMake，提供了一套跨平台生成编译脚本或IDE工程的方案<br>如下图所示，通过编写GYP脚本，就可以在不同平台下面生成对于的编译脚本或着IDE工程，比如Unix平台下面的Makefile或Ninja，Windows平台下面的VS工程，IOS平台下面的Xcode工程，从而达到一键构建的目的</p>
+<blockquote>
+<p>GYP对于有支持跨平台的多语言编译，交叉编译需求的项目，是一个很好的选择</p>
+</blockquote>
+<p><img src="/img/cross-platform-script-framework.png" alt="cross-platform-script-framework"></p>
+<h1 id="简单实例">简单实例</h1><p>下面是一个简单的GYP脚本，通过它可以在不同的平台下面生成可my_target的可执行文件<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="string">'targets'</span>: [</span><br><span class="line">     &#123;</span><br><span class="line">       <span class="string">'target_name'</span>: <span class="string">'my_target'</span>,</span><br><span class="line">       <span class="string">'type'</span>: <span class="string">'executable'</span>,</span><br><span class="line">       <span class="string">'sources'</span>: [</span><br><span class="line">         <span class="string">'main.cc'</span>,</span><br><span class="line">       ],</span><br><span class="line">     &#125;,</span><br><span class="line">   ],</span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure></p>
+<h1 id="基本功能">基本功能</h1><p>跟CMake这种跨平台脚本生成工具一样，GYP提供一个编译脚本所需要的基本功能</p>
+<h2 id="定义宏">定义宏</h2><p>定义C中的宏，如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'defines'</span>: [</span><br><span class="line">            <span class="string">'DEFINE_FOO'</span>,</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure></p>
+<h2 id="default变量">default变量</h2><p>通过OS变量判断当前操作系统平台，如下所示：<br><figure class="highlight lasso"><table><tr><td class="code"><pre><span class="line"><span class="string">'conditions'</span>: <span class="preprocessor">[</span></span><br><span class="line">          <span class="preprocessor">[</span><span class="string">'OS=="linux"'</span>, &#123;</span><br><span class="line">            <span class="attribute">...</span></span><br><span class="line">          <span class="preprocessor">]</span><span class="markup">,</span><br><span class="line">          </span><span class="preprocessor">[</span><span class="string">'OS=="win"'</span>, &#123;</span><br><span class="line">            <span class="attribute">...</span></span><br><span class="line">          &#125;, &#123;OS != <span class="string">"win"</span>,</span><br><span class="line">            <span class="attribute">...</span></span><br><span class="line">          &#125;<span class="preprocessor">]</span><span class="markup"></span><br><span class="line">        ],</span></span><br></pre></td></tr></table></figure></p>
+<p>除了OS变量，PRODUCT_DIR变量表示编译生成文件路径，DEPTH表示文件执行路径</p>
+<h2 id="模块依赖">模块依赖</h2><p>依赖其他GYP里面的target，如下所示，bar为bar.gyp里面的一个target_name：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'dependencies'</span>: [</span><br><span class="line">          <span class="string">'../bar/bar.gyp:bar'</span>,</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure></p>
+<h2 id="变量定义">变量定义</h2><p>定义变量，用来进行项目配置，如下所示：<br><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line"><span class="string">'variables'</span>: &#123;</span><br><span class="line">      <span class="string">'is_enable_video'</span>: <span class="string">'true'</span></span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure></p>
+<h2 id="include其他gyp文件">include其他gyp文件</h2><p>include其他gypi文件，如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'includes'</span>: [</span><br><span class="line">     <span class="string">'../build/common.gypi'</span>,</span><br><span class="line">   ],</span><br></pre></td></tr></table></figure></p>
+<h2 id="包含头文件搜索路径">包含头文件搜索路径</h2><p>如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'include_dirs'</span>: [</span><br><span class="line">          <span class="string">'include'</span>,</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure></p>
+<h2 id="cflag设置">cflag设置</h2><p>如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'cflags'</span>: [</span><br><span class="line">            <span class="string">'-Werror'</span>,</span><br><span class="line">            <span class="string">'-Wall'</span>,</span><br><span class="line">         ],</span><br></pre></td></tr></table></figure></p>
+<h2 id="shell脚本执行">shell脚本执行</h2><p>在脚本里面执行shell命令，如下所示，BUILD_DATE可以在代码中打印出来，用来标示编译日期<br><figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">"defines": [</span><br><span class="line">              'BUILD_DATE=&lt;！(<span class="keyword">echo</span> `<span class="built_in">date</span> +<span class="envvar">%Y%</span>m%d`)'</span><br><span class="line">            ],</span><br></pre></td></tr></table></figure></p>
+<h1 id="特有功能">特有功能</h1><h2 id="action">action</h2><p>GYP出了支持生成编译C的脚本外，还支持第三方模块执行的接口action，这样就可以考虑到利用GYP编译其他语言，比如用javac编译Java、用ant来Android App、用yasm来编译汇编语言等。利用这个特性，还可以用来执行单元测试，下面就是在每次编译的时候，<strong>根据“inputs”文件（func.cc、func.h、func_test_main.cc）是否有改变</strong>，来执行单元测试out/Release/fun_test<br><figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line"><span class="variable">'targets</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">'target_name</span><span class="variable">':</span> <span class="variable">'fun_test</span>',</span><br><span class="line">        <span class="variable">'type</span><span class="variable">':</span> <span class="variable">'executable</span>',</span><br><span class="line">        <span class="variable">'sources</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">           <span class="variable">'test/func_test_main.cc</span>',</span><br><span class="line">        ],</span><br><span class="line">        <span class="variable">'actions</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">         &#123;</span><br><span class="line">            <span class="variable">'action_name</span><span class="variable">':</span> <span class="variable">'run_fun_test</span>',</span><br><span class="line">                <span class="variable">'inputs</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">                    <span class="variable">'func.h</span>',</span><br><span class="line">                    <span class="variable">'func.cc</span>',</span><br><span class="line">                    <span class="variable">'test/func_test_main.cc</span>',</span><br><span class="line">                ],</span><br><span class="line">                <span class="variable">'outputs</span><span class="variable">':</span> <span class="list">[ <span class="variable">'fun_test.txt</span>' ],</span><br><span class="line">                <span class="variable">'action</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">                    <span class="variable">'out/Release/fun_test</span>',</span><br><span class="line">                    ],</span><br><span class="line">                &#125;,</span><br><span class="line">         ],</span><br><span class="line">&#125;,]</span></span></span></span></span></span></span><br></pre></td></tr></table></figure></p>
+<h2 id="direct_dependent_settings">direct_dependent_settings</h2><p>direct_dependent_settings表示依赖这个模块的模块也自动包含这个属性，比如入unit_test这个模块依赖gtest这个模块，那么unit_test会被设置“include_dirs”这个属性，把gtest这个模块中include的绝对路径添加为头文件搜索路径，</p>
+<blockquote>
+<p>direct_dependent_settings的设计让使用其他模块更加方便，被依赖模块include路径变更对其他模块没有影响</p>
+</blockquote>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line"><span class="variable">'targets</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">'target_name</span><span class="variable">':</span> <span class="variable">'gtest</span>',</span><br><span class="line">        <span class="variable">'type</span><span class="variable">':</span> <span class="variable">'static_library</span>',</span><br><span class="line">        <span class="variable">'include_dirs</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">            <span class="variable">'include</span>',</span><br><span class="line">            <span class="variable">'.</span>',</span><br><span class="line">        ],</span><br><span class="line">        <span class="variable">'sources</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">            <span class="variable">'include/gtest.h</span>',</span><br><span class="line">            <span class="variable">'source/gtest.cpp</span>',</span><br><span class="line">        ],</span><br><span class="line">      <span class="variable">'direct_dependent_settings</span><span class="variable">':</span> &#123;</span><br><span class="line">             <span class="variable">'include_dirs</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">              <span class="variable">'include</span>',</span><br><span class="line">           ]</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">]</span></span></span></span></span><br></pre></td></tr></table></figure>
+<h1 id="GYP_Vs_CMake">GYP Vs CMake</h1><p>下图为GYP和CMake五个特性之间的比较：<br><img src="/img/GYP_Vs_CMake.png" alt="GYP_Vs_CMake"></p>
+<ul>
+<li>可读性：相比较于CMake的脚本瀑布式书写方式，GYP的书写方式类似于Json，可读性比较强</li>
+<li>扩展性：action特性可以让GYP可以整合其他编译器，让C语言和其他语言一起一键编译</li>
+<li>模块化：GYP以targets为书写单元，模块性很好，CMake通过一行语句添加依赖的模块目录，GYP通过dependencies属性来设置依赖的targets</li>
+<li>源文件批量添加：GYP对批量添加源文件支持不好，CMake通过aux_source_directory命令轻松添加</li>
+<li>流行度：CMake在很多成熟的项目中使用，也有很多配套的工具，GYP起步比较晚，主要用在Chromium项目上面，这块还需努力</li>
+</ul>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[宏在c++中的正确使用]]></title>
+      <url>peter517.github.io/2015/10/12/%E5%AE%8F%E5%9C%A8c++%E4%B8%AD%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8/</url>
+      <content type="html"><![CDATA[<p>宏在c++里面应该是最有个性的一个特点，虽然只是简单的文本替换，但</p>
+<blockquote>
+<p>用的巧妙，它可以让代码行数变短，如果乱用，则代码会完全丧失可读性</p>
+</blockquote>
+<p>正确的使用宏非常重要,宏主要作用是两点：</p>
+<ul>
+<li>用来表达一般语法无法表达的内容，如通过一行语句，简洁的定义一个自定义类</li>
+<li>用来标示一种状态，根据不同的状态来减少编译代码</li>
+</ul>
+<h1 id="尽量不使用宏">尽量不使用宏</h1><p>文本替换操作可以使用的场景很多，但是代码里面到处是宏，其他开发人员也很难阅读代码，《Effective C++》里面明确表示通过const、emum、inline语法来替代宏的使用。<br>如下所示，相对于VAR_INT宏，使用VAR_INT会写入符号表，编译起来报错会有“VAR_INT”信息，而不是单纯的一个“1”</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> VAR_INT <span class="number">1</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> VAR_INT = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="定义新的类或函数">定义新的类或函数</h1><p>那什么时候应该使用宏呢？有些内容，比如定义一个新的类或函数，c++里面只有模版可以对一个类进行抽象，还是有一些需求无法满足，使用宏会让代码更加简洁。<br>如下面代码，单元测试框架代码，用P_TEST_宏来定义个一个<strong>部分</strong>新测试类，每次定义时用register_test_case方法来自动注册到TestManager中（也可以选择在构造函数中，但是这样要先new这个对象），这样就可以在main函数中执行队列中所有的测试案例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> ptest &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> TestClass&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//register test case to TestManager</span></span><br><span class="line"><span class="function">TestCase* <span class="title">register_test_case</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* test_case_name, <span class="keyword">const</span> <span class="keyword">char</span>* test_name,TestFactoryBase* factory)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> TestFactoryBase&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> TestCase* <span class="title">CreateTest</span><span class="params">()</span></span>=<span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> TestClass&gt;</span><br><span class="line"><span class="keyword">class</span> TestFactoryImpl : <span class="keyword">public</span> TestFactoryBase&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> TestCase* <span class="title">CreateTest</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">new</span> TestClass; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> P_TEST_CLASS_NAME_(test_case_name, test_name) \</span><br><span class="line">test_case_name##_##test_name##_Test</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> P_TEST_(test_case_name, test_name, parent_class)\</span><br><span class="line">class P_TEST_CLASS_NAME_(test_case_name, test_name) : public parent_class &#123;\</span><br><span class="line">public:\</span><br><span class="line">    P_TEST_CLASS_NAME_(test_case_name, test_name)() &#123;&#125;\</span><br><span class="line">private:\</span><br><span class="line">    virtual void Run();\</span><br><span class="line">    static ptest::TestCase* test_case_;\</span><br><span class="line">&#125;;\</span><br><span class="line">\</span><br><span class="line">ptest::TestCase* P_TEST_CLASS_NAME_(test_case_name, test_name)::test_case_ =\</span><br><span class="line">ptest::register_test_case(#test_case_name, #test_name, \</span><br><span class="line">new ptest::TestFactoryImpl&lt;P_TEST_CLASS_NAME_(test_case_name, test_name)&gt;);\</span><br><span class="line">void P_TEST_CLASS_NAME_(test_case_name, test_name)::Run()</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PTEST(test_case_name, test_name) \</span><br><span class="line">P_TEST_(test_case_name, test_name, ptest::TestCase)</span></span><br></pre></td></tr></table></figure></p>
+<p>利用宏定义一个测试案例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">PTEST(MyTestCase, Macro_Test_Name)&#123;</span><br><span class="line">    assert(<span class="number">1</span>,<span class="number">3</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>执行所有测试案例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    ptest::TestManager::GetInstance()-&gt;Run();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="内置宏">内置宏</h1><p>内置宏就是来表达一种状态，表达在编译时刻，编译环境的一些信息</p>
+<h2 id="操作系统">操作系统</h2><p>表达编译时刻的操作系统：比如__WIN64__代表64位windows；__CYGWIN__代表windows上面的CYGWIN虚拟环境；ANDROID代表Android环境；__linux__或者__linux代表linux环境</p>
+<h2 id="CPU类型">CPU类型</h2><p>表达编译时刻的CPU架构类型：比如__arm__表达移动平台arm芯片；__i386__表示的i386架构；__x86_64__表示x86架构</p>
+<h2 id="编译器类型">编译器类型</h2><p>表达编译代码的编译器类型：比如__GNUC__表示GNU C++编译平台；_MSC_VER表示windows的Microsoft Visual C/C++平台；__clang__表示Mac下面的LLVM编译平台</p>
+<h2 id="c++实现版本">c++实现版本</h2><p>表达实现c++规范的版本，也可以用来区分c和c++，根据__cplusplus来判断是否支持某种特性，如qt源码中qcompilerdetection.h的代码片段，表示如果c++版本晚于是2011年3月份，intel的编译器值大于1200，则支持LAMBDA等特性<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#  <span class="keyword">if</span> __cplusplus &gt;= <span class="number">201103L</span> || defined(__INTEL_CXX11_MODE__)</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">if</span> __INTEL_COMPILER &gt;= <span class="number">1200</span></span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_AUTO_TYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_CLASS_ENUM</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DECLTYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DEFAULT_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DELETE_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_EXTERN_TEMPLATES</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_LAMBDA</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_RVALUE_REFS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_STATIC_ASSERT</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_VARIADIC_MACROS</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">endif</span></span></span><br><span class="line"><span class="preprocessor">#   <span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[一个完整软件产品需要的功能]]></title>
+      <url>peter517.github.io/2015/08/28/%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E8%BD%AF%E4%BB%B6%E4%BA%A7%E5%93%81%E9%9C%80%E8%A6%81%E7%9A%84%E5%8A%9F%E8%83%BD/</url>
+      <content type="html"><![CDATA[<p>做一个demo很容易，但是真正要交到用户手中时，应该是一个成熟的产品，一些功能是必不可少的，这些功能主要作用如下：</p>
+<ul>
+<li>提供不断完善产品的方法</li>
+<li>方便定位问题</li>
+<li>保证产品的可扩展性</li>
+</ul>
+<h1 id="基本功能">基本功能</h1><h2 id="用户反馈渠道">用户反馈渠道</h2><p>用户在使用产品时发生了Bug或者对产品有一些新的需求，应该有一个明显的入口提供给用户完成反馈</p>
+<h2 id="用户行为数据统计">用户行为数据统计</h2><p>用户行为统计最基本是用来看一个产品的活跃用户数、转化率等指标，但更重要的是根据用户在产品上面的操作习惯，可以用来改进产品设计，对于一些特殊的涉及用户个人信息的产品，还可以知道用户是一个什么样子的人，从而进行针对性营销</p>
+<h2 id="对内对技术和对外的帮助文档">对内对技术和对外的帮助文档</h2><p>对内的技术文档主要是方便开发人员之间的协同开发，对外的帮助文档主要是面向最终用户，帮助用户处理产品常见问题</p>
+<h2 id="方便获取日志">方便获取日志</h2><p>产品发布后，如果发现问题，用户反馈给开发人员，开发人员一般会要求用户抓取日志，但不是每个用户都懂得或者愿意抓取日志，有条件的话，应该设计一个更方便的日志抓取逻辑，比如产品留一个监听端口，开发人员可以通过这个端口获取日志，整个过程只需要用户告诉IP就可以了</p>
+<h2 id="方便查看版本信息">方便查看版本信息</h2><p>产品的UI界面一般显示的是App的信息，如果想知道App所使用其他SDK的版本信息，需要查看日志，SDK应保证在日志中可以方便的查看到版本信息</p>
+<h2 id="用户数据安全">用户数据安全</h2><p>软件产品常常设计到用户的个人信息，产品发布的时候一定要Review一下整个流程有么有可能造成用户个人信息泄漏</p>
+<h2 id="第三方库是否可商业化">第三方库是否可商业化</h2><p>产权问题就像生小孩，等肚子大了才看的出来，当你的产品用户数量越来越多，你用的第三方库的产权问题就会受到更多的关注，所以在第一个版本发布的时候，就需要把那些无法商业化的第三方库去掉</p>
+<h2 id="在线升级">在线升级</h2><p>新旧产品之间的不兼容，一直是软件开发中的硬伤，每个程序员都希望用户用的是最新版本，但是现实很残酷，开发人员应该提供一种方便的升级方式来帮助用户升级，当一个人做一件事成本很低的时候，他会愿意试一试的，比如说网购</p>
+<h2 id="版本信息交互">版本信息交互</h2><p>如果产品设计到多个端之间通信，交互时需要加入版本信息保证兼容，随着业务逻辑的增加，很容易出现协议之间不兼容的情况，这时候就需要根据对方的版本来选择不同的协议，所以多个端之间交互时加入版本号信息是一个很好习惯</p>
+<h2 id="配置产品特性">配置产品特性</h2><p>一般可以通过界面来配置一些产品特性；如果是通过配置文件来修改，那么主要针对面向程序开发人员的产品，比如IDE，开发者可以根据自己的喜好和机器环境，修改配置</p>
+<h1 id="高级功能">高级功能</h1><p>基本功能主要是针对最终用户，高级功能主要是面向开发人员</p>
+<h2 id="插件化">插件化</h2><p>插件化让新增一个功能不需要重新编译和部署，可能只需要简单的重启一下程序，像Eclipse一样</p>
+<h2 id="SDK支持">SDK支持</h2><p>当开发人员不喜欢默认UI时候，可以根据SDK重新设计自己的UI</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[开发中容易忽略的事情]]></title>
+      <url>peter517.github.io/2015/08/20/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
+      <content type="html"><![CDATA[<p>下面这些事情，如果没有做，项目也可以摇摇晃晃的往前走，但是我们应该追求业界所说的<strong>高效程序员</strong>，一个高效的程序员，绝对不是随心而欲的完成一个项目，一定有一些自己经历过各种项目历练而熟记于心的准则。<br>我相信，高效程序员的效率可能是普通程序员的20倍，可能差别就在下面这些地方</p>
+<h1 id="单元测试">单元测试</h1><h2 id="功能未写，测试先行">功能未写，测试先行</h2><p>最理想的情况是在写一个功能的时候，先写一个fail的单元测试，功能完成的标准是看单元测试是否可以由fail变为pass。平时在做项目时，在项目紧张的时候一直坚持做到这一点实属不易，但我们至少可以在功能完成后，review一下哪个方法需要单元测试，经过单元测试的功能，我们会更有信心的交付这个功能</p>
+<h2 id="不仅仅是测试">不仅仅是测试</h2><p>单元测试可以迫使我们的代码接口更加清晰</p>
+<blockquote>
+<p>易于测试的代码一般也是接口清晰的代码</p>
+</blockquote>
+<h2 id="完善单元测试">完善单元测试</h2><p>初次单元测试是目标是一些基础功能，当这个模块单元测试ok后仍然有bug，我们需要审视一下我们是否需要完善当前的单元测试，之后可以通过单元测试来验证该bug，而不是通过测试人员和最终用户</p>
+<h2 id="自动化">自动化</h2><p>所有单元测试应该在每次功能交付之前自动的运行一次，比如Maven打包的时候会运行test目录下面的所以单元测试，有一个fail则打包失败</p>
+<h2 id="框架">框架</h2><p>测试框架可以提供Assert函数和Mock对象，方便统一运行测试和测试case的管理，常见的测试框架如下：</p>
+<ul>
+<li><a href="http://junit.org/" target="_blank" rel="external">Junit</a> for Java</li>
+<li><a href="https://code.google.com/p/googletest/" target="_blank" rel="external">gtest</a> for C++</li>
+</ul>
+<h1 id="Code_Review">Code Review</h1><h2 id="没人可以review">没人可以review</h2><p>平时在做项目时，一个功能模块可能就一个人写，完成后没有相关的人可以review，或者可以review，但是review的质量不高。review的目的其实是保证代码的质量，反过来想，开发中哪个行为最容易破坏代码的质量呢？</p>
+<blockquote>
+<p>不熟悉这个模块的人的代码提交没有被review</p>
+</blockquote>
+<h2 id="Code_Owner">Code Owner</h2><p>引入Code Owner机制，每个模块需要至少有一个Owner，对这个模块的代码负责，Owner自己提交的代码，如果有条件，可以找对应的人review一下（比如两个Owner的时候，互相review），其他开发人员如果有需求需要改这个模块的代码，必须向Owner提供review申请</p>
+<h2 id="reivew方式">reivew方式</h2><p>Android通过repo和gerrit来管理代码，gerrit是一个代码审核服务器的概念，可以确保所有人都要向Owner发起reivew进程，但大多数git实现，比如gitlab和github，都没有代码审核服务器，所以尽量每个模块单独建立一个仓库，而不是所有模块共享一个仓库，这样太多人有master权限了</p>
+<blockquote>
+<p>应该单独建立一个仓库，每个仓库只有Owner才有master权限</p>
+</blockquote>
+<p>其他人想修改该模块的代码必须向master发起push request来review，所有仓库可以通过repo管理</p>
+<h1 id="模块化">模块化</h1><h2 id="依赖抽象而不是过程">依赖抽象而不是过程</h2><p>任何一本软件开发的书都会强调模块化的重要性，平时在做项目时，每个“模块”以功能来划分很容易做到，当发现一个“模块”比较臃肿的时候，拆分成两个“模块”也花不了多少时间，但这些“模块”可能不是真正的模块，模块与模块之间依赖过程，而不是依赖抽象，要真正做到模块化应该有两点：</p>
+<ul>
+<li>模块与模块之间是通过接口交互</li>
+<li>每个模块是一个单独的编译单元</li>
+</ul>
+<p>做到这两点，每个模块都可以通过简单的一行命令独立出来提供单一的服务</p>
+<h2 id="持续模块化">持续模块化</h2><p>项目紧张的时候，为了快速搭建原型可以先牺牲一下模块化，在原型验证通过后，开发正式代码时，模块化是第一步，项目开发过程中要有持续模块化的心态，如果开始没有做好模块化，抱着功能测试通过后再重构代码的心态，结果往往是模块化永远不会被执行，因为测试通过的代码有了一个附加值，开发人员这个时候重构的话，代码可能需要重新测试一遍，所以臃肿的代码就一直保留下来</p>
+<blockquote>
+<p>当发现解决一个bug的时候，需要改很多地方代码，那么就是你需要立刻做模块化的信号</p>
+</blockquote>
+<h1 id="跨平台">跨平台</h1><h2 id="操作系统原生语言">操作系统原生语言</h2><p>设想一下你想在Android、IOS、OSX、Windows、Linux上面写一个文件读写的工具库，你们会选择哪种语言来做，第一反应应该是Java，Java最大特征就是跨平台，但是很抱歉，除了Android和Linux上面你可以很好产品化（因为有Java环境支持），其他平台都需要用户先装好java环境，这一点是无法做到的。</p>
+<blockquote>
+<p>所以真正的跨平台语言应该是和操作系统相关的原生语言，该语言的输出是不需要用户额外安装其他的虚拟环境，那么答案应该只有一个：C语言</p>
+</blockquote>
+<p>平时在做项目时，当你准备实现一个功能的时候，除了定义良好的接口，也要先考虑一下，这个功能是否有跨平台的需求，是否该用C来实现<br>不是所有功能都可以通过C来实现跨平台，比如移动端的一些UI组件操作，我们需要保证的是可以做到尽量跨平台</p>
+<h2 id="跨平台技术">跨平台技术</h2><p>一个功能跨平台的实现主要考虑的是两方面：</p>
+<ul>
+<li>代码级别的跨平台</li>
+<li>编译级别的跨平台 </li>
+</ul>
+<p>C语言在不同的平台上面有不同的API，需要在代码中根据宏来控制<br>编译级别的跨平台主要需求时一个编译脚本，各个平台上面可以完成编译，<a href="https://chromium.googlesource.com/external/gyp/+/master/docs/UserDocumentation.md" target="_blank" rel="external">GYP</a>是由Python实现的跨平台编译脚本，可以很好满足需要</p>
+<h1 id="可配置">可配置</h1><h2 id="测试人员的可配置">测试人员的可配置</h2><p>当交互的产品需要切换一下线上、线下功能，或者开启debug模式，是否需要开发人员重现build一个版本，很不幸，这个在开发中很常见，我们应该在产品测试前考虑好哪些功能是可以给测试人员配置的，如果移动平台，比如IOS上面，配置文件比较麻烦，我们也应该提供一种后门，通过PC端的命令来控制IOS的表现，达到可配置的效果</p>
+<h2 id="最终用户的可配置">最终用户的可配置</h2><p>开发给最终用户的配置选项一般是产品经理来定的，开发人员需要注意的是安全性问题，防止用户通过配置选项来破坏后台服务</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[算法中的递归运用]]></title>
+      <url>peter517.github.io/2015/08/14/%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84%E9%80%92%E5%BD%92%E8%BF%90%E7%94%A8/</url>
+      <content type="html"><![CDATA[<h1 id="单纯递归">单纯递归</h1><h2 id="主要思想">主要思想</h2><p>递归是各类算法的基本动作，递归要注意以下几点：</p>
+<ul>
+<li>递归算法能设计成不返回值就不返回值，因为递归的出口一般不止一个，设计成返回值会增加复杂度</li>
+<li>如果设计成参数，那么要注意：参数如果传值，那么是每个被递归函数的私有数据，如果是传引用，那么是每个被递归函数的公有数据</li>
+</ul>
+<blockquote>
+<p>单纯的递归动作，每递归一次，问题规模进一步缩小（有时可能是放大），直到问题规模到达下界（或上界），停止递归，原路返回</p>
+</blockquote>
+<h2 id="典型运用">典型运用</h2><p>斐波纳契数列</p>
+<h2 id="实例">实例</h2><p>单纯的递归易于编码实现，但容易造成重复计算子问题（可以通过记录子问题的解来避免），比如“斐波纳契数列”的递归解法：<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">1</span> )&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span> <span class="keyword">if</span>(n == <span class="number">2</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>避免重复计算子问题改进后的斐波纳契数列：<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">//如果之前计算过那么直接返回</span></span><br><span class="line">      <span class="keyword">if</span> (resultArray[n - <span class="number">1</span>] != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> resultArray[n - <span class="number">1</span>];</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">1</span> )&#123;</span><br><span class="line">            resultArray[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span> <span class="keyword">if</span>(n == <span class="number">2</span>)&#123;</span><br><span class="line">            resultArray[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//记录每次计算的解</span></span><br><span class="line">            resultArray[n - <span class="number">1</span>] = f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>);</span><br><span class="line">            <span class="keyword">return</span> resultArray[n - <span class="number">1</span>];</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="分治">分治</h1><h2 id="主要思想-1">主要思想</h2><p>分治基本动作是递归，但它是把问题空间用递归的方法分为各个不相关的子问题，然后计算每个小问题，最后合并各个解,</p>
+<blockquote>
+<p>分治消除了重复计算子问题的问题，所以比较高效,分治和单纯的递归的根本区别在于解空间的划分是否有重复</p>
+</blockquote>
+<h2 id="典型运用-1">典型运用</h2><p>归并排序，快速排序</p>
+<h2 id="实例-1">实例</h2><p>分治法有两个类型:<br>所有操作都在一组数据上进行，如下，</p>
+<blockquote>
+<p>mergeSort方法的“合并一”与“合并二”没有数据交流，如归并排序</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (start &lt; end) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">int</span> middle = (start + end) / <span class="number">2</span>;</span><br><span class="line">            mergeSort(data, start, middle);</span><br><span class="line">            mergeSort(data, middle + <span class="number">1</span>, end);</span><br><span class="line"></span><br><span class="line">            merge(data, start, end);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如新search方法的“合并一”与“合并二”有数据交流</p>
+</blockquote>
+<p>“合并一”得到的数据要返回给”合并二”，如求数组的最大值与最小值<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Result <span class="title">search</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (start == end) &#123;</span><br><span class="line">            Result r = <span class="keyword">new</span> Result(data[start], data[start]);</span><br><span class="line">            <span class="keyword">return</span> r;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">int</span> mid = (start + end) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">      Result rLeft = search(start, mid);</span><br><span class="line">      Result rRight = search(mid + <span class="number">1</span>, end);</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">return</span> Result.cmpResult(rLeft, rRight);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="回溯">回溯</h1><h2 id="主要思想-2">主要思想</h2><p>回溯的基本动作是递归，把问题解想象成一个树状空间，</p>
+<blockquote>
+<p>用递归的方法，深度搜索遍历整棵树；最适合使用回溯法的是在整个树状空间中，存在从根节点到某叶子节点的完整路径的解；回溯法会先完成整个左子树递归后，再进行右子树递归，当对第一个右子树进行递归的时候，整个函数完整的执行了一遍**</p>
+</blockquote>
+<p>利用剪枝技术，回溯法可以得到较好的效果</p>
+<p>回溯法和单纯的递归区别在于：</p>
+<ul>
+<li>“单纯的递归”递归到叶子节点时候就进行原路返回</li>
+<li>“回溯法”递归到叶子节点时返回到叶子节点的父节点，如果该父节点还有其他分支，那么对其他分支依次进行递归操作</li>
+</ul>
+<p>所以回溯法中有一个操作要注意，</p>
+<blockquote>
+<p>即是由叶子节点时返回到该叶子节点的父节点时，要把状态恢复到父节点将要递归到子节点前的状态</p>
+</blockquote>
+<h2 id="典型运用-2">典型运用</h2><p>八皇后问题</p>
+<h1 id="动态规划">动态规划</h1><h2 id="主要思想-3">主要思想</h2><blockquote>
+<p>动态规划虽然在语言层面上没有用到递归，但是其最优子结构的公式是通过递归的思想构建的，其递归用在解空间上，适合于解有公共子问题的问题，把公共子问题的解保存在一个表中，解其他子问题时候需要时进行查询</p>
+</blockquote>
+<p>对于“斐波纳契数列”，其迭代的解法近似可以看成是一种动态规划，相对于递归解法，没有重复计算一些子问题，有更高的效率；动态规划通过遍历已计算出的最优子问题的表，来构建最优解</p>
+<blockquote>
+<p>因为动态规划的每一步都需要遍历全部或者部分的子空间解，递归只是对上一步解的固定模式的应用</p>
+</blockquote>
+<h2 id="典型运用-3">典型运用</h2><p>0-1背包，最长非连续公共子序列</p>
+<h2 id="实例-2">实例</h2><p>“斐波纳契数列”的迭代解法只是单纯的读表，所以只能说是近似的动态规划：<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            resultArray[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">            resultArray[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">                  resultArray[i] = resultArray[i - <span class="number">1</span>] + resultArray[i - <span class="number">2</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> resultArray[n - <span class="number">1</span>];</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="递归构建最终解">递归构建最终解</h1><h2 id="单个数据">单个数据</h2><ul>
+<li>全局变量:八皇后问题，计算解的数量</li>
+<li>函数参数：最长非连续公共子序列，计算最长非连续公共子序列</li>
+<li>返回值：斐波纳契数，计算总和</li>
+</ul>
+<h2 id="多个数据">多个数据</h2><p>需要对递归的各个分支得到数据进行对比来构建最终的解，把各个分支得到的解放进一个列表中，然后根据最优判断条件对这个列表进行遍历，判断出最优解。比如“最长连续公共子序列问题”</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[主流平台的反编译工具]]></title>
+      <url>peter517.github.io/2015/08/10/%E4%B8%BB%E6%B5%81%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%8F%8D%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7/</url>
+      <content type="html"><![CDATA[<p>反编译在工程中是绝对的利器，我们通常用它来做一下几件事情：</p>
+<ul>
+<li>查找和修改二进制文件依赖的库路径</li>
+<li>查看二进制文件符号表，检查是否包涵某个函数</li>
+<li>查找二进制文件中的可打印字符串，可用来查看版本信息</li>
+<li>将多个二进制文件合并成同一个二进制文件</li>
+</ul>
+<h1 id="二进制文件格式">二进制文件格式</h1><p>主流二进制文件格式ELF和PE，是基于COFF(Common file format)而来，根据不同的操作系统有不同的特性</p>
+<h2 id="ELF">ELF</h2><p><strong>ELF(Executable And Linkable)</strong>是Unix体系中二进制文件格式，除了执行文件，还包括*.so,*.a，*.o等文件</p>
+<h2 id="PE">PE</h2><p><strong>PE(Portable Executable)</strong>是Windows平台的二进制格式，，除了exe执行文件，还包括*.lib,*.dll，*.obj等文件</p>
+<h1 id="反编译工具">反编译工具</h1><p>反编译工具主要处理对象就是ELF和PE文件，根据平台划分，主要有以下一些工具</p>
+<h2 id="Unix(Linux_and_OSX)">Unix(Linux and OSX)</h2><h3 id="nm">nm</h3><p>读取ELF文件中的符号表<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nm <span class="variable">$elf_filename</span> | grep <span class="variable">$method_name</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>查找ELF文件是否包含方法名$method_name</p>
+</blockquote>
+<h3 id="strings">strings</h3><p>读取ELF文件中的可打印的字符串表<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ strings <span class="variable">$elf_filename</span> | grep <span class="variable">$find_str</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>查找ELF文件是否包含可打印的字符串$find_str </p>
+</blockquote>
+<h3 id="file">file</h3><p>查看文件编译架构，从头文件中读取<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ file <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>查看ELF文件类型</p>
+</blockquote>
+<h3 id="libtool">libtool</h3><p>libtool是对平台编译工具的封装，为不同平台提供一致接口，<a href="http://www.gnu.org/software/libtool/manual/libtool.html" target="_blank" rel="external">开发文档</a><br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ libtool -static -o <span class="variable">$elf_filename</span> <span class="variable">$source_elf_filename1</span> <span class="variable">$source_elf_filename2</span> ...</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>把$source_elf_filename1，$source_elf_filename2…合并为$elf_filename</p>
+</blockquote>
+<h2 id="Linux">Linux</h2><h3 id="readelf">readelf</h3><p>命令的名字就是read elf，用来读取ELF文件信息<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ readelf -h <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>读取elf文件头信息</p>
+</blockquote>
+<h3 id="objdump">objdump</h3><p>objdump可以根据ELF文件来生成对应的汇编信息<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ objdump -x <span class="variable">$elf_filename</span> | grep NEED</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>获取ELF文件依赖的库</p>
+</blockquote>
+<h2 id="OSX">OSX</h2><h3 id="otool">otool</h3><p>与readelf类似，用来读取ELF文件信息<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ otool -L <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>查找ELF文件依赖的库</p>
+</blockquote>
+<h3 id="lipo">lipo</h3><p>对ELF文件进行重构<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lipo -info <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>查看ELF文件类型</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lipo -create <span class="variable">$elf_file_i386_name</span>.a <span class="variable">$elf_file_arm_name</span>.a -output <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把不同平台的ELF文件合并成同一文件</p>
+</blockquote>
+<h3 id="install_name_tool">install_name_tool</h3><p>用来更改ELF文件的依赖文件路径<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ install_name_tool -change <span class="variable">$elf_file_name</span> <span class="variable">$elf_file_depends_path_before</span> <span class="variable">$elf_file_depends_path_after</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>把$elf_file_name文件依赖路径由$elf_file_depends_path_before改为$elf_file_depends_path_after</p>
+</blockquote>
+<h2 id="Windows">Windows</h2><h3 id="DUMPBIN">DUMPBIN</h3><p>与readelf类似，用来读取ELF文件信息<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; dumpbin /exports <span class="variable">$pe_file_name</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>查看PE文件的依赖库</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; dumpbin /all <span class="variable">$pe_file_name</span> | findstr <span class="variable">$find_str</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看PE文件中是否有可打印字符串$find_str</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; dumpbin /symbols <span class="variable">$pe_file_name</span> | findstr <span class="variable">$method_name</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看PE文件中包含方法名$method_name</p>
+</blockquote>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Ubuntu中自定义服务]]></title>
+      <url>peter517.github.io/2015/08/10/Ubuntu%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1/</url>
+      <content type="html"><![CDATA[<p>在Ubuntu中定义一些服务，可以对该服务进行全局控制，比较常见的就是用sudo service <code>servcie_name</code> start/stop/restart 进行服务的启停</p>
+<h1 id="在/etc/init-d/目录下面定义控制服务的脚本">在/etc/init.d/目录下面定义控制服务的脚本</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service_name=<span class="string">"service_name"</span></span><br><span class="line">service_script_path=<span class="string">"service_script_path"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">start</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$service_name</span> service start"</span></span><br><span class="line">    chmod a+x <span class="variable">$service_script_path</span> &amp;&amp; nohup ./<span class="variable">$service_script_path</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">stop</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$service_name</span> service stop"</span></span><br><span class="line">    server_process_id=`ps -aux | grep <span class="variable">$service_name</span> | cut <span class="operator">-d</span> <span class="string">" "</span> <span class="operator">-f</span> <span class="number">6</span>`</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"server_process_id="</span>server_process_id</span><br><span class="line">    <span class="built_in">kill</span> -<span class="number">9</span> <span class="variable">$server_process_id</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></span><br><span class="line">start)</span><br><span class="line">    start</span><br><span class="line">    ;;</span><br><span class="line">stop)</span><br><span class="line">    stop</span><br><span class="line">    ;;</span><br><span class="line">restart)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"resert the <span class="variable">$service_name</span>"</span></span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">    ;;</span><br><span class="line">*)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"undefine operation"</span></span><br><span class="line">    ;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Git个人配置]]></title>
+      <url>peter517.github.io/2015/08/10/Git%E4%B8%AA%E4%BA%BA%E9%85%8D%E7%BD%AE/</url>
+      <content type="html"><![CDATA[<h1 id="快捷键配置">快捷键配置</h1><h2 id="Git自带alias配置">Git自带alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global alias.st status</span><br><span class="line">git config --global alias.co checkout</span><br><span class="line">git config --global alias.ci commit</span><br><span class="line">git config --global alias.br branch</span><br></pre></td></tr></table></figure>
+<h2 id="自定义alias配置">自定义alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> gitcommit=<span class="string">"git commit -m"</span></span><br><span class="line"><span class="built_in">alias</span> gitlog=<span class="string">"git log"</span></span><br><span class="line"><span class="built_in">alias</span> gitshow=<span class="string">"git show"</span><span class="comment">#查看修改内容</span></span><br><span class="line"><span class="built_in">alias</span> gitcat=<span class="string">"git cat-file"</span></span><br><span class="line"><span class="built_in">alias</span> gitloggraph=<span class="string">"git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset'"</span><span class="comment">#以图形方式显示提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitinfo=<span class="string">"git remote show origin"</span><span class="comment">#查看仓库信息</span></span><br><span class="line"><span class="built_in">alias</span> gitshortlog=<span class="string">"git shortlog --since=1.day.ago"</span><span class="comment">#查看最近一天的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitweekshortlog=<span class="string">"git shortlog --since=1.week.ago --author='pengjun' | grep -v Merge | uniq"</span><span class="comment">#查看最近一周pengjun的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitfilelog=<span class="string">"git log --follow -p"</span><span class="comment">#查看文件的修改日志</span></span><br></pre></td></tr></table></figure>
+<h1 id="在命令行提示符后面显示Git分支">在命令行提示符后面显示Git分支</h1><p>明确当前的Git分支很重要，之前也不知道有这个功能，开发者频繁的需要查看当前分支，就觉得这个问题其他开发人员也遇到过，应该有解决办法<br>Unix环境一般是服务器，需要显示登录名和主机名</p>
+<h2 id="Unix">Unix</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">parse_git_branch</span></span>() &#123;</span><br><span class="line">    git branch <span class="number">2</span>&gt; /dev/null | sed <span class="operator">-e</span> <span class="string">'/^[^*]/d'</span> <span class="operator">-e</span> <span class="string">'s/* \(.*\)/ (\1)/'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\u@\h \w\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "</span></span><br></pre></td></tr></table></figure>
+<h2 id="OSX">OSX</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">parse_git_branch</span></span>() &#123;</span><br><span class="line">    git branch <span class="number">2</span>&gt; /dev/null | sed <span class="operator">-e</span> <span class="string">'/^[^*]/d'</span> <span class="operator">-e</span> <span class="string">'s/* \(.*\)/ (\1)/'</span></span><br><span class="line">&#125;</span><br><span class="line">RED=<span class="string">"\[\033[0;31m\]"</span></span><br><span class="line">YELLOW=<span class="string">"\[\033[0;33m\]"</span></span><br><span class="line">GREEN=<span class="string">"\[\033[0;32m\]"</span></span><br><span class="line">NO_COLOR=<span class="string">"\[\033[0m\]"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">"\w<span class="variable">$GREEN</span>\$(parse_git_branch)<span class="variable">$NO_COLOR</span>\$ "</span></span><br></pre></td></tr></table></figure>
+<h1 id="meld配置">meld配置</h1><p>meld是Git本地合并冲突时候的UI界面，在~/.gitconfig里面进行如下配置<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">[difftool <span class="string">"meld"</span>]</span><br><span class="line">path = /usr/<span class="built_in">local</span>/bin/meld</span><br><span class="line">trustExitCode = <span class="literal">false</span></span><br><span class="line">[difftool]</span><br><span class="line">prompt = <span class="literal">false</span></span><br><span class="line">[diff]</span><br><span class="line">tool = meld</span><br><span class="line">[mergetool <span class="string">"meld"</span>]</span><br><span class="line">path = /usr/<span class="built_in">local</span>/bin/meld</span><br><span class="line">trustExitCode = <span class="literal">false</span></span><br><span class="line">[mergetool]</span><br><span class="line">keepBackup = <span class="literal">false</span></span><br><span class="line">[merge]</span><br><span class="line">tool = meld</span><br></pre></td></tr></table></figure></p>
+<p>git merge操作后执行git mergetools，如果本地有冲突，就会可以通过meld界面来进行冲突合并</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[基于dp的Android UI 布局适配]]></title>
+      <url>peter517.github.io/2015/08/06/%E5%9F%BA%E4%BA%8Edp%E7%9A%84Android%20UI%20%E5%B8%83%E5%B1%80%E9%80%82%E9%85%8D/</url>
+      <content type="html"><![CDATA[<h1 id="分辨率布局的局限">分辨率布局的局限</h1><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
+<p><img src="/img/android_ui_adaptor_01.png" alt="android_ui_adaptor_01"></p>
+<p>为减少开发人员的适配工作量，Android引入了dp的概念，在xml布局文件中可以直接设置单位为dp的值，要了解dp，先要了解下面几个概念。</p>
+<h1 id="dip和desity">dip和desity</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
+<p>目前Android设备上dip的主要值是120 dpi、160 dpi、240 dpi、320 dpi 如果显示器尺寸大于或小于这个尺寸，显示器模块负责缩放。</p>
+<h2 id="desity">desity</h2><p><strong>desity</strong>：像素显示密度，基于dip的一个衍生概念，是dip归一化的值，计算方法为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">desity ＝ dip / <span class="number">160</span></span><br></pre></td></tr></table></figure></p>
+<p>目前Android设备上desity主要值为0.75、1、1.5、2、3，Android中可以用代码来获取：<br><figure class="highlight ocaml"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> density = getContext<span class="literal">()</span>.getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>.density;</span><br></pre></td></tr></table></figure></p>
+<h1 id="dp表示缓解适配压力">dp表示缓解适配压力</h1><p>dp的计算就是基于分辨率和desity的，如果一个Android设备分辨率为640*480，desity为1.5，那么屏幕的dp为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">1.5</span>) * (<span class="number">480</span>/<span class="number">1.5</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
+<p>代码中可以根据分辨率和desity来计算dp<br>屏幕可以用分辨率划分，引入dp的概念后，可以用dp来划分屏幕大小，如果屏幕大小为如果两个设备之间分辨率不一样，只要分辨率和desity的比例是一样的，就可以，比如之前的320*240的手机设备，如果它的desity为1，那么它屏幕的dp为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">320</span>/<span class="number">1</span>) * (<span class="number">240</span>/<span class="number">1</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
+<p>这样两个Android设备对屏幕都有同样的表达方式：320dp * 240dp，基于dp的布局就可以这样：<br><img src="/img/android_ui_adaptor_02.png" alt="android_ui_adaptor_02"></p>
+<h1 id="没有完美解决方案">没有完美解决方案</h1><h2 id="dp也做不到的事情">dp也做不到的事情</h2><p>不同设备之间只有用拥有统一的dp大小才能共享同一个布局方案，如果dp不一样的情况，那么就需要针对不同的dp进行处理了，android下面有一个values目录，里面通过dimens.xml来设置布局的dp<br><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">values</span>-w540dp-hdpi</span><br></pre></td></tr></table></figure></p>
+<p>格式如上所示w540dp代表宽度为540dp,hdpi代表density为1，针对不同的dp，需要新建对应的目录，App会在运行时根据设备情况加载对应的目录里面的dp值</p>
+<h2 id="建议">建议</h2><ul>
+<li>如果可以不用数字来布局的尽量不要用，可以用百分比来代替：<a href="https://github.com/JulienGenoud/android-percent-support-lib-sample" target="_blank" rel="external">开源库</a></li>
+<li>不同的手机里面dp之间差距不大，布局之间的差异不明显，但是现在的智能电视和手机之间dp差距大，需要做好适配</li>
+</ul>
+<h1 id="参考资料">参考资料</h1><ul>
+<li><a href="http://developer.android.com/guide/practices/screens_support.html" target="_blank" rel="external">http://developer.android.com/guide/practices/screens_support.html</a></li>
+</ul>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[MapReduce编程思考]]></title>
+      <url>peter517.github.io/2015/08/04/MapReduce%E7%BC%96%E7%A8%8B%E6%80%9D%E8%80%83/</url>
+      <content type="html"><![CDATA[<p>在MapReduce框架下编写程序，最重要的是理解从map到reducer数据是如何组织的，核心的就是map到reducer的shuffle过程：</p>
+<blockquote>
+<p>每个reducer接到的数据都是按key值排序后的，并且key值相同的记录会被分配到同一个reducer里面</p>
+</blockquote>
+<p>这一过程是框架自动完成，许多实例需要用到这一特性</p>
+<h1 id="实现方式">实现方式</h1><h2 id="jar包">jar包</h2><p>在框架下利用java可以进行map和reducer端的编写，然后使用一个main类来进行运行，这里reducer只有一个，所有记录都排好序，信息集中，方便处理，会使得reducer数据很大，处理时间慢</p>
+<h2 id="hadoop流">hadoop流</h2><p>利用脚本来编写hadoop的map和reducer端，脚本的输出和输入都是来自标准输入和标准输出，这里reducer可以有多个，这里不需要主类配置参数，而是通过命令行配置参数</p>
+<p>由于有多个reducer，每个reducer中的统计的信息分散的，所以对于计算全局信息，最后需要一个computer端（单机）来整合信息</p>
+<h1 id="编程思维">编程思维</h1><p>根据shuffle过程的特性，即所有数据已经排好序，所有的相同key值记录的数据也在同一个reducer里面，这样就可以方便解决很多问题，下面是典型问题</p>
+<h2 id="top100问题">top100问题</h2><h3 id="思路">思路</h3><p>在reducer端算出top100，然后在computer端再计算一次top100（如果只有一个top）</p>
+<h3 id="细节">细节</h3><p>在reducer端计算top100时候，数据量比较大，不能把所有数据都放入内存然后排序，可以只保留100条记录的空间，利用行缓冲进行数据读取，进行堆排序</p>
+<h2 id="带权random问题（取出个数不定）">带权random问题（取出个数不定）</h2><h3 id="思路-1">思路</h3><p>在map端给每条记录分配一个随机数，然后利用shuffle机制对这些随机数排序，这就等同于把原始记录打乱了，在reducer端去取指定个数的记录</p>
+<h2 id="去重">去重</h2><h3 id="思路-2">思路</h3><p>一般的思路是把所有数据放在一个map里面，这样容易爆内存，所以只有在map端按照要去重的元素排好序，然后在reducer端利用行缓冲，记录读取相邻的两个记录，如果相邻的记录不一样，说明读到了一个新记录，然后把这个数据存下来</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[实用shell命令]]></title>
+      <url>peter517.github.io/2015/08/04/%E5%AE%9E%E7%94%A8shell%E5%91%BD%E4%BB%A4/</url>
+      <content type="html"><![CDATA[<h1 id="查看占用CPU最大的10个进程">查看占用CPU最大的10个进程</h1><figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">$ ps au | awk 'NR&gt;1 &#123;<span class="keyword">print</span>&#125;'| <span class="keyword">sort</span> -nrk +3 | awk '&#123;<span class="keyword">print</span> <span class="label">$3</span><span class="string">"\t"</span><span class="label">$11&#125;</span>' | head -10；</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中sort中的k参数表示按照第几列来排序，有个t参数，表示按照\t分割内容，形成列</p>
+</blockquote>
+<h1 id="在某个时间点运行命令">在某个时间点运行命令</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ echo <span class="string">"ls -l"</span> <span class="string">| at midnight</span></span><br></pre></td></tr></table></figure>
+<h1 id="显示某个目录下面最大的10个文件或文件夹">显示某个目录下面最大的10个文件或文件夹</h1><figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">$ du -sh <span class="keyword">*</span> |<span class="string"> sort -nr </span>|<span class="string"> head -10</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中s表示统计文件或文件夹容量总和，如果命令为du -ah *，表示统计当前目录文件和所有子目录的文件信息；与之相对的df命令用来统计硬盘容量信息</p>
+</blockquote>
+<h1 id="查看指定网络端口服务是否开启">查看指定网络端口服务是否开启</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ netstat -natp <span class="string">| grep servicename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中n代表数字化，a代表所有，t代表tcp，p代表程序名,另一个查看网络服务的命令是lsof，列出系统已打开的文件，lsof -i | grep servicename，其中i表示查看所有网络服务打开的连接</p>
+</blockquote>
+<h1 id="awk主要对文件内容进行统计操作">awk主要对文件内容进行统计操作</h1><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>sed <span class="string">'s/localhost/127.0.0.1/g'</span> mysql_virtual<span class="constant">_</span>*.cf</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>sed与vim中命令行操作类似，主要用来对文件进行处理（p选项+正则也可以完成强大的文本内容搜索）,如可以进行文本替换,%s/localhost/127.0.0.1/g,而在vim命令行中可以直接：%代表对文本中每一行都进行处理</p>
+</blockquote>
+<h1 id="输出最常用的10个命令">输出最常用的10个命令</h1><figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">$ history|<span class="string">awk '&#123;print $2&#125;'</span>|<span class="string">awk 'BEGIN &#123;FS="</span>|<span class="string">"&#125; &#123;print $1&#125;'</span>|<span class="string">sort</span>|<span class="string">uniq -c</span>|<span class="string">sort -rn</span>|<span class="string">head -10</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中history历史输入命令，uniq命令会从1列（元素）变成2列（个数，元素）</p>
+</blockquote>
+<h1 id="对指定文件夹中符合条件的文件进行操作">对指定文件夹中符合条件的文件进行操作</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ ls image/* <span class="string">| awk 'NR &lt; 10 &#123;system("</span>cp <span class="string">"$1"</span> uploadImage<span class="string">")&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>复制10个文件</p>
+</blockquote>
+<figure class="highlight mel"><table><tr><td class="code"><pre><span class="line">$ find <span class="keyword">image</span>/ -name <span class="string">"1*"</span> -<span class="keyword">exec</span> cp &#123;&#125; uploadImage \</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>对以“1”开头的文件进行复制</p>
+</blockquote>
+<figure class="highlight gherkin"><table><tr><td class="code"><pre><span class="line">$ ls image/<span class="keyword">*</span> |<span class="string"> head -10 </span>|<span class="string"> xargs -i cp &#123;&#125; uploadImage</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中-i选项告诉 xargs 用每项的名称替换 {}</p>
+</blockquote>
+<h1 id="不登陆远程机器而进行远程操作">不登陆远程机器而进行远程操作</h1><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>ssh user<span class="variable">@server</span> bash &lt; <span class="regexp">/path/to</span><span class="regexp">/local/script</span>.sh</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在远程机器上执行本地脚本</p>
+</blockquote>
+<figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line">$ ssh user<span class="annotation">@host</span> cat <span class="regexp">/path/</span>to<span class="regexp">/remotefile | diff /</span>path<span class="regexp">/to/</span>localfile -</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>比较本地和远程机器上面的两个文件</p>
+</blockquote>
+<h1 id="查看机器信息">查看机器信息</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ dmidecode <span class="string">| grep "</span>Product Name<span class="string">"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看机器型号</p>
+</blockquote>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>getconf <span class="constant">LONG_BIT</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看机器版本号（64位的系统中int类型还是4字节的，但是long已变成了8字节）</p>
+</blockquote>
+<figure class="highlight nimrod"><table><tr><td class="code"><pre><span class="line">$ cat /<span class="keyword">proc</span>/cpuinfo</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看cpu信息，其中grep “core id”表示查看cpu内核id， grep “physical id”表示查看物理cpu的id，grep “processor”表示查看逻辑处理器。多核技术和多线程技术和区别为：前者表示有多少能力，后者表示使用该能力的能力）</p>
+</blockquote>
+<figure class="highlight nimrod"><table><tr><td class="code"><pre><span class="line">$ cat /<span class="keyword">proc</span>/meminfo</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看内存信息</p>
+</blockquote>
+<h1 id="以列为单位抽取文件内容">以列为单位抽取文件内容</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ cat /etc/passwd | cut <span class="operator">-f</span>1,<span class="number">3</span> <span class="operator">-d</span><span class="string">":"</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>利用cut命令可以对文件按照字节、字段、字符进行抽取，表示获取第一列和第三列，sed命令中1,3表示1至3列，而在cut中需要1-3来表示。awk命令也可以完成相同的内容，更复杂、更灵活； </p>
+</blockquote>
+<h1 id="文件内容的查找与文件名的查找">文件内容的查找与文件名的查找</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ grep -o str filename <span class="string">| wc -l</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>文件名查找可以用经典的find命令，文件内容的查找则用grep。统计文件中出现某个字符串的个数，-o表示显示匹配的单词，而不是单词所在的行数：grep str filename</p>
+</blockquote>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">$ grep -l <span class="keyword">str </span>filenames</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>统计出现某个字符串的文件名</p>
+</blockquote>
+<figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>grep -i -<span class="constant">R </span>--<span class="keyword">include</span>=<span class="string">"*.cpp"</span> <span class="string">'example'</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在当前目录及其子目录所有的.cpp文件中查找字符串”example”, 不区分大小写</p>
+</blockquote>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+  
+  
+</search>
