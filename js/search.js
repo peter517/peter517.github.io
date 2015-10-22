@@ -17,7 +17,7 @@ var searchFunc = function(path, search_id, content_id) {
             var $resultContent = document.getElementById(content_id);
 
             $input.addEventListener('input', function(){
-                var str='<ul padding-left: 10px;>';                
+                var str='<ul class=\"search-result-list\">';                
                 var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
                 $resultContent.innerHTML = "";
                 if (this.value.trim().length <= 0) {
