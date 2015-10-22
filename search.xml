@@ -5,7 +5,7 @@
     
     <entry>
       <title><![CDATA[GYP可以做什么？]]></title>
-      <url>peter517.github.io/2015/10/21/GYP%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88/</url>
+      <url>/2015/10/21/GYP%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88/</url>
       <content type="html"><![CDATA[<p>写的一手好代码固然难得，代码写好后可以方便的在各个平台完成编译部署，也需要找到好的工具，GYP就是其中一个，类似于CMake，提供了一套跨平台生成编译脚本或IDE工程的方案<br>如下图所示，通过编写GYP脚本，就可以在不同平台下面生成对于的编译脚本或着IDE工程，比如Unix平台下面的Makefile或Ninja，Windows平台下面的VS工程，IOS平台下面的Xcode工程，从而达到一键构建的目的</p>
 <blockquote>
 <p>GYP对于有支持跨平台的多语言编译，交叉编译需求的项目，是一个很好的选择</p>
@@ -41,7 +41,7 @@
     
     <entry>
       <title><![CDATA[宏在c++中的正确使用]]></title>
-      <url>peter517.github.io/2015/10/12/%E5%AE%8F%E5%9C%A8c++%E4%B8%AD%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8/</url>
+      <url>/2015/10/12/%E5%AE%8F%E5%9C%A8c++%E4%B8%AD%E7%9A%84%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8/</url>
       <content type="html"><![CDATA[<p>宏在c++里面应该是最有个性的一个特点，虽然只是简单的文本替换，但</p>
 <blockquote>
 <p>用的巧妙，它可以让代码行数变短，如果乱用，则代码会完全丧失可读性</p>
@@ -66,7 +66,7 @@
     
     <entry>
       <title><![CDATA[一个完整软件产品需要的功能]]></title>
-      <url>peter517.github.io/2015/08/28/%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E8%BD%AF%E4%BB%B6%E4%BA%A7%E5%93%81%E9%9C%80%E8%A6%81%E7%9A%84%E5%8A%9F%E8%83%BD/</url>
+      <url>/2015/08/28/%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E8%BD%AF%E4%BB%B6%E4%BA%A7%E5%93%81%E9%9C%80%E8%A6%81%E7%9A%84%E5%8A%9F%E8%83%BD/</url>
       <content type="html"><![CDATA[<p>做一个demo很容易，但是真正要交到用户手中时，应该是一个成熟的产品，一些功能是必不可少的，这些功能主要作用如下：</p>
 <ul>
 <li>提供不断完善产品的方法</li>
@@ -91,7 +91,7 @@
     
     <entry>
       <title><![CDATA[开发中容易忽略的事情]]></title>
-      <url>peter517.github.io/2015/08/20/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
+      <url>/2015/08/20/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E4%BA%8B%E6%83%85/</url>
       <content type="html"><![CDATA[<p>下面这些事情，如果没有做，项目也可以摇摇晃晃的往前走，但是我们应该追求业界所说的<strong>高效程序员</strong>，一个高效的程序员，绝对不是随心而欲的完成一个项目，一定有一些自己经历过各种项目历练而熟记于心的准则。<br>我相信，高效程序员的效率可能是普通程序员的20倍，可能差别就在下面这些地方</p>
 <h1 id="单元测试">单元测试</h1><h2 id="功能未写，测试先行">功能未写，测试先行</h2><p>最理想的情况是在写一个功能的时候，先写一个fail的单元测试，功能完成的标准是看单元测试是否可以由fail变为pass。平时在做项目时，在项目紧张的时候一直坚持做到这一点实属不易，但我们至少可以在功能完成后，review一下哪个方法需要单元测试，经过单元测试的功能，我们会更有信心的交付这个功能</p>
 <h2 id="不仅仅是测试">不仅仅是测试</h2><p>单元测试可以迫使我们的代码接口更加清晰</p>
@@ -143,7 +143,7 @@
     
     <entry>
       <title><![CDATA[算法中的递归运用]]></title>
-      <url>peter517.github.io/2015/08/14/%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84%E9%80%92%E5%BD%92%E8%BF%90%E7%94%A8/</url>
+      <url>/2015/08/14/%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84%E9%80%92%E5%BD%92%E8%BF%90%E7%94%A8/</url>
       <content type="html"><![CDATA[<h1 id="单纯递归">单纯递归</h1><h2 id="主要思想">主要思想</h2><p>递归是各类算法的基本动作，递归要注意以下几点：</p>
 <ul>
 <li>递归算法能设计成不返回值就不返回值，因为递归的出口一般不止一个，设计成返回值会增加复杂度</li>
@@ -204,7 +204,7 @@
     
     <entry>
       <title><![CDATA[主流平台的反编译工具]]></title>
-      <url>peter517.github.io/2015/08/10/%E4%B8%BB%E6%B5%81%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%8F%8D%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7/</url>
+      <url>/2015/08/10/%E4%B8%BB%E6%B5%81%E5%B9%B3%E5%8F%B0%E7%9A%84%E5%8F%8D%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7/</url>
       <content type="html"><![CDATA[<p>反编译在工程中是绝对的利器，我们通常用它来做一下几件事情：</p>
 <ul>
 <li>查找和修改二进制文件依赖的库路径</li>
@@ -273,7 +273,7 @@
     
     <entry>
       <title><![CDATA[Ubuntu中自定义服务]]></title>
-      <url>peter517.github.io/2015/08/10/Ubuntu%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1/</url>
+      <url>/2015/08/10/Ubuntu%E4%B8%AD%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1/</url>
       <content type="html"><![CDATA[<p>在Ubuntu中定义一些服务，可以对该服务进行全局控制，比较常见的就是用sudo service <code>servcie_name</code> start/stop/restart 进行服务的启停</p>
 <h1 id="在/etc/init-d/目录下面定义控制服务的脚本">在/etc/init.d/目录下面定义控制服务的脚本</h1><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service_name=<span class="string">"service_name"</span></span><br><span class="line">service_script_path=<span class="string">"service_script_path"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">start</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$service_name</span> service start"</span></span><br><span class="line">    chmod a+x <span class="variable">$service_script_path</span> &amp;&amp; nohup ./<span class="variable">$service_script_path</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">stop</span></span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$service_name</span> service stop"</span></span><br><span class="line">    server_process_id=`ps -aux | grep <span class="variable">$service_name</span> | cut <span class="operator">-d</span> <span class="string">" "</span> <span class="operator">-f</span> <span class="number">6</span>`</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"server_process_id="</span>server_process_id</span><br><span class="line">    <span class="built_in">kill</span> -<span class="number">9</span> <span class="variable">$server_process_id</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></span><br><span class="line">start)</span><br><span class="line">    start</span><br><span class="line">    ;;</span><br><span class="line">stop)</span><br><span class="line">    stop</span><br><span class="line">    ;;</span><br><span class="line">restart)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"resert the <span class="variable">$service_name</span>"</span></span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">    ;;</span><br><span class="line">*)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"undefine operation"</span></span><br><span class="line">    ;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
@@ -281,7 +281,7 @@
     
     <entry>
       <title><![CDATA[Git个人配置]]></title>
-      <url>peter517.github.io/2015/08/10/Git%E4%B8%AA%E4%BA%BA%E9%85%8D%E7%BD%AE/</url>
+      <url>/2015/08/10/Git%E4%B8%AA%E4%BA%BA%E9%85%8D%E7%BD%AE/</url>
       <content type="html"><![CDATA[<h1 id="快捷键配置">快捷键配置</h1><h2 id="Git自带alias配置">Git自带alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global alias.st status</span><br><span class="line">git config --global alias.co checkout</span><br><span class="line">git config --global alias.ci commit</span><br><span class="line">git config --global alias.br branch</span><br></pre></td></tr></table></figure>
 <h2 id="自定义alias配置">自定义alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> gitcommit=<span class="string">"git commit -m"</span></span><br><span class="line"><span class="built_in">alias</span> gitlog=<span class="string">"git log"</span></span><br><span class="line"><span class="built_in">alias</span> gitshow=<span class="string">"git show"</span><span class="comment">#查看修改内容</span></span><br><span class="line"><span class="built_in">alias</span> gitcat=<span class="string">"git cat-file"</span></span><br><span class="line"><span class="built_in">alias</span> gitloggraph=<span class="string">"git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset'"</span><span class="comment">#以图形方式显示提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitinfo=<span class="string">"git remote show origin"</span><span class="comment">#查看仓库信息</span></span><br><span class="line"><span class="built_in">alias</span> gitshortlog=<span class="string">"git shortlog --since=1.day.ago"</span><span class="comment">#查看最近一天的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitweekshortlog=<span class="string">"git shortlog --since=1.week.ago --author='pengjun' | grep -v Merge | uniq"</span><span class="comment">#查看最近一周pengjun的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitfilelog=<span class="string">"git log --follow -p"</span><span class="comment">#查看文件的修改日志</span></span><br></pre></td></tr></table></figure>
 <h1 id="在命令行提示符后面显示Git分支">在命令行提示符后面显示Git分支</h1><p>明确当前的Git分支很重要，之前也不知道有这个功能，开发者频繁的需要查看当前分支，就觉得这个问题其他开发人员也遇到过，应该有解决办法<br>Unix环境一般是服务器，需要显示登录名和主机名</p>
@@ -294,7 +294,7 @@
     
     <entry>
       <title><![CDATA[基于dp的Android UI 布局适配]]></title>
-      <url>peter517.github.io/2015/08/06/%E5%9F%BA%E4%BA%8Edp%E7%9A%84Android%20UI%20%E5%B8%83%E5%B1%80%E9%80%82%E9%85%8D/</url>
+      <url>/2015/08/06/%E5%9F%BA%E4%BA%8Edp%E7%9A%84Android%20UI%20%E5%B8%83%E5%B1%80%E9%80%82%E9%85%8D/</url>
       <content type="html"><![CDATA[<h1 id="分辨率布局的局限">分辨率布局的局限</h1><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
 <p><img src="/img/android_ui_adaptor_01.png" alt="android_ui_adaptor_01"></p>
 <p>为减少开发人员的适配工作量，Android引入了dp的概念，在xml布局文件中可以直接设置单位为dp的值，要了解dp，先要了解下面几个概念。</p>
@@ -319,7 +319,7 @@
     
     <entry>
       <title><![CDATA[MapReduce编程思考]]></title>
-      <url>peter517.github.io/2015/08/04/MapReduce%E7%BC%96%E7%A8%8B%E6%80%9D%E8%80%83/</url>
+      <url>/2015/08/04/MapReduce%E7%BC%96%E7%A8%8B%E6%80%9D%E8%80%83/</url>
       <content type="html"><![CDATA[<p>在MapReduce框架下编写程序，最重要的是理解从map到reducer数据是如何组织的，核心的就是map到reducer的shuffle过程：</p>
 <blockquote>
 <p>每个reducer接到的数据都是按key值排序后的，并且key值相同的记录会被分配到同一个reducer里面</p>
@@ -338,7 +338,7 @@
     
     <entry>
       <title><![CDATA[实用shell命令]]></title>
-      <url>peter517.github.io/2015/08/04/%E5%AE%9E%E7%94%A8shell%E5%91%BD%E4%BB%A4/</url>
+      <url>/2015/08/04/%E5%AE%9E%E7%94%A8shell%E5%91%BD%E4%BB%A4/</url>
       <content type="html"><![CDATA[<h1 id="查看占用CPU最大的10个进程">查看占用CPU最大的10个进程</h1><figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">$ ps au | awk 'NR&gt;1 &#123;<span class="keyword">print</span>&#125;'| <span class="keyword">sort</span> -nrk +3 | awk '&#123;<span class="keyword">print</span> <span class="label">$3</span><span class="string">"\t"</span><span class="label">$11&#125;</span>' | head -10；</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>其中sort中的k参数表示按照第几列来排序，有个t参数，表示按照\t分割内容，形成列</p>
