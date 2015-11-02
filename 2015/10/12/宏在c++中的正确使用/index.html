@@ -73,7 +73,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/10/12/宏在C++中的正确使用/" title="宏在C++中的正确使用" itemprop="url">宏在C++中的正确使用</a>
+      <a href="/2015/10/12/宏在c++中的正确使用/" title="宏在C++中的正确使用" itemprop="url">宏在C++中的正确使用</a>
   </h1>
   <p class="article-author">By
     
@@ -81,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-10-12T08:19:02.000Z" itemprop="datePublished">2015-10-12</time>
-    更新日期:<time datetime="2015-10-22T08:22:31.000Z" itemprop="dateModified">2015-10-22</time>
+    更新日期:<time datetime="2015-10-26T09:45:55.000Z" itemprop="dateModified">2015-10-26</time>
     
   </p>
 </header>
@@ -90,7 +90,7 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#尽量不使用宏"><span class="toc-number">1.</span> <span class="toc-text">尽量不使用宏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定义新的类或函数"><span class="toc-number">2.</span> <span class="toc-text">定义新的类或函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内置宏"><span class="toc-number">3.</span> <span class="toc-text">内置宏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU类型"><span class="toc-number">3.2.</span> <span class="toc-text">CPU类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器类型"><span class="toc-number">3.3.</span> <span class="toc-text">编译器类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#c++实现版本"><span class="toc-number">3.4.</span> <span class="toc-text">c++实现版本</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#尽量不使用宏"><span class="toc-number">1.</span> <span class="toc-text">尽量不使用宏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定义新的类或函数"><span class="toc-number">2.</span> <span class="toc-text">定义新的类或函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内置宏"><span class="toc-number">3.</span> <span class="toc-text">内置宏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU类型"><span class="toc-number">3.2.</span> <span class="toc-text">CPU类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器类型"><span class="toc-number">3.3.</span> <span class="toc-text">编译器类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C++实现版本"><span class="toc-number">3.4.</span> <span class="toc-text">C++实现版本</span></a></li></ol></li></ol>
 		</div>
 		
 		<p>宏在c++里面应该是最有个性的一个特点，虽然只是简单的文本替换，但</p>
@@ -111,7 +111,7 @@
 <h2 id="操作系统">操作系统</h2><p>表达编译时刻的操作系统：比如__WIN64__代表64位windows；__CYGWIN__代表windows上面的CYGWIN虚拟环境；ANDROID代表Android环境；__linux__或者__linux代表linux环境</p>
 <h2 id="CPU类型">CPU类型</h2><p>表达编译时刻的CPU架构类型：比如__arm__表达移动平台arm芯片；__i386__表示的i386架构；__x86_64__表示x86架构</p>
 <h2 id="编译器类型">编译器类型</h2><p>表达编译代码的编译器类型：比如__GNUC__表示GNU C++编译平台；_MSC_VER表示windows的Microsoft Visual C/C++平台；__clang__表示Mac下面的LLVM编译平台</p>
-<h2 id="c++实现版本">c++实现版本</h2><p>表达实现c++规范的版本，也可以用来区分c和c++，根据__cplusplus来判断是否支持某种特性，如qt源码中qcompilerdetection.h的代码片段，表示如果c++版本晚于是2011年3月份，intel的编译器值大于1200，则支持LAMBDA等特性<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#  <span class="keyword">if</span> __cplusplus &gt;= <span class="number">201103L</span> || defined(__INTEL_CXX11_MODE__)</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">if</span> __INTEL_COMPILER &gt;= <span class="number">1200</span></span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_AUTO_TYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_CLASS_ENUM</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DECLTYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DEFAULT_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DELETE_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_EXTERN_TEMPLATES</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_LAMBDA</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_RVALUE_REFS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_STATIC_ASSERT</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_VARIADIC_MACROS</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">endif</span></span></span><br><span class="line"><span class="preprocessor">#   <span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
+<h2 id="C++实现版本">C++实现版本</h2><p>表达实现C++规范的版本，也可以用来区分C和C++，根据__cplusplus来判断是否支持某种特性，如qt源码中qcompilerdetection.h的代码片段，表示如果C++版本晚于是2011年3月份，intel的编译器值大于1200，则支持LAMBDA等特性<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="preprocessor">#  <span class="keyword">if</span> __cplusplus &gt;= <span class="number">201103L</span> || defined(__INTEL_CXX11_MODE__)</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">if</span> __INTEL_COMPILER &gt;= <span class="number">1200</span></span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_AUTO_TYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_CLASS_ENUM</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DECLTYPE</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DEFAULT_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_DELETE_MEMBERS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_EXTERN_TEMPLATES</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_LAMBDA</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_RVALUE_REFS</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_STATIC_ASSERT</span></span><br><span class="line"><span class="preprocessor">#      <span class="keyword">define</span> Q_COMPILER_VARIADIC_MACROS</span></span><br><span class="line"><span class="preprocessor">#    <span class="keyword">endif</span></span></span><br><span class="line"><span class="preprocessor">#   <span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure></p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
 	</div>
 		<footer class="article-footer clearfix">
@@ -170,7 +170,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="宏在C++中的正确使用" data-thread-key="宏在C++中的正确使用" data-author-key="Peng Jun" data-url="/post/宏在C++中的正确使用"></div>
+	<div class="ds-thread" data-title="宏在C++中的正确使用" data-thread-key="宏在c++中的正确使用" data-author-key="Peng Jun" data-url="/post/宏在c++中的正确使用"></div>
 	
 </section>
 
@@ -180,7 +180,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#尽量不使用宏"><span class="toc-number">1.</span> <span class="toc-text">尽量不使用宏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定义新的类或函数"><span class="toc-number">2.</span> <span class="toc-text">定义新的类或函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内置宏"><span class="toc-number">3.</span> <span class="toc-text">内置宏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU类型"><span class="toc-number">3.2.</span> <span class="toc-text">CPU类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器类型"><span class="toc-number">3.3.</span> <span class="toc-text">编译器类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#c++实现版本"><span class="toc-number">3.4.</span> <span class="toc-text">c++实现版本</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#尽量不使用宏"><span class="toc-number">1.</span> <span class="toc-text">尽量不使用宏</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定义新的类或函数"><span class="toc-number">2.</span> <span class="toc-text">定义新的类或函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#内置宏"><span class="toc-number">3.</span> <span class="toc-text">内置宏</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">操作系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CPU类型"><span class="toc-number">3.2.</span> <span class="toc-text">CPU类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编译器类型"><span class="toc-number">3.3.</span> <span class="toc-text">编译器类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C++实现版本"><span class="toc-number">3.4.</span> <span class="toc-text">C++实现版本</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
@@ -244,7 +244,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
       </li>
     
       <li>
-        <a href="/2015/10/12/宏在C++中的正确使用/">宏在C++中的正确使用</a>
+        <a href="/2015/10/12/宏在c++中的正确使用/">宏在C++中的正确使用</a>
       </li>
     
       <li>
@@ -260,6 +260,14 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
       </li>
     
   </ul>
+</div>
+
+
+  
+<div class="widget">
+  <p class="asidetitle">近期评论</p>
+    
+<ul class="entry ds-recent-comments" data-num-items="8" data-show-avatars="0" data-show-time="1" data-show-admin="0" data-excerpt-length="70"></ul>
 </div>
 
 
