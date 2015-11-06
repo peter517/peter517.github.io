@@ -7,7 +7,7 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>如何实现一个完整的Jni模块 | Pengjun&#39;s Blog</title>
+    <title>C++中如何实现一个完整的Jni模块 | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
@@ -73,7 +73,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/11/05/如何实现一个完整的Jni模块/" title="如何实现一个完整的Jni模块" itemprop="url">如何实现一个完整的Jni模块</a>
+      <a href="/2015/11/05/C++中如何实现一个完整的Jni模块/" title="C++中如何实现一个完整的Jni模块" itemprop="url">C++中如何实现一个完整的Jni模块</a>
   </h1>
   <p class="article-author">By
     
@@ -81,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-11-05T02:27:41.000Z" itemprop="datePublished">2015-11-05</time>
-    更新日期:<time datetime="2015-11-05T12:01:42.000Z" itemprop="dateModified">2015-11-05</time>
+    更新日期:<time datetime="2015-11-06T08:37:30.000Z" itemprop="dateModified">2015-11-06</time>
     
   </p>
 </header>
@@ -90,14 +90,14 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本流程"><span class="toc-number">1.</span> <span class="toc-text">基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNI_OnLoad"><span class="toc-number">1.1.</span> <span class="toc-text">JNI_OnLoad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegisterNatives"><span class="toc-number">1.2.</span> <span class="toc-text">RegisterNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建C层实例"><span class="toc-number">1.3.</span> <span class="toc-text">创建C层实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C层回调"><span class="toc-number">1.4.</span> <span class="toc-text">C层回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java层实现"><span class="toc-number">1.5.</span> <span class="toc-text">Java层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#资源释放"><span class="toc-number">2.</span> <span class="toc-text">资源释放</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本流程"><span class="toc-number">1.</span> <span class="toc-text">基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNI_OnLoad"><span class="toc-number">1.1.</span> <span class="toc-text">JNI_OnLoad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegisterNatives"><span class="toc-number">1.2.</span> <span class="toc-text">RegisterNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建C层实例"><span class="toc-number">1.3.</span> <span class="toc-text">创建C层实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C层回调"><span class="toc-number">1.4.</span> <span class="toc-text">C层回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java层实现"><span class="toc-number">1.5.</span> <span class="toc-text">Java层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#资源释放"><span class="toc-number">2.</span> <span class="toc-text">资源释放</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">3.</span> <span class="toc-text">结论</span></a></li></ol>
 		</div>
 		
 		<p>在<a href="http://peter517.github.io/2015/08/20/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E4%BA%8B%E6%83%85/#操作系统原生语言" target="_blank" rel="external">开发中容易忽略的事情</a>文章中有提到，对于客户端开发，复用程度最高的还是C语言，但C语言实现的功能在Java语言环境中要通过Jni来调用</p>
 <blockquote>
 <p>Jni基本实现比较简单，但是要做稳定还要考虑很多因素，比如资源的释放、多线程处理、实例管理</p>
 </blockquote>
-<h1 id="基本流程">基本流程</h1><h2 id="JNI_OnLoad">JNI_OnLoad</h2><p>C层加载动态库时调用的第一个函数就是JNI_OnLoad，JNI_OnLoad可以获得JavaVM是全局变量，通过JavaVM可以拿到JNIEnv来进行Jni常见操作（比如FindClass），不同的Jni模块共享同一个JavaVM，所以可以有一个工具模块，来管理JavaVM，同时在不同线程使用JNIEnv时封装调用AttachCurrentThread和DetachCurrentThread的逻辑，其他Jni模块依赖这个工具模块来使用JNIEnv。<br>一般在在JNI_OnLoad时进行RegisterNatives操作，具体代码如下，NativeTest里面的initNativeMethods方法会调用RegisterNatives<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> <span class="function">JNIEXPORT jint <span class="title">JNI_OnLoad</span><span class="params">(JavaVM* vm, <span class="keyword">void</span>* reserved)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!NativeTest::initNativeMethods()) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_ERR;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> JNI_VERSION_1_6;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="基本流程">基本流程</h1><h2 id="JNI_OnLoad">JNI_OnLoad</h2><p>C层加载动态库时调用的第一个函数就是JNI_OnLoad，JNI_OnLoad可以获得JavaVM是全局变量，通过JavaVM可以拿到JNIEnv来进行Jni常见操作（比如FindClass），不同的Jni模块共享同一个JavaVM，所以可以有一个工具模块，来管理JavaVM，同时在不同线程使用JNIEnv时封装调用AttachCurrentThread和DetachCurrentThread的逻辑，其他Jni模块依赖这个工具模块来使用JNIEnv。<br>一般在在JNI_OnLoad时进行RegisterNatives操作，具体代码如下，NativeTest里面的initNativeMethods方法会调用RegisterNatives<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> “C” <span class="function">JNIEXPORT jint <span class="title">JNI_OnLoad</span><span class="params">(JavaVM* vm, <span class="keyword">void</span>* reserved)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!NativeTest::initNativeMethods()) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_ERR;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> JNI_VERSION_1_6;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h2 id="RegisterNatives">RegisterNatives</h2><p>通过RegisterNatives方法可以把Java层对应类的方法和C层对应的函数绑定起来，java_class代表Java层的对应类的class信息，所以这个绑定是函数元信息跟函数元信息的绑定，不涉及到具体实例<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">jint <span class="title">RegisterNatives</span><span class="params">(jclass java_class, JNINativeMethod method, jint methodLen)</span></span></span><br></pre></td></tr></table></figure></p>
 <p>具体代码实例如下：<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> NativeTest::initNativeMethods()</span><br><span class="line">&#123;</span><br><span class="line">    JNINativeMethod nativeFunctions[] =</span><br><span class="line">    &#123;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"createNativeTest"</span>,</span><br><span class="line">            <span class="string">"(Lcom/test/TestCallback;)J"</span>,</span><br><span class="line">            (<span class="keyword">void</span>*) &amp;NativeTest::createNativeTest</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"destroyNativeTest"</span>,</span><br><span class="line">            <span class="string">"(J)I"</span>,</span><br><span class="line">            (<span class="keyword">void</span>*) &amp;NativeTest::destroyNativeTest</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">"start"</span>,</span><br><span class="line">            <span class="string">"(J)I"</span>,</span><br><span class="line">            (<span class="keyword">void</span>*) &amp;NativeTest::terminate</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    env-&gt;RegisterNatives(<span class="string">"com/test/NativeTest"</span>,</span><br><span class="line">                    nativeFunctions,</span><br><span class="line">                    <span class="keyword">sizeof</span>(nativeFunctions)/<span class="keyword">sizeof</span>(nativeFunctions[<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>JNINativeMethod类型主要包括三个元素，依次为：Java层对应的方法名、Java层方法名的签名，C层对应的方法，比如 “createNativeTest”、”(Lcom/test/TestCallback;)J”、(void*) &amp;NativeTest::createNativeTest</p>
@@ -113,7 +113,7 @@
 <li>jstring类型本地局部命名以“jstring_”开头，例如：jstring_id</li>
 <li>jclass类型本地局部命名以“jclass_”开头，例如：jclass_test</li>
 </ul>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+<h1 id="结论">结论</h1><font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -149,6 +149,14 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2015/11/06/C++中线程级资源自动释放/" title="C++中线程级资源自动释放">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  C++中线程级资源自动释放</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2015/10/21/GYP可以做什么/"  title="GYP可以做什么？">
@@ -163,7 +171,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="如何实现一个完整的Jni模块" data-thread-key="如何实现一个完整的Jni模块" data-author-key="Peng Jun" data-url="/post/如何实现一个完整的Jni模块"></div>
+	<div class="ds-thread" data-title="C++中如何实现一个完整的Jni模块" data-thread-key="C++中如何实现一个完整的Jni模块" data-author-key="Peng Jun" data-url="/post/C++中如何实现一个完整的Jni模块"></div>
 	
 </section>
 
@@ -173,7 +181,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本流程"><span class="toc-number">1.</span> <span class="toc-text">基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNI_OnLoad"><span class="toc-number">1.1.</span> <span class="toc-text">JNI_OnLoad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegisterNatives"><span class="toc-number">1.2.</span> <span class="toc-text">RegisterNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建C层实例"><span class="toc-number">1.3.</span> <span class="toc-text">创建C层实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C层回调"><span class="toc-number">1.4.</span> <span class="toc-text">C层回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java层实现"><span class="toc-number">1.5.</span> <span class="toc-text">Java层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#资源释放"><span class="toc-number">2.</span> <span class="toc-text">资源释放</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本流程"><span class="toc-number">1.</span> <span class="toc-text">基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNI_OnLoad"><span class="toc-number">1.1.</span> <span class="toc-text">JNI_OnLoad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegisterNatives"><span class="toc-number">1.2.</span> <span class="toc-text">RegisterNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建C层实例"><span class="toc-number">1.3.</span> <span class="toc-text">创建C层实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C层回调"><span class="toc-number">1.4.</span> <span class="toc-text">C层回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java层实现"><span class="toc-number">1.5.</span> <span class="toc-text">Java层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#资源释放"><span class="toc-number">2.</span> <span class="toc-text">资源释放</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">3.</span> <span class="toc-text">结论</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -207,7 +215,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
 		
-			<li><a href="/tags/C/" title="C++">C++<sup>3</sup></a></li>
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
 		
 			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
 		
@@ -217,9 +225,11 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Jni/" title="Jni">Jni<sup>1</sup></a></li>
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
 		
 			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
 		
@@ -237,7 +247,11 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
   <ul class="entry">
     
       <li>
-        <a href="/2015/11/05/如何实现一个完整的Jni模块/">如何实现一个完整的Jni模块</a>
+        <a href="/2015/11/06/C++中线程级资源自动释放/">C++中线程级资源自动释放</a>
+      </li>
+    
+      <li>
+        <a href="/2015/11/05/C++中如何实现一个完整的Jni模块/">C++中如何实现一个完整的Jni模块</a>
       </li>
     
       <li>
@@ -245,15 +259,11 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
       </li>
     
       <li>
-        <a href="/2015/10/12/宏在c++中的正确使用/">宏在C++中的正确使用</a>
+        <a href="/2015/10/12/C++中宏在的正确使用/">C++中宏在的正确使用</a>
       </li>
     
       <li>
         <a href="/2015/08/28/一个完整软件产品需要的功能/">一个完整软件产品需要的功能</a>
-      </li>
-    
-      <li>
-        <a href="/2015/08/20/开发中容易忽略的事情/">开发中容易忽略的事情</a>
       </li>
     
   </ul>

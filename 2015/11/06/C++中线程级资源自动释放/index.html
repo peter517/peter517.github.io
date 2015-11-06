@@ -1,0 +1,427 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>C++中线程级资源自动释放 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="如何让一个资源随着线程结束而释放">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+     
+</head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/11/06/C++中线程级资源自动释放/" title="C++中线程级资源自动释放" itemprop="url">C++中线程级资源自动释放</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-11-06T07:31:01.000Z" itemprop="datePublished">2015-11-06</time>
+    更新日期:<time datetime="2015-11-06T09:01:18.000Z" itemprop="dateModified">2015-11-06</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#函数级"><span class="toc-number">1.</span> <span class="toc-text">函数级</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#线程级"><span class="toc-number">2.</span> <span class="toc-text">线程级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Qt全局JniEnv实现"><span class="toc-number">2.1.</span> <span class="toc-text">Qt全局JniEnv实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JniEnv工具模块"><span class="toc-number">2.2.</span> <span class="toc-text">JniEnv工具模块</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">3.</span> <span class="toc-text">结论</span></a></li></ol>
+		</div>
+		
+		<p>我们常常在代码通过类的生命周期来管理资源释放，构造函数的时候申请资源，析构函数的时候释放资源，这样可以减少程序员自动释放资源的工作。而有些场景，一个资源是线程级别共享的，线程结束后才释放，对于这种场景，可以利用Thread Local Storage机制，因为</p>
+<blockquote>
+<p>在C++中，线程的局部变量的析构函数会随着线程的结束而调用</p>
+</blockquote>
+<h1 id="函数级">函数级</h1><p>先复习一下函数级资源释，这里面应用的最多的就是局部锁了，代码如下，在构造函数获取锁，在析构的时候释放锁<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> Lockable&gt;</span><br><span class="line"><span class="keyword">class</span> LockScope</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    LockScope(Lockable &amp; m) : mtx(m)</span><br><span class="line">    &#123;</span><br><span class="line">        mtx.lock();</span><br><span class="line">    &#125;</span><br><span class="line">    ~LockScope()</span><br><span class="line">    &#123;</span><br><span class="line">        mtx.unlock();</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Lockable &amp; mtx;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>调用代码如下：<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    LockScope(lock);</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="线程级">线程级</h1><p>线程级别的资源应用场景不多，通常是一个全局静态变量，希望它在每个线程中有独立的拷贝。Jni中在获取JNIEnv时，在相应的线程中要调用AttachCurrentThread和DetachCurrentThread，否则线程无法正常退出，这就给程序员比较大压力，我们需要想一种方法来封装这个操作，Qt中的全局JniEnv实现给了我们一种思路</p>
+<h2 id="Qt全局JniEnv实现">Qt全局JniEnv实现</h2><p>如下面代码所示，有一个全局静态变量QJNIEnvironmentPrivateTLS，存放在QThreadStorage中，表示是线程局部变量，它的析构函数是执行DetachCurrentThread操作，表示在线程退出时会调用这个操作。<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> QJNIEnvironmentPrivateTLS</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">inline</span> ~QJNIEnvironmentPrivateTLS()</span><br><span class="line">    &#123;</span><br><span class="line">        QtAndroidPrivate::javaVM()-&gt;DetachCurrentThread();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Q_GLOBAL_STATIC(QThreadStorage&lt;QJNIEnvironmentPrivateTLS *&gt;, jniEnvTLS)</span><br></pre></td></tr></table></figure></p>
+<p>QJNIEnvironmentPrivate在构造函数中会获取JNIEnv，如果发现没有调用过AttachCurrentThread则马上Attach一下，每个线程在Detach时会初始化一个QJNIEnvironmentPrivateTLS实例，这样可以保证在线程退出时会调用相应的DetachCurrentThread操作。<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">char</span> qJniThreadName[] = <span class="string">"QtThread"</span>;</span><br><span class="line"></span><br><span class="line">QJNIEnvironmentPrivate::QJNIEnvironmentPrivate()</span><br><span class="line">    : jniEnv(<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    JavaVM *vm = QtAndroidPrivate::javaVM();</span><br><span class="line">    <span class="keyword">const</span> jint ret = vm-&gt;GetEnv((<span class="keyword">void</span>**)&amp;jniEnv, JNI_VERSION_1_6);</span><br><span class="line">    <span class="keyword">if</span> (ret == JNI_OK) <span class="comment">// Already attached</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ret == JNI_EDETACHED) &#123; <span class="comment">// We need to (re-)attach</span></span><br><span class="line">        JavaVMAttachArgs args = &#123; JNI_VERSION_1_6, qJniThreadName, Q_NULLPTR &#125;;</span><br><span class="line">        <span class="keyword">if</span> (vm-&gt;AttachCurrentThread(&amp;jniEnv, &amp;args) != JNI_OK)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!jniEnvTLS-&gt;hasLocalData()) <span class="comment">// If we attached the thread we own it.</span></span><br><span class="line">            jniEnvTLS-&gt;setLocalData(<span class="keyword">new</span> QJNIEnvironmentPrivateTLS);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>QJNIEnvironmentPrivate还重载了-&gt;方法，这样使用者就可以通过QJNIEnvironmentPrivate来使用JniEnv，而不用考虑AttachCurrentThread和DetachCurrentThread操作<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">JNIEnv *QJNIEnvironmentPrivate::<span class="keyword">operator</span>-&gt;()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> jniEnv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用代码如下：<br><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> TestCb::onTest(<span class="keyword">long</span> value)</span><br><span class="line">&#123;</span><br><span class="line">    QJNIEnvironmentPrivate env;</span><br><span class="line">    jlong j_value = (jlong) value;</span><br><span class="line">    jmethodID jmethod =env-&gt;GetMethodID(jclass_callback_global_, <span class="string">"onTest"</span>, <span class="string">"(J)V"</span>);</span><br><span class="line">    env-&gt;CallVoidMethod(jobject_callback_global_, jmethod,j_value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="JniEnv工具模块">JniEnv工具模块</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">Q_CORE_EXPORT jint JNICALL <span class="title">JNI_OnLoad</span><span class="params">(JavaVM *vm, <span class="keyword">void</span> *reserved)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (vm-&gt;GetEnv(&amp;uenv.venv, JNI_VERSION_1_6) != JNI_OK)</span><br><span class="line">        <span class="keyword">return</span> JNI_ERR;</span><br><span class="line"></span><br><span class="line">    JNIEnv *env = uenv.nenv;</span><br><span class="line">    <span class="keyword">const</span> jint ret = QT_PREPEND_NAMESPACE(QtAndroidPrivate::initJNI(vm, env));<span class="comment">//save the JavaVM , get it by QtAndroidPrivate::javaVM()</span></span><br><span class="line">    <span class="keyword">if</span> (ret != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> JNI_VERSION_1_6;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="结论">结论</h1><font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/C/">C++</a><a href="/tags/Jni/">Jni</a><a href="/tags/Qt/">Qt</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+<div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">
+<a class="bds_qzone"></a>
+<a class="bds_tsina"></a>
+<a class="bds_tqq"></a>
+<a class="bds_renren"></a>
+<a class="bds_t163"></a>
+<span class="bds_more"></span>
+<a class="shareCount"></a>
+</div>
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=3326447" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2015/11/05/C++中如何实现一个完整的Jni模块/"  title="C++中如何实现一个完整的Jni模块">
+ <strong>NEXT:</strong><br/> 
+ <span>C++中如何实现一个完整的Jni模块
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	
+	<div class="ds-thread" data-title="C++中线程级资源自动释放" data-thread-key="C++中线程级资源自动释放" data-author-key="Peng Jun" data-url="/post/C++中线程级资源自动释放"></div>
+	
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#函数级"><span class="toc-number">1.</span> <span class="toc-text">函数级</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#线程级"><span class="toc-number">2.</span> <span class="toc-text">线程级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Qt全局JniEnv实现"><span class="toc-number">2.1.</span> <span class="toc-text">Qt全局JniEnv实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JniEnv工具模块"><span class="toc-number">2.2.</span> <span class="toc-text">JniEnv工具模块</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">3.</span> <span class="toc-text">结论</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		<a href="http://weibo.com/2178110505" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/peter517" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Ubuntu/" title="Ubuntu">Ubuntu<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">近期文章</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2015/11/06/C++中线程级资源自动释放/">C++中线程级资源自动释放</a>
+      </li>
+    
+      <li>
+        <a href="/2015/11/05/C++中如何实现一个完整的Jni模块/">C++中如何实现一个完整的Jni模块</a>
+      </li>
+    
+      <li>
+        <a href="/2015/10/21/GYP可以做什么/">GYP可以做什么？</a>
+      </li>
+    
+      <li>
+        <a href="/2015/10/12/C++中宏在的正确使用/">C++中宏在的正确使用</a>
+      </li>
+    
+      <li>
+        <a href="/2015/08/28/一个完整软件产品需要的功能/">一个完整软件产品需要的功能</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2015 
+		
+		<a href="" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+
+
+<a href="https://github.com/peter517"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
