@@ -81,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-10-21T02:17:37.000Z" itemprop="datePublished">2015-10-21</time>
-    更新日期:<time datetime="2015-11-06T08:38:13.000Z" itemprop="dateModified">2015-11-06</time>
+    更新日期:<time datetime="2015-11-09T01:43:39.000Z" itemprop="dateModified">2015-11-09</time>
     
   </p>
 </header>
@@ -108,7 +108,7 @@
 <h2 id="include其他gyp文件">include其他gyp文件</h2><p>include其他gypi文件，如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'includes'</span>: [</span><br><span class="line">     <span class="string">'../build/common.gypi'</span>,</span><br><span class="line">   ],</span><br></pre></td></tr></table></figure></p>
 <h2 id="包含头文件搜索路径">包含头文件搜索路径</h2><p>如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'include_dirs'</span>: [</span><br><span class="line">          <span class="string">'include'</span>,</span><br><span class="line">        ],</span><br></pre></td></tr></table></figure></p>
 <h2 id="cflag设置">cflag设置</h2><p>如下所示：<br><figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">'cflags'</span>: [</span><br><span class="line">            <span class="string">'-Werror'</span>,</span><br><span class="line">            <span class="string">'-Wall'</span>,</span><br><span class="line">         ],</span><br></pre></td></tr></table></figure></p>
-<h2 id="shell脚本执行">shell脚本执行</h2><p>在脚本里面执行shell命令，如下所示，BUILD_DATE可以在代码中打印出来，用来标示编译日期<br><figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">"defines": [</span><br><span class="line">              'BUILD_DATE=&lt;！(<span class="keyword">echo</span> `<span class="built_in">date</span> +<span class="envvar">%Y%</span>m%d`)'</span><br><span class="line">            ],</span><br></pre></td></tr></table></figure></p>
+<h2 id="shell脚本执行">shell脚本执行</h2><p>在脚本里面执行shell命令，如下所示，BUILD_DATE可以在代码中打印出来，用来标示编译日期<br><figure class="highlight dos"><table><tr><td class="code"><pre><span class="line">"defines": [</span><br><span class="line">              'BUILD_DATE=&lt;!(<span class="keyword">echo</span> `<span class="built_in">date</span> +<span class="envvar">%Y%</span>m%d`)'</span><br><span class="line">            ],</span><br></pre></td></tr></table></figure></p>
 <h1 id="特有功能">特有功能</h1><h2 id="action">action</h2><p>GYP出了支持生成编译C的脚本外，还支持第三方模块执行的接口action，这样就可以考虑到利用GYP编译其他语言，比如用javac编译Java、用ant来Android App、用yasm来编译汇编语言等。利用这个特性，还可以用来执行单元测试，下面就是在每次编译的时候，<strong>根据“inputs”文件（func.cc、func.h、func_test_main.cc）是否有改变</strong>，来执行单元测试out/Release/fun_test<br><figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line"><span class="variable">'targets</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="variable">'target_name</span><span class="variable">':</span> <span class="variable">'fun_test</span>',</span><br><span class="line">        <span class="variable">'type</span><span class="variable">':</span> <span class="variable">'executable</span>',</span><br><span class="line">        <span class="variable">'sources</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">           <span class="variable">'test/func_test_main.cc</span>',</span><br><span class="line">        ],</span><br><span class="line">        <span class="variable">'actions</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">         &#123;</span><br><span class="line">            <span class="variable">'action_name</span><span class="variable">':</span> <span class="variable">'run_fun_test</span>',</span><br><span class="line">                <span class="variable">'inputs</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">                    <span class="variable">'func.h</span>',</span><br><span class="line">                    <span class="variable">'func.cc</span>',</span><br><span class="line">                    <span class="variable">'test/func_test_main.cc</span>',</span><br><span class="line">                ],</span><br><span class="line">                <span class="variable">'outputs</span><span class="variable">':</span> <span class="list">[ <span class="variable">'fun_test.txt</span>' ],</span><br><span class="line">                <span class="variable">'action</span><span class="variable">':</span> <span class="list">[</span><br><span class="line">                    <span class="variable">'out/Release/fun_test</span>',</span><br><span class="line">                    ],</span><br><span class="line">                &#125;,</span><br><span class="line">         ],</span><br><span class="line">&#125;,]</span></span></span></span></span></span></span><br></pre></td></tr></table></figure></p>
 <h2 id="direct_dependent_settings">direct_dependent_settings</h2><p>direct_dependent_settings表示依赖这个模块的模块也自动包含这个属性，比如入unit_test这个模块依赖gtest这个模块，那么unit_test会被设置“include_dirs”这个属性，把gtest这个模块中include的绝对路径添加为头文件搜索路径，</p>
 <blockquote>
@@ -123,7 +123,8 @@
 <li>源文件批量添加：GYP对批量添加源文件支持不好，CMake通过aux_source_directory命令轻松添加</li>
 <li>流行度：CMake在很多成熟的项目中使用，也有很多配套的工具，GYP起步比较晚，主要用在Chromium项目上面，这块还需努力</li>
 </ul>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
