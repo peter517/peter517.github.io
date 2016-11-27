@@ -4,8 +4,8 @@
   
     
     <entry>
-      <title><![CDATA[Qt中Mac端应用开发]]></title>
-      <url>/2016/11/26/Qt%E4%B8%ADMac%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/</url>
+      <title><![CDATA[Qt中Mac端应用工程搭建]]></title>
+      <url>/2016/11/26/Qt%E4%B8%ADMac%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/</url>
       <content type="html"><![CDATA[<h1 id="工程建立">工程建立</h1><p>qt建立工程的三个关键文件：</p>
 <ul>
 <li>YourApp.pro：管理工程源文件、库依赖、基本工程配置</li>
@@ -35,7 +35,7 @@
 </blockquote>
 <h1 id="应用dmg打包">应用dmg打包</h1><p>应用dmg打包可以通过macdeployqt，也可以通过dropdmg工具</p>
 <h1 id="在线升级">在线升级</h1><p>在线升级目前开源的成熟跨平台框架是Sparkle，提供generate_keys和sign_update工具，通过xml文件信息更新来进行在线升级。</p>
-<h2 id="Sparkle在线升级流程">Sparkle在线升级流程</h2><p>利用generate_keys生成dsa_pub.pem、dsa_priv.pem—&gt;利用sign_update用dsa_priv.pem对dmg进行签名—&gt;将签名信息和应用版本信息、下载链接更新到线上xml中—&gt;旧的客户端通过检测到xml更新进行在线升级</p>
+<h2 id="Sparkle在线升级流程">Sparkle在线升级流程</h2><p>利用generate_keys生成dsa_pub.pem、dsa_priv.pem—&gt;利用sign_update用dsa_priv.pem对dmg进行签名—&gt;将签名信息、应用版本信息、下载链接更新到线上xml中—&gt;旧客户端通过检测到xml更新进行在线升级</p>
 <h2 id="Sparkle如何保障应用签名">Sparkle如何保障应用签名</h2><ul>
 <li>使用私钥dsa_priv.pem，对App进行计算，得出结果dsaSignature — 算法1</li>
 <li>将公钥dsa_pub.pem，放入app内，可以更加它对App进行计算，结果如果为dsaSignature，则验证通过 – 算法2</li>
