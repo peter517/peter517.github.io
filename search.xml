@@ -6,8 +6,8 @@
     <entry>
       <title><![CDATA[Qt中Windows端应用工程搭建]]></title>
       <url>/2016/11/28/Qt%E4%B8%ADWindows%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/</url>
-      <content type="html"><![CDATA[<h1 id="工程建立">工程建立</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
-<h1 id="应用打包">应用打包</h1><h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
+      <content type="html"><![CDATA[<h1 id="工程建立">工程建立</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#工程建立" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
+<h1 id="应用打包">应用打包</h1><h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#在线升级" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
 ]]></content>
     </entry>
@@ -50,7 +50,7 @@
     <entry>
       <title><![CDATA[Qt中Mac端应用工程搭建]]></title>
       <url>/2016/11/26/Qt%E4%B8%ADMac%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/</url>
-      <content type="html"><![CDATA[<h1 id="工程建立">工程建立</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
+      <content type="html"><![CDATA[<h1 id="工程建立">工程建立</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#工程建立" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
 <h1 id="应用打包">应用打包</h1><h2 id="macdeployqt">macdeployqt</h2><p>利用qmake生成的App目录结构很简单，Contents下面只有Info.plist、MacOS、PkgInfo。<br>执行macdeployqt命令后会增加Frameworks、PlugIns、Resources目录，会把对应的库拷贝到Frameworks下面，依赖的资源拷贝到Resources下，但是有些依赖库和资源需要自己拷贝，比如opencv和sparkle</p>
 <h2 id="install_name_tool">install_name_tool</h2><p>应用二进制依赖的库都是本地路径，这样发布的时候会找不到库，需要利用install_name_tool来进行依赖库的重连接，把之前依赖的系统路径改为应用当前路径，利用otool -L 可以查看一个二进制的依赖项跟对应的路径</p>
 <h1 id="应用签名">应用签名</h1><h2 id="签名流程">签名流程</h2><p>为什么说是“可发布的”，因为Mac有一个签名机制，需要开发者用一个可信任的证书对App中<strong>App二进制、framework、dylib</strong>进行签名，这样才能让普通用户可以打开网页下载的App。Mac提供codesign这个命令<br>签名<br><figure class="highlight brainfuck"><table><tr><td class="code"><pre><span class="line"><span class="comment">codesign</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">force</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">sign</span> <span class="comment">“your_licence”</span>  <span class="comment">need_to_be_sign_part</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">deep</span></span><br></pre></td></tr></table></figure></p>
@@ -62,7 +62,7 @@
 <p>Info.plist 是从QT的SDK中拿到</p>
 </blockquote>
 <h1 id="应用dmg打包">应用dmg打包</h1><p>应用dmg打包可以通过macdeployqt，也可以通过dropdmg工具</p>
-<h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
+<h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#在线升级" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
 ]]></content>
     </entry>
