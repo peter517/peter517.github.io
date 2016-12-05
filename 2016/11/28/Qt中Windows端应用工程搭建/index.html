@@ -35,7 +35,7 @@
 				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
 				<a class="blog-motto">坚持写博客，沉淀！</a>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -81,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-11-28T09:28:09.000Z" itemprop="datePublished">2016-11-28</time>
-    更新日期:<time datetime="2016-11-28T09:50:24.000Z" itemprop="dateModified">2016-11-28</time>
+    Updated:<time datetime="2016-12-04T08:23:21.000Z" itemprop="dateModified">2016-12-04</time>
     
   </p>
 </header>
@@ -89,12 +89,53 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#工程建立"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#应用打包"><span class="toc-number">2.</span> <span class="toc-text">应用打包</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在线升级"><span class="toc-number">3.</span> <span class="toc-text">在线升级</span></a></li></ol>
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#工程建立"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#链接"><span class="toc-number">2.</span> <span class="toc-text">链接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Debug_or_Release"><span class="toc-number">2.1.</span> <span class="toc-text">Debug or Release</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他SDK集成"><span class="toc-number">2.2.</span> <span class="toc-text">其他SDK集成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NSIS应用打包"><span class="toc-number">3.</span> <span class="toc-text">NSIS应用打包</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#架构"><span class="toc-number">3.1.</span> <span class="toc-text">架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Page和UninstPage"><span class="toc-number">3.1.1.</span> <span class="toc-text">Page和UninstPage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#翻页"><span class="toc-number">3.1.2.</span> <span class="toc-text">翻页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生命周期"><span class="toc-number">3.1.3.</span> <span class="toc-text">生命周期</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell风格"><span class="toc-number">3.2.</span> <span class="toc-text">Shell风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本信息配置"><span class="toc-number">3.2.1.</span> <span class="toc-text">基本信息配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统函数"><span class="toc-number">3.2.2.</span> <span class="toc-text">系统函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义函数"><span class="toc-number">3.2.3.</span> <span class="toc-text">自定义函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#汇编风格"><span class="toc-number">3.3.</span> <span class="toc-text">汇编风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断互斥"><span class="toc-number">3.3.1.</span> <span class="toc-text">判断互斥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建组件及其注册事件"><span class="toc-number">3.3.2.</span> <span class="toc-text">创建组件及其注册事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组件联动"><span class="toc-number">3.3.3.</span> <span class="toc-text">组件联动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#隐藏组件"><span class="toc-number">3.3.4.</span> <span class="toc-text">隐藏组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kill进程"><span class="toc-number">3.3.5.</span> <span class="toc-text">Kill进程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在线升级"><span class="toc-number">4.</span> <span class="toc-text">在线升级</span></a></li></ol>
 		</div>
 		
 		<h1 id="工程建立">工程建立</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#工程建立" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
-<h1 id="应用打包">应用打包</h1><h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#在线升级" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
+<h1 id="链接">链接</h1><h2 id="Debug_or_Release">Debug or Release</h2><p>Window App在编译Debug or Release模式时会找对应的Qt包，不然QtCored.dll是Debug需要的，QtCore.dll是Release需要的，在应用打包环境需要注意</p>
+<h2 id="其他SDK集成">其他SDK集成</h2><ul>
+<li>OpenCV编译出来的版本一般有两个维度，除了常见的CPU位数，还有VS版本，开发App和打包阶段需要把App的VS环境和CPU位数考虑进去</li>
+<li>当集成许多SDK时，保证每个SDK都统一成Debug版本或者Release版本</li>
+</ul>
+<h1 id="NSIS应用打包">NSIS应用打包</h1><p>NSIS是Windows上面的开源打包工具，用类似汇编和Shell混合的语言来构建一个安装程序，支持c、c++语言实现的插件，功能很全。</p>
+<h2 id="架构">架构</h2><p>NSIS以每个页面为单元构建一个安装包，开发者在对应页面中完成相应代码，NSIS用;代表注释</p>
+<h3 id="Page和UninstPage">Page和UninstPage</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Page</span> custom WelcomePage</span><br><span class="line"><span class="keyword">Page</span> custom InstallPage</span><br><span class="line"><span class="keyword">Page</span> custom FinishPage</span><br><span class="line"></span><br><span class="line"><span class="keyword">UninstPage</span> custom un.WelecomPage</span><br><span class="line"><span class="keyword">UninstPage</span> custom un.UnInstallPage</span><br><span class="line"><span class="keyword">UninstPage</span> custom un.FinishPage</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span> WelcomePage</span></span><br><span class="line">    <span class="comment">;TODO</span></span><br><span class="line">End</span><br></pre></td></tr></table></figure>
+<h3 id="翻页">翻页</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">Function Next_Page</span><br><span class="line">  IntCmp <span class="variable">$R9</span> <span class="number">0</span> <span class="number">0</span> Move Move</span><br><span class="line">    StrCmp <span class="variable">$R9</span> <span class="string">"X"</span> <span class="number">0</span> Move</span><br><span class="line">      StrCpy <span class="variable">$R9</span> <span class="string">"120"</span></span><br><span class="line">  Move:</span><br><span class="line">  SendMessage <span class="variable">$HWNDPARENT</span> <span class="string">"0x408"</span> <span class="string">"$R9"</span> <span class="string">""</span></span><br><span class="line">FunctionEnd</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>官方例子</p>
+</blockquote>
+<h3 id="生命周期">生命周期</h3><p>.onInit –&gt; .onGUIInit –&gt; Pages –&gt;  un.onInit –&gt; un.onGUIInit  –&gt; un.Pages<br><figure class="highlight fortran"><table><tr><td class="code"><pre><span class="line"><span class="comment">!define MUI_CUSTOMFUNCTION_GUIINIT onGUIInit</span></span><br><span class="line"><span class="comment">!define MUI_CUSTOMFUNCTION_UNGUIINIT un.onGUIInit</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> .onInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> .onGUIInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> un.onInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> un.onGUIInit</span><br><span class="line"><span class="keyword">End</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Shell风格">Shell风格</h2><p>NSIS从瀑布上执行流程，脚本中只有两个基本概念，变量和函数，和Shell很类似，变量从来源上分为系统变量、UI变量、用户自定义变量，函数分为系统函数和自定义函数</p>
+<h3 id="基本信息配置">基本信息配置</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Name</span> <span class="string">"YourAppName"</span></span><br><span class="line"><span class="keyword">OutFile</span> <span class="string">"Your-Setup.exe"</span></span><br><span class="line"><span class="keyword">InstallDir</span> <span class="string">"YourInstallDir"</span></span><br><span class="line"><span class="keyword">XPStyle</span> <span class="literal">on</span></span><br><span class="line"><span class="keyword">RequestExecutionLevel</span> <span class="literal">admin</span> <span class="comment">;要求系统权限执行</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>NSIS框架会读取这些信息来配置安装包</p>
+</blockquote>
+<h3 id="系统函数">系统函数</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">CreateDirectory <span class="variable">$YourDir</span>; 创建目录</span><br><span class="line">Exec YourApp.exe ; 运行文件</span><br><span class="line">ExecShell <span class="string">"open"</span> Your_URL ; 打开网页</span><br><span class="line">CreateShortCut <span class="variable">$YourShortCut</span>; 创建快捷方式</span><br><span class="line">SendMessage <span class="variable">$Pb</span>_Uninstall $&#123;PBM_SETPOS&#125; <span class="number">80</span> <span class="number">0</span> ;更新进度条</span><br><span class="line">DetailPrint <span class="string">"WindowsVersion:"</span>; 打印日志</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>$Pb_Uninstall是组件变量，${PBM_SETPOS} 是系统变量，与UI组件交互一般用SendMessage方法</p>
+</blockquote>
+<h3 id="自定义函数">自定义函数</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">Function</span> Your_Method</span></span><br><span class="line">    <span class="comment">;TODO</span></span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span> SomPage_Method</span></span><br><span class="line">    <span class="keyword">Call</span> Your_Method</span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br></pre></td></tr></table></figure>
+<h2 id="汇编风格">汇编风格</h2><p>通过Pop和Push命令和系统、第三方插件方法进行数据交互，很汇编的写法，常用Pop方法获取系统调用结果。</p>
+<h3 id="判断互斥">判断互斥</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"> <span class="literal">System::Call</span> '<span class="literal">kernel32::CreateMutex</span>(i <span class="number">0</span>, i <span class="number">0</span>, t <span class="string">"<span class="constant">$&#123;INSTALL_NAME&#125;</span>"</span>) ?e'</span><br><span class="line"><span class="keyword">Pop</span> <span class="variable">$R0</span></span><br><span class="line"><span class="keyword">StrCmp</span> <span class="variable">$R0</span> <span class="number">0</span> +<span class="number">3</span></span><br><span class="line"> <span class="keyword">MessageBox</span> <span class="params">MB_OK</span> <span class="string">"Already Running!"</span></span><br><span class="line"> <span class="keyword">Abort</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Pop命令获取System::Call的结果，存放到$R0里面</p>
+</blockquote>
+<h3 id="创建组件及其注册事件">创建组件及其注册事件</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line"> $&#123;NSD_CreateButton&#125; <span class="number">454</span> <span class="number">13</span> <span class="number">14</span> <span class="number">14</span> <span class="string">""</span></span><br><span class="line">Pop <span class="variable">$Bt</span>_CloseDialog</span><br><span class="line">GetFunctionAddress <span class="variable">$3</span> OnClick_CloseDialog ; 获取自定义OnClick_CloseDialog方法的地址</span><br><span class="line">SkinBtn::onClick <span class="variable">$Bt</span>_CloseDialog <span class="variable">$3</span> ;把OnClick_CloseDialog设置为SkinBtn::onClick的响应事件</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>${NSD_CreateButton}里面存放一个创建UI的方法</p>
+</blockquote>
+<h3 id="组件联动">组件联动</h3><p>NSIS中很多组件的效果需要开发人员完成，例如下面的Checkbox效果，通过Checkbox来控制某个按钮是否可以点击，<br><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line"> $&#123;IF&#125; <span class="variable">$IS</span>_AgreeLicence == <span class="number">1</span></span><br><span class="line">	IntOp <span class="variable">$IS</span>_AgreeLicence <span class="variable">$IS</span>_AgreeLicence - <span class="number">1</span></span><br><span class="line">	EnableWindow <span class="variable">$Bt</span>_Install <span class="number">0</span> ;disable Bt_Install 组件</span><br><span class="line">	StrCpy <span class="variable">$1</span> <span class="variable">$Cb</span>_AgreeLicence</span><br><span class="line">	Call SkinBtn_UnChecked ; 调用自定义方法并传入Checkbox组件</span><br><span class="line">$&#123;ELSE&#125;</span><br><span class="line">	IntOp <span class="variable">$IS</span>_AgreeLicence <span class="variable">$IS</span>_AgreeLicence + <span class="number">1</span></span><br><span class="line">	EnableWindow <span class="variable">$Bt</span>_Install <span class="number">1</span></span><br><span class="line">	StrCpy <span class="variable">$1</span> <span class="variable">$Cb</span>_AgreeLicence ; enable Bt_Install 组件</span><br><span class="line">	Call SkinBtn_Checked ; 调用自定义方法并传入Checkbox组件</span><br><span class="line">$&#123;EndIf&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="隐藏组件">隐藏组件</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">GetDlgItem <span class="variable">$0</span> <span class="variable">$HWNDPARENT</span> <span class="number">1034</span></span><br><span class="line">ShowWindow <span class="variable">$0</span> $&#123;SW_HIDE&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>$HWNDPARENT和${SW_HIDE}是系统变量</p>
+</blockquote>
+<h3 id="Kill进程">Kill进程</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">StrCpy <span class="variable">$0</span> <span class="string">"YourAppName"</span></span><br><span class="line">KillProc::KillProcesses</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把AppName放入$0中，KillProc::KillProcesses从$0里取参数</p>
+</blockquote>
+<h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#在线升级" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
   
 	</div>
@@ -152,15 +193,15 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#工程建立"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#应用打包"><span class="toc-number">2.</span> <span class="toc-text">应用打包</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在线升级"><span class="toc-number">3.</span> <span class="toc-text">在线升级</span></a></li></ol>
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#工程建立"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#链接"><span class="toc-number">2.</span> <span class="toc-text">链接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Debug_or_Release"><span class="toc-number">2.1.</span> <span class="toc-text">Debug or Release</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他SDK集成"><span class="toc-number">2.2.</span> <span class="toc-text">其他SDK集成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NSIS应用打包"><span class="toc-number">3.</span> <span class="toc-text">NSIS应用打包</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#架构"><span class="toc-number">3.1.</span> <span class="toc-text">架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Page和UninstPage"><span class="toc-number">3.1.1.</span> <span class="toc-text">Page和UninstPage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#翻页"><span class="toc-number">3.1.2.</span> <span class="toc-text">翻页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生命周期"><span class="toc-number">3.1.3.</span> <span class="toc-text">生命周期</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell风格"><span class="toc-number">3.2.</span> <span class="toc-text">Shell风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本信息配置"><span class="toc-number">3.2.1.</span> <span class="toc-text">基本信息配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统函数"><span class="toc-number">3.2.2.</span> <span class="toc-text">系统函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义函数"><span class="toc-number">3.2.3.</span> <span class="toc-text">自定义函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#汇编风格"><span class="toc-number">3.3.</span> <span class="toc-text">汇编风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断互斥"><span class="toc-number">3.3.1.</span> <span class="toc-text">判断互斥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建组件及其注册事件"><span class="toc-number">3.3.2.</span> <span class="toc-text">创建组件及其注册事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组件联动"><span class="toc-number">3.3.3.</span> <span class="toc-text">组件联动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#隐藏组件"><span class="toc-number">3.3.4.</span> <span class="toc-text">隐藏组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kill进程"><span class="toc-number">3.3.5.</span> <span class="toc-text">Kill进程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在线升级"><span class="toc-number">4.</span> <span class="toc-text">在线升级</span></a></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 <div id="authorInfo">
 	
@@ -225,7 +266,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   
 <div class="categorieslist">
-<p class="asidetitle">近期文章</p>
+<p class="asidetitle">Recent Posts</p>
   <ul class="entry">
     
       <li>

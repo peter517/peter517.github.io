@@ -7,7 +7,48 @@
       <title><![CDATA[Qt中Windows端应用工程搭建]]></title>
       <url>/2016/11/28/Qt%E4%B8%ADWindows%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/</url>
       <content type="html"><![CDATA[<h1 id="工程建立">工程建立</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#工程建立" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
-<h1 id="应用打包">应用打包</h1><h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#在线升级" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
+<h1 id="链接">链接</h1><h2 id="Debug_or_Release">Debug or Release</h2><p>Window App在编译Debug or Release模式时会找对应的Qt包，不然QtCored.dll是Debug需要的，QtCore.dll是Release需要的，在应用打包环境需要注意</p>
+<h2 id="其他SDK集成">其他SDK集成</h2><ul>
+<li>OpenCV编译出来的版本一般有两个维度，除了常见的CPU位数，还有VS版本，开发App和打包阶段需要把App的VS环境和CPU位数考虑进去</li>
+<li>当集成许多SDK时，保证每个SDK都统一成Debug版本或者Release版本</li>
+</ul>
+<h1 id="NSIS应用打包">NSIS应用打包</h1><p>NSIS是Windows上面的开源打包工具，用类似汇编和Shell混合的语言来构建一个安装程序，支持c、c++语言实现的插件，功能很全。</p>
+<h2 id="架构">架构</h2><p>NSIS以每个页面为单元构建一个安装包，开发者在对应页面中完成相应代码，NSIS用;代表注释</p>
+<h3 id="Page和UninstPage">Page和UninstPage</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Page</span> custom WelcomePage</span><br><span class="line"><span class="keyword">Page</span> custom InstallPage</span><br><span class="line"><span class="keyword">Page</span> custom FinishPage</span><br><span class="line"></span><br><span class="line"><span class="keyword">UninstPage</span> custom un.WelecomPage</span><br><span class="line"><span class="keyword">UninstPage</span> custom un.UnInstallPage</span><br><span class="line"><span class="keyword">UninstPage</span> custom un.FinishPage</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span> WelcomePage</span></span><br><span class="line">    <span class="comment">;TODO</span></span><br><span class="line">End</span><br></pre></td></tr></table></figure>
+<h3 id="翻页">翻页</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">Function Next_Page</span><br><span class="line">  IntCmp <span class="variable">$R9</span> <span class="number">0</span> <span class="number">0</span> Move Move</span><br><span class="line">    StrCmp <span class="variable">$R9</span> <span class="string">"X"</span> <span class="number">0</span> Move</span><br><span class="line">      StrCpy <span class="variable">$R9</span> <span class="string">"120"</span></span><br><span class="line">  Move:</span><br><span class="line">  SendMessage <span class="variable">$HWNDPARENT</span> <span class="string">"0x408"</span> <span class="string">"$R9"</span> <span class="string">""</span></span><br><span class="line">FunctionEnd</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>官方例子</p>
+</blockquote>
+<h3 id="生命周期">生命周期</h3><p>.onInit –&gt; .onGUIInit –&gt; Pages –&gt;  un.onInit –&gt; un.onGUIInit  –&gt; un.Pages<br><figure class="highlight fortran"><table><tr><td class="code"><pre><span class="line"><span class="comment">!define MUI_CUSTOMFUNCTION_GUIINIT onGUIInit</span></span><br><span class="line"><span class="comment">!define MUI_CUSTOMFUNCTION_UNGUIINIT un.onGUIInit</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> .onInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> .onGUIInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> un.onInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span></span> un.onGUIInit</span><br><span class="line"><span class="keyword">End</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Shell风格">Shell风格</h2><p>NSIS从瀑布上执行流程，脚本中只有两个基本概念，变量和函数，和Shell很类似，变量从来源上分为系统变量、UI变量、用户自定义变量，函数分为系统函数和自定义函数</p>
+<h3 id="基本信息配置">基本信息配置</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Name</span> <span class="string">"YourAppName"</span></span><br><span class="line"><span class="keyword">OutFile</span> <span class="string">"Your-Setup.exe"</span></span><br><span class="line"><span class="keyword">InstallDir</span> <span class="string">"YourInstallDir"</span></span><br><span class="line"><span class="keyword">XPStyle</span> <span class="literal">on</span></span><br><span class="line"><span class="keyword">RequestExecutionLevel</span> <span class="literal">admin</span> <span class="comment">;要求系统权限执行</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>NSIS框架会读取这些信息来配置安装包</p>
+</blockquote>
+<h3 id="系统函数">系统函数</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">CreateDirectory <span class="variable">$YourDir</span>; 创建目录</span><br><span class="line">Exec YourApp.exe ; 运行文件</span><br><span class="line">ExecShell <span class="string">"open"</span> Your_URL ; 打开网页</span><br><span class="line">CreateShortCut <span class="variable">$YourShortCut</span>; 创建快捷方式</span><br><span class="line">SendMessage <span class="variable">$Pb</span>_Uninstall $&#123;PBM_SETPOS&#125; <span class="number">80</span> <span class="number">0</span> ;更新进度条</span><br><span class="line">DetailPrint <span class="string">"WindowsVersion:"</span>; 打印日志</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>$Pb_Uninstall是组件变量，${PBM_SETPOS} 是系统变量，与UI组件交互一般用SendMessage方法</p>
+</blockquote>
+<h3 id="自定义函数">自定义函数</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">Function</span> Your_Method</span></span><br><span class="line">    <span class="comment">;TODO</span></span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">Function</span> SomPage_Method</span></span><br><span class="line">    <span class="keyword">Call</span> Your_Method</span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br></pre></td></tr></table></figure>
+<h2 id="汇编风格">汇编风格</h2><p>通过Pop和Push命令和系统、第三方插件方法进行数据交互，很汇编的写法，常用Pop方法获取系统调用结果。</p>
+<h3 id="判断互斥">判断互斥</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"> <span class="literal">System::Call</span> '<span class="literal">kernel32::CreateMutex</span>(i <span class="number">0</span>, i <span class="number">0</span>, t <span class="string">"<span class="constant">$&#123;INSTALL_NAME&#125;</span>"</span>) ?e'</span><br><span class="line"><span class="keyword">Pop</span> <span class="variable">$R0</span></span><br><span class="line"><span class="keyword">StrCmp</span> <span class="variable">$R0</span> <span class="number">0</span> +<span class="number">3</span></span><br><span class="line"> <span class="keyword">MessageBox</span> <span class="params">MB_OK</span> <span class="string">"Already Running!"</span></span><br><span class="line"> <span class="keyword">Abort</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Pop命令获取System::Call的结果，存放到$R0里面</p>
+</blockquote>
+<h3 id="创建组件及其注册事件">创建组件及其注册事件</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line"> $&#123;NSD_CreateButton&#125; <span class="number">454</span> <span class="number">13</span> <span class="number">14</span> <span class="number">14</span> <span class="string">""</span></span><br><span class="line">Pop <span class="variable">$Bt</span>_CloseDialog</span><br><span class="line">GetFunctionAddress <span class="variable">$3</span> OnClick_CloseDialog ; 获取自定义OnClick_CloseDialog方法的地址</span><br><span class="line">SkinBtn::onClick <span class="variable">$Bt</span>_CloseDialog <span class="variable">$3</span> ;把OnClick_CloseDialog设置为SkinBtn::onClick的响应事件</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>${NSD_CreateButton}里面存放一个创建UI的方法</p>
+</blockquote>
+<h3 id="组件联动">组件联动</h3><p>NSIS中很多组件的效果需要开发人员完成，例如下面的Checkbox效果，通过Checkbox来控制某个按钮是否可以点击，<br><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line"> $&#123;IF&#125; <span class="variable">$IS</span>_AgreeLicence == <span class="number">1</span></span><br><span class="line">	IntOp <span class="variable">$IS</span>_AgreeLicence <span class="variable">$IS</span>_AgreeLicence - <span class="number">1</span></span><br><span class="line">	EnableWindow <span class="variable">$Bt</span>_Install <span class="number">0</span> ;disable Bt_Install 组件</span><br><span class="line">	StrCpy <span class="variable">$1</span> <span class="variable">$Cb</span>_AgreeLicence</span><br><span class="line">	Call SkinBtn_UnChecked ; 调用自定义方法并传入Checkbox组件</span><br><span class="line">$&#123;ELSE&#125;</span><br><span class="line">	IntOp <span class="variable">$IS</span>_AgreeLicence <span class="variable">$IS</span>_AgreeLicence + <span class="number">1</span></span><br><span class="line">	EnableWindow <span class="variable">$Bt</span>_Install <span class="number">1</span></span><br><span class="line">	StrCpy <span class="variable">$1</span> <span class="variable">$Cb</span>_AgreeLicence ; enable Bt_Install 组件</span><br><span class="line">	Call SkinBtn_Checked ; 调用自定义方法并传入Checkbox组件</span><br><span class="line">$&#123;EndIf&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="隐藏组件">隐藏组件</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">GetDlgItem <span class="variable">$0</span> <span class="variable">$HWNDPARENT</span> <span class="number">1034</span></span><br><span class="line">ShowWindow <span class="variable">$0</span> $&#123;SW_HIDE&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>$HWNDPARENT和${SW_HIDE}是系统变量</p>
+</blockquote>
+<h3 id="Kill进程">Kill进程</h3><figure class="highlight xquery"><table><tr><td class="code"><pre><span class="line">StrCpy <span class="variable">$0</span> <span class="string">"YourAppName"</span></span><br><span class="line">KillProc::KillProcesses</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把AppName放入$0中，KillProc::KillProcesses从$0里取参数</p>
+</blockquote>
+<h1 id="在线升级">在线升级</h1><p><a href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#在线升级" target="_blank" rel="external">Qt中PC端应用工程搭建</a></p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
 ]]></content>
     </entry>
@@ -214,6 +255,7 @@
 <li>提供不断完善产品的方法</li>
 <li>方便定位问题</li>
 <li>保证产品的可扩展性</li>
+<li>用户数据安全</li>
 </ul>
 <h1 id="基本功能">基本功能</h1><h2 id="用户反馈渠道">用户反馈渠道</h2><p>用户在使用产品时发生了Bug或者对产品有一些新的需求，应该有一个明显的入口提供给用户完成反馈</p>
 <h2 id="用户行为数据统计">用户行为数据统计</h2><p>用户行为统计最基本是用来看一个产品的活跃用户数、转化率等指标，但更重要的是根据用户在产品上面的操作习惯，可以用来改进产品设计，对于一些特殊的涉及用户个人信息的产品，还可以知道用户是一个什么样子的人，从而进行针对性营销</p>
@@ -227,8 +269,9 @@
 <h2 id="配置产品特性">配置产品特性</h2><p>一般可以通过界面来配置一些产品特性；如果是通过配置文件来修改，那么主要针对面向程序开发人员的产品，比如IDE，开发者可以根据自己的喜好和机器环境，修改配置</p>
 <h1 id="高级功能">高级功能</h1><p>基本功能主要是针对最终用户，高级功能主要是面向开发人员</p>
 <h2 id="插件化">插件化</h2><p>插件化让新增一个功能不需要重新编译和部署，可能只需要简单的重启一下程序，像Eclipse一样</p>
-<h2 id="SDK支持">SDK支持</h2><p>当开发人员不喜欢默认UI时候，可以根据SDK重新设计自己的UI</p>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+<h2 id="SDK支持">SDK支持</h2><p>当用户不喜欢默认UI时候，可以根据SDK重新设计自己的UI</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
+]]></content>
     </entry>
     
     <entry>
