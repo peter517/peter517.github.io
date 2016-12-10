@@ -1,0 +1,438 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Unity插件编写 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="介绍如何在Unity中调用平台原生方法">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+     
+</head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/12/10/Unity插件编写/" title="Unity插件编写" itemprop="url">Unity插件编写</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-12-10T04:01:27.000Z" itemprop="datePublished">2016-12-10</time>
+    更新日期:<time datetime="2016-12-10T04:47:12.000Z" itemprop="dateModified">2016-12-10</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#工程结构"><span class="toc-number">1.</span> <span class="toc-text">工程结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基础类定义"><span class="toc-number">2.</span> <span class="toc-text">基础类定义</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android"><span class="toc-number">2.1.</span> <span class="toc-text">Android</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOS"><span class="toc-number">2.2.</span> <span class="toc-text">IOS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#插件调用模块"><span class="toc-number">3.</span> <span class="toc-text">插件调用模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#插件要实现的接口"><span class="toc-number">3.1.</span> <span class="toc-text">插件要实现的接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对Unity其他模块的接口"><span class="toc-number">3.2.</span> <span class="toc-text">对Unity其他模块的接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-1"><span class="toc-number">3.3.</span> <span class="toc-text">Android</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOS-1"><span class="toc-number">3.4.</span> <span class="toc-text">IOS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#插件实现"><span class="toc-number">4.</span> <span class="toc-text">插件实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-2"><span class="toc-number">4.1.</span> <span class="toc-text">Android</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基础类"><span class="toc-number">4.1.1.</span> <span class="toc-text">基础类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现"><span class="toc-number">4.1.2.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOS-2"><span class="toc-number">4.2.</span> <span class="toc-text">IOS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义接口"><span class="toc-number">4.2.1.</span> <span class="toc-text">定义接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">具体实现</span></a></li></ol></li></ol></li></ol>
+		</div>
+		
+		<p>Unity作为跨平台的游戏引擎，支持很多跨平台的方法调用，但Unity重点还是在游戏开发，有些接口无法从Unity层面拿到，比如是设备全局音量控制接口、Android中的Activity跳转接口，本文以实现设备全局音量控制这个功能，来介绍如何编写Unity移动端插件，PC端插件类似，这里就不再赘述</p>
+<h1 id="工程结构">工程结构</h1><p>Unity插件都是在对应平台编译好，打包成jar、动态库、静态库后，放在工程Assets/Plugin/Android、Assets/Plugin/IOS下面，Unity会自动把插件加载起来</p>
+<h1 id="基础类定义">基础类定义</h1><h2 id="Android">Android</h2><p>Unity调用Android接口可以是jar包，也可以试so文件，Unity提供调用Android接口方法很像Jni，下面通过GetUnityActivity()拿到当前App的Activity，这样插件可以基于这个Activity调用一些系统接口，GetJavaObject()方法相当于Jni中的JniEnv，用来调用对应插件的方法<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">AndroidPluginBase</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">string</span> UNITY_PLAYER_ANDROID_OBJECT_NAME = <span class="string">"com.unity3d.player.UnityPlayer"</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">string</span> UNITY_PLAYER_ACTIVITY_NAME = <span class="string">"currentActivity"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">string</span> <span class="title">getAndroidObjectEntryName</span> (<span class="params"></span>)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> AndroidJavaObject javaObj = <span class="keyword">null</span>;</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> AndroidJavaObject <span class="title">GetJavaObject</span>(<span class="params"></span>)</span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (javaObj == <span class="keyword">null</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			javaObj = <span class="keyword">new</span> AndroidJavaObject(getAndroidObjectEntryName());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> javaObj;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">protected</span> AndroidJavaObject <span class="title">GetUnityActivity</span>(<span class="params"></span>)</span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> AndroidJavaClass(UNITY_PLAYER_ANDROID_OBJECT_NAME).GetStatic&lt;AndroidJavaObject&gt;(UNITY_PLAYER_ACTIVITY_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="IOS">IOS</h2><p>IOS插件一般是以源文件的方式集成进来，通过Unity生成的xcode工程一起编译。GetRootControllerAddress()类似于Android里面获取Activity引用，插件拿到这个后可以调用IOS的一些方法<br><figure class="highlight aspectj"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IOSPluginBase</span></span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	[DllImport(<span class="string">"__Internal"</span>)]</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> extern <span class="function"><span class="keyword">long</span> <span class="title">_getRootControllerAddress</span> <span class="params">()</span></span>;</span><br><span class="line">	<span class="keyword">protected</span> <span class="function"><span class="keyword">long</span> <span class="title">GetRootControllerAddress</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="function"><span class="keyword">return</span> <span class="title">_getRootControllerAddress</span> <span class="params">()</span></span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="插件调用模块">插件调用模块</h1><h2 id="插件要实现的接口">插件要实现的接口</h2><p>各个平台需要实现的接口<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVolumeCtrlDevice</span>&#123;</span><br><span class="line">	 <span class="function"><span class="keyword">float</span> <span class="title">GetVolume</span> (<span class="params"></span>)</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">float</span> <span class="title">SetVolume</span> (<span class="params"><span class="keyword">float</span> volume</span>)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="对Unity其他模块的接口">对Unity其他模块的接口</h2><p>统一接口更加当前运行平台选择对应的插件实现，其中EditorVolumeCtrlDevice是一个空实现，保证在Editor状态下面可以编译通过<br><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">VolumeCtrlNative</span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">string</span> TAG = <span class="string">"VolumeCtrlNative"</span>;</span><br><span class="line">	<span class="keyword">private</span> IVolumeCtrlDevice volumeCtrlDevice;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">VolumeCtrlNative</span>(<span class="params"></span>)</span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="preprocessor">#<span class="keyword">if</span> UNITY_EDITOR</span></span><br><span class="line">			volumeCtrlDevice = <span class="keyword">new</span> EditorVolumeCtrlDevice();</span><br><span class="line">		<span class="preprocessor">#<span class="keyword">elif</span> UNITY_IPHONE</span></span><br><span class="line">			volumeCtrlDevice = <span class="keyword">new</span> IOSVolumeCtrlDevice();</span><br><span class="line">		<span class="preprocessor">#<span class="keyword">elif</span> UNITY_ANDROID</span></span><br><span class="line">			volumeCtrlDevice = <span class="keyword">new</span> AndroidVolumeCtrlDevice();</span><br><span class="line">		<span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> VolumeCtrlNative INSTANCE&#123;</span><br><span class="line">		<span class="keyword">get</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">				instance = <span class="keyword">new</span> VolumeCtrlNative();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> instance;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> VolumeCtrlNative instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">GetVolume</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> volumeCtrlDevice.GetVolume ();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">SetVolume</span>(<span class="params"><span class="keyword">float</span> volume</span>)</span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (volume &gt; <span class="number">1.0</span> || volume &lt; <span class="number">0.0</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> -<span class="number">1.0</span>f;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> volumeCtrlDevice.SetVolume (volume);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Android-1">Android</h2><p>ANDROID_OBJECT_ENTRY_NAME表示插件的实现包名和类名，CallGetVolume()的实现跟Jni的调用很类似<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> AndroidVolumeCtrlDevice : AndroidPluginBase,IVolumeCtrlDevice</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">const</span> <span class="built_in">string</span> ANDROID_OBJECT_ENTRY_NAME = <span class="string">"com.yourcompany.VolumeCtrl"</span>;</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> override <span class="built_in">string</span> <span class="title">getAndroidObjectEntryName</span> <span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ANDROID_OBJECT_ENTRY_NAME;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">AndroidVolumeCtrlDevice</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		CallSetUnityActivity();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">GetVolume</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> CallGetVolume();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">SetVolume</span><span class="params">(<span class="keyword">float</span> volume)</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span>  CallSetVolume(volume);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">CallSetUnityActivity</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		GetJavaObject().Call(<span class="string">"setUnityActivity"</span>, GetUnityActivity());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">float</span> <span class="title">CallGetVolume</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> GetJavaObject().Call&lt;<span class="keyword">float</span>&gt;(<span class="string">"getVolume"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">float</span> <span class="title">CallSetVolume</span><span class="params">(<span class="keyword">float</span> volume)</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> GetJavaObject().Call&lt;<span class="keyword">float</span>&gt;(<span class="string">"setVolume"</span>, volume);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="IOS-1">IOS</h2><p>IOS的接口就是C#调用c方法的实现方式<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> IOSVolumeCtrlDevice : IOSPluginBase,IVolumeCtrlDevice &#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">IOSVolumeCtrlDevice</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		SetRootControllerAddress();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	[DllImport(<span class="string">"__Internal"</span>)]</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">float</span> _media_player_volume_get_volume ();</span><br><span class="line">	[DllImport(<span class="string">"__Internal"</span>)]</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">float</span> _media_player_volume_set_volume (<span class="keyword">float</span> volume);</span><br><span class="line">	[DllImport(<span class="string">"__Internal"</span>)]</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">extern</span> <span class="keyword">float</span> _media_player_set_root_control(<span class="keyword">long</span> rootControllerAddress);</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">GetVolume</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> _media_player_volume_get_volume ();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">SetVolume</span><span class="params">(<span class="keyword">float</span> volume)</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> _media_player_volume_set_volume (volume);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">SetRootControllerAddress</span><span class="params">()</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		_media_player_set_root_control(GetRootControllerAddress ());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="插件实现">插件实现</h1><h2 id="Android-2">Android</h2><h3 id="基础类">基础类</h3><figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">BasePlugin</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> Activity activity;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUnityActivity</span>(<span class="params">Activity activity</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.activity = activity;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="具体实现">具体实现</h3><p>通过Unity传进来的Activity实例来调用系统方法获取全局音量<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolumeCtrl</span> <span class="keyword">extends</span> <span class="title">BasePlugin</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String TAG = <span class="keyword">this</span>.getClass().getSimpleName();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getVolume</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (activity == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        AudioManager mgr = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> MAX_STREAM_MUSIC_VOLUME = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">float</span> volume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//change volume to 0.0 -&gt; 1.0</span></span><br><span class="line">        <span class="keyword">float</span> normalizedVolume = volume / MAX_STREAM_MUSIC_VOLUME;</span><br><span class="line">        <span class="keyword">return</span> normalizedVolume;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">setVolume</span><span class="params">(<span class="keyword">float</span> volume)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        Log.d(TAG, <span class="string">"setVolume volume "</span> + volume);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (activity == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1.0f</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (volume &gt; <span class="number">1.0f</span> || volume &lt; <span class="number">0.0f</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1.0f</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        AudioManager mgr = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> MAX_STREAM_MUSIC_VOLUME = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);</span><br><span class="line">        mgr.setStreamVolume(AudioManager.STREAM_MUSIC, (<span class="keyword">int</span>) (volume * MAX_STREAM_MUSIC_VOLUME), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">return</span> volume;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="IOS-2">IOS</h2><h3 id="定义接口">定义接口</h3><figure class="highlight groovy"><table><tr><td class="code"><pre><span class="line"><span class="annotation">@interface</span> <span class="string">VolumeCtrl :</span> NSObject</span><br><span class="line"></span><br><span class="line">+ (VolumeCtrl*) getInstance;</span><br><span class="line"></span><br><span class="line">- (<span class="typename">int</span> ) <span class="string">setRootController:</span>(<span class="typename">long</span>)rootControllerAddress;</span><br><span class="line">- (<span class="typename">float</span>) getVolume;</span><br><span class="line">- (<span class="typename">float</span>) <span class="string">setVolume:</span>(<span class="typename">float</span>)volume;</span><br><span class="line"><span class="annotation">@end</span></span><br></pre></td></tr></table></figure>
+<h3 id="具体实现-1">具体实现</h3><p>与Unity调用相关的接口通过extern “C”来定义，通过Unity传进来的rootController来呼出全局音量的组件<br><figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> _media_player_set_root_control(<span class="keyword">long</span> rootControllerAddress) &#123;</span><br><span class="line">        <span class="keyword">return</span> [[VolumeCtrl getInstance] setRootController:rootControllerAddress];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> _media_player_volume_get_volume() &#123;</span><br><span class="line">        <span class="keyword">return</span> [[VolumeCtrl getInstance] getVolume];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">float</span> _media_player_volume_set_volume (<span class="keyword">float</span> volume) &#123;</span><br><span class="line">        <span class="keyword">return</span> [[VolumeCtrl getInstance] setVolume:volume];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">VolumeCtrl</span> ()</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>,<span class="keyword">strong</span>)<span class="built_in">UISlider</span> *slider;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">VolumeCtrl</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> VolumeCtrl * instance;</span><br><span class="line">+ (VolumeCtrl*) getInstance &#123;</span><br><span class="line">    <span class="keyword">@synchronized</span>(<span class="keyword">self</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(instance == <span class="literal">nil</span>) &#123;</span><br><span class="line">            instance = [[<span class="keyword">self</span> alloc]init];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="keyword">int</span> ) setRootController:(<span class="keyword">long</span>)rootControllerAddress</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">UIViewController</span>* rootViewController = (__bridge <span class="built_in">UIViewController</span> *)((<span class="keyword">void</span>*)rootControllerAddress);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">MPVolumeView</span> *volumeView = [[<span class="built_in">MPVolumeView</span> alloc] init];</span><br><span class="line">    [rootViewController<span class="variable">.view</span> addSubview: volumeView];</span><br><span class="line">    [volumeView sizeToFit];</span><br><span class="line">    [rootViewController<span class="variable">.view</span> bringSubviewToFront: volumeView];</span><br><span class="line"></span><br><span class="line">    _slider = [[<span class="built_in">UISlider</span> alloc]init];</span><br><span class="line">    _slider<span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> blueColor];</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">UIControl</span> *view <span class="keyword">in</span> volumeView<span class="variable">.subviews</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([view<span class="variable">.superclass</span> isSubclassOfClass:[<span class="built_in">UISlider</span> class]]) &#123;</span><br><span class="line">            <span class="keyword">self</span><span class="variable">.slider</span> = (<span class="built_in">UISlider</span> *)view;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    _slider<span class="variable">.autoresizesSubviews</span> = <span class="literal">NO</span>;</span><br><span class="line">    _slider<span class="variable">.autoresizingMask</span> = <span class="built_in">UIViewAutoresizingNone</span>;</span><br><span class="line">    volumeView<span class="variable">.alpha</span> = <span class="number">0.001</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">float</span>) getVolume</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">AVAudioSession</span> *audioSession = [<span class="built_in">AVAudioSession</span> sharedInstance];</span><br><span class="line">    <span class="keyword">return</span> audioSession<span class="variable">.outputVolume</span>;</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="keyword">float</span>) setVolume:(<span class="keyword">float</span>)volume</span><br><span class="line">&#123;</span><br><span class="line">    assert(_slider != <span class="literal">nil</span>);</span><br><span class="line">    _slider<span class="variable">.value</span> = volume;</span><br><span class="line">    <span class="keyword">return</span> _slider<span class="variable">.value</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure></p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Unity/">Unity</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+<div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">
+<a class="bds_qzone"></a>
+<a class="bds_tsina"></a>
+<a class="bds_tqq"></a>
+<a class="bds_renren"></a>
+<a class="bds_t163"></a>
+<span class="bds_more"></span>
+<a class="shareCount"></a>
+</div>
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=3326447" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/12/10/Unity中自定义VR事件输入模块/"  title="Unity中自定义VR事件输入模块">
+ <strong>NEXT:</strong><br/> 
+ <span>Unity中自定义VR事件输入模块
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	
+	<div class="ds-thread" data-title="Unity插件编写" data-thread-key="Unity插件编写" data-author-key="Peng Jun" data-url="/post/Unity插件编写"></div>
+	
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#工程结构"><span class="toc-number">1.</span> <span class="toc-text">工程结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基础类定义"><span class="toc-number">2.</span> <span class="toc-text">基础类定义</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android"><span class="toc-number">2.1.</span> <span class="toc-text">Android</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOS"><span class="toc-number">2.2.</span> <span class="toc-text">IOS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#插件调用模块"><span class="toc-number">3.</span> <span class="toc-text">插件调用模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#插件要实现的接口"><span class="toc-number">3.1.</span> <span class="toc-text">插件要实现的接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对Unity其他模块的接口"><span class="toc-number">3.2.</span> <span class="toc-text">对Unity其他模块的接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-1"><span class="toc-number">3.3.</span> <span class="toc-text">Android</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOS-1"><span class="toc-number">3.4.</span> <span class="toc-text">IOS</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#插件实现"><span class="toc-number">4.</span> <span class="toc-text">插件实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-2"><span class="toc-number">4.1.</span> <span class="toc-text">Android</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基础类"><span class="toc-number">4.1.1.</span> <span class="toc-text">基础类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现"><span class="toc-number">4.1.2.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOS-2"><span class="toc-number">4.2.</span> <span class="toc-text">IOS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义接口"><span class="toc-number">4.2.1.</span> <span class="toc-text">定义接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实现-1"><span class="toc-number">4.2.2.</span> <span class="toc-text">具体实现</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>
+	
+	<div class="social-list" class="clearfix">
+		
+		<a href="http://weibo.com/2178110505" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/peter517" target="_blank" title="github"></a>
+		
+		
+		
+		<a href="http://blog.csdn.net/peter517" target="_blank" title="csdn">CSDN博客</a>
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Ubuntu/" title="Ubuntu">Ubuntu<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Unity/" title="Unity">Unity<sup>3</sup></a></li>
+		
+			<li><a href="/tags/VR/" title="VR">VR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Windows/" title="Windows">Windows<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">近期文章</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2016/12/10/Unity插件编写/">Unity插件编写</a>
+      </li>
+    
+      <li>
+        <a href="/2016/12/10/Unity中自定义VR事件输入模块/">Unity中自定义VR事件输入模块</a>
+      </li>
+    
+      <li>
+        <a href="/2016/11/28/Qt中Windows端应用工程搭建/">Qt中Windows端应用工程搭建</a>
+      </li>
+    
+      <li>
+        <a href="/2016/11/28/Qt中PC端应用工程搭建/">Qt中PC端应用工程搭建</a>
+      </li>
+    
+      <li>
+        <a href="/2016/11/26/Qt中Mac端应用工程搭建/">Qt中Mac端应用工程搭建</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2016 
+		
+		<a href="" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+
+
+<a href="https://github.com/peter517"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
