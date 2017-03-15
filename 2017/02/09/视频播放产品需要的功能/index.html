@@ -7,12 +7,12 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>Android中基于dp的UI布局适配 | Pengjun&#39;s Blog</title>
+    <title>视频播放产品需要的功能 | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" itemprop="description" content="用dp来做Android适配">
+    <meta name="description" itemprop="description" content="一个商业化的播放器的基本要素">
     
     
     
@@ -73,15 +73,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/06/Android中基于dp的UI布局适配/" title="Android中基于dp的UI布局适配" itemprop="url">Android中基于dp的UI布局适配</a>
+      <a href="/2017/02/09/视频播放产品需要的功能/" title="视频播放产品需要的功能" itemprop="url">视频播放产品需要的功能</a>
   </h1>
   <p class="article-author">By
     
       <a href="" title="Peng Jun">Peng Jun</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-06T01:01:06.000Z" itemprop="datePublished">2015-08-06</time>
-    更新日期:<time datetime="2015-11-06T08:38:04.000Z" itemprop="dateModified">2015-11-06</time>
+    <time datetime="2017-02-09T06:53:26.000Z" itemprop="datePublished">2017-02-09</time>
+    更新日期:<time datetime="2017-03-15T03:56:20.000Z" itemprop="dateModified">2017-03-15</time>
     
   </p>
 </header>
@@ -90,35 +90,59 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本播放功能"><span class="toc-number">1.</span> <span class="toc-text">基本播放功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本操作"><span class="toc-number">1.1.</span> <span class="toc-text">基本操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#信息提示"><span class="toc-number">1.2.</span> <span class="toc-text">信息提示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误提示"><span class="toc-number">1.3.</span> <span class="toc-text">错误提示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#支持格式"><span class="toc-number">1.4.</span> <span class="toc-text">支持格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#播放能力"><span class="toc-number">1.5.</span> <span class="toc-text">播放能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#流媒体协议"><span class="toc-number">1.6.</span> <span class="toc-text">流媒体协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#非基本播放功能"><span class="toc-number">2.</span> <span class="toc-text">非基本播放功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#无缝切流"><span class="toc-number">2.1.</span> <span class="toc-text">无缝切流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#seekBar中的截图"><span class="toc-number">2.2.</span> <span class="toc-text">seekBar中的截图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#loading信息"><span class="toc-number">2.3.</span> <span class="toc-text">loading信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#播放配置功能"><span class="toc-number">2.4.</span> <span class="toc-text">播放配置功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#降级功能"><span class="toc-number">2.5.</span> <span class="toc-text">降级功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓存功能"><span class="toc-number">2.6.</span> <span class="toc-text">缓存功能</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#性能要求"><span class="toc-number">3.</span> <span class="toc-text">性能要求</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#稳定性"><span class="toc-number">3.1.</span> <span class="toc-text">稳定性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#资源消耗"><span class="toc-number">3.2.</span> <span class="toc-text">资源消耗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速响应"><span class="toc-number">3.3.</span> <span class="toc-text">快速响应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点要求"><span class="toc-number">3.4.</span> <span class="toc-text">埋点要求</span></a></li></ol></li></ol>
 		</div>
 		
-		<h1 id="分辨率布局的局限">分辨率布局的局限</h1><p>Android设备分辨率千奇百怪，基于pixcel的布局无法在不同的分辨率有一致的显示效果，如下图所示，要让一个button在320*240和640*480的两种分辨率下有一致的布局，设置相同的pixcel行不通。</p>
-<p><img src="/img/android_ui_adaptor_01.png" alt="android_ui_adaptor_01"></p>
-<p>为减少开发人员的适配工作量，Android引入了dp的概念，在xml布局文件中可以直接设置单位为dp的值，要了解dp，先要了解下面几个概念。</p>
-<h1 id="dip和desity">dip和desity</h1><h2 id="dip">dip</h2><p><strong>dip</strong>：每英寸像素数，这个概念和Android设备分辨率一样，和连接Android设备的显示器尺寸是没有关系的（很多博客上面用手机的尺寸和分辨率来计算dip是不对的，本末倒置了），只表明android设备的显示输出能力，如果一个Android设备分辨率为640*480，每英寸像素数为320，那么连接这个android设备的显示器最佳尺寸为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">320</span>) * (<span class="number">480</span>/<span class="number">320</span>) ＝ <span class="number">2</span>英寸 * <span class="number">1.5</span>英寸</span><br></pre></td></tr></table></figure></p>
-<p>目前Android设备上dip的主要值是120 dpi、160 dpi、240 dpi、320 dpi 如果显示器尺寸大于或小于这个尺寸，显示器模块负责缩放。</p>
-<h2 id="desity">desity</h2><p><strong>desity</strong>：像素显示密度，基于dip的一个衍生概念，是dip归一化的值，计算方法为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">desity ＝ dip / <span class="number">160</span></span><br></pre></td></tr></table></figure></p>
-<p>目前Android设备上desity主要值为0.75、1、1.5、2、3，Android中可以用代码来获取：<br><figure class="highlight ocaml"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> density = getContext<span class="literal">()</span>.getResources<span class="literal">()</span>.getDisplayMetrics<span class="literal">()</span>.density;</span><br></pre></td></tr></table></figure></p>
-<h1 id="dp表示缓解适配压力">dp表示缓解适配压力</h1><p>dp的计算就是基于分辨率和desity的，如果一个Android设备分辨率为640*480，desity为1.5，那么屏幕的dp为:<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">640</span>/<span class="number">1.5</span>) * (<span class="number">480</span>/<span class="number">1.5</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
-<p>代码中可以根据分辨率和desity来计算dp<br>屏幕可以用分辨率划分，引入dp的概念后，可以用dp来划分屏幕大小，如果屏幕大小为如果两个设备之间分辨率不一样，只要分辨率和desity的比例是一样的，就可以，比如之前的320*240的手机设备，如果它的desity为1，那么它屏幕的dp为：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(<span class="number">320</span>/<span class="number">1</span>) * (<span class="number">240</span>/<span class="number">1</span>) = <span class="number">320</span>dp * <span class="number">240</span>dp</span><br></pre></td></tr></table></figure></p>
-<p>这样两个Android设备对屏幕都有同样的表达方式：320dp * 240dp，基于dp的布局就可以这样：<br><img src="/img/android_ui_adaptor_02.png" alt="android_ui_adaptor_02"></p>
-<h1 id="没有完美解决方案">没有完美解决方案</h1><h2 id="dp也做不到的事情">dp也做不到的事情</h2><p>不同设备之间只有用拥有统一的dp大小才能共享同一个布局方案，如果dp不一样的情况，那么就需要针对不同的dp进行处理了，android下面有一个values目录，里面通过dimens.xml来设置布局的dp<br><figure class="highlight perl"><table><tr><td class="code"><pre><span class="line"><span class="keyword">values</span>-w540dp-hdpi</span><br></pre></td></tr></table></figure></p>
-<p>格式如上所示w540dp代表宽度为540dp,hdpi代表density为1，针对不同的dp，需要新建对应的目录，App会在运行时根据设备情况加载对应的目录里面的dp值</p>
-<h2 id="建议">建议</h2><ul>
-<li>如果可以不用数字来布局的尽量不要用，可以用百分比来代替：<a href="https://github.com/JulienGenoud/android-percent-support-lib-sample" target="_blank" rel="external">开源库</a></li>
-<li>不同的手机里面dp之间差距不大，布局之间的差异不明显，但是现在的智能电视和手机之间dp差距大，需要做好适配</li>
+		<p>商业化的播放器除了提供Android系统播放器支持的功能外，还有广告播放，seekBar中的截图、播放能力配置等功能</p>
+<h1 id="基本播放功能">基本播放功能</h1><p>基本功能是Android播放器可以提供</p>
+<h2 id="基本操作">基本操作</h2><p>开始、暂停、拖动</p>
+<h2 id="信息提示">信息提示</h2><p>开始播放、结束播放、Buffer进度、播放位置、拖动完成</p>
+<h2 id="错误提示">错误提示</h2><p>播放失败</p>
+<h2 id="支持格式">支持格式</h2><ul>
+<li>音频：mp3 wma wav ogg flac ape alac aac</li>
+<li>视频：3gp asf avi dat flv m2ts mkv mov mp4 mpeg mpg rm rmvb ts vob wmv m4v mpe mts tp</li>
+<li>字幕：srt ssa ass sub</li>
+<li>编解码：h264/h265</li>
 </ul>
-<h1 id="参考资料">参考资料</h1><ul>
-<li><a href="http://developer.android.com/guide/practices/screens_support.html" target="_blank" rel="external">http://developer.android.com/guide/practices/screens_support.html</a></li>
+<h2 id="播放能力">播放能力</h2><ul>
+<li>最大清晰度：4K</li>
+<li>最高帧率：60fps</li>
+<li>多音轨切换：DTS Dolby</li>
 </ul>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+<h2 id="流媒体协议">流媒体协议</h2><ul>
+<li>HLS</li>
+<li>RTMP</li>
+</ul>
+<h1 id="非基本播放功能">非基本播放功能</h1><p>特色功能需要自己开发基于FFmpeg的播放器</p>
+<h2 id="无缝切流">无缝切流</h2><p>前置广告和中插广告需要和正片直接进行切流动作，切流前能预加载下一个流，保证平滑切换</p>
+<h2 id="seekBar中的截图">seekBar中的截图</h2><h2 id="loading信息">loading信息</h2><ul>
+<li>下载速度</li>
+<li>下载进度</li>
+</ul>
+<h2 id="播放配置功能">播放配置功能</h2><p>不同的机器播放能力不同，有的可以播放1080p，有的可以播放h265，这些需要一个本地默认配置和在线配置中心来处理这个问题</p>
+<h2 id="降级功能">降级功能</h2><p>一些机型上面自主播放器效果不好，需要使用系统播放器</p>
+<h2 id="缓存功能">缓存功能</h2><p>能够根据业务需要缓存之前播放的数据</p>
+<h1 id="性能要求">性能要求</h1><h2 id="稳定性">稳定性</h2><ul>
+<li>Money时长</li>
+<li>长时间播放</li>
+</ul>
+<h2 id="资源消耗">资源消耗</h2><ul>
+<li>CPU</li>
+<li>内存</li>
+</ul>
+<h2 id="快速响应">快速响应</h2><ul>
+<li>起播速度</li>
+<li>seek播放速度</li>
+<li>切换清晰度速度</li>
+</ul>
+<h2 id="埋点要求">埋点要求</h2><font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Android/">Android</a>
+  <span></span> <a href="/tags/MediaPlayer/">MediaPlayer</a>
   </div>
 
 
@@ -149,18 +173,18 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/08/10/Git个人配置/" title="Git个人配置">
+ <a href="/2017/03/15/视频播放产品埋点思路/" title="视频播放产品埋点思路">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  Git个人配置</span>
+  视频播放产品埋点思路</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/08/04/MapReduce编程思考/"  title="MapReduce编程思考">
+<a href="/2016/12/10/Unity插件编写/"  title="Unity插件编写">
  <strong>NEXT:</strong><br/> 
- <span>MapReduce编程思考
+ <span>Unity插件编写
 </span>
 </a>
 </div>
@@ -170,7 +194,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="Android中基于dp的UI布局适配" data-thread-key="Android中基于dp的UI布局适配" data-author-key="Peng Jun" data-url="/post/Android中基于dp的UI布局适配"></div>
+	<div class="ds-thread" data-title="视频播放产品需要的功能" data-thread-key="视频播放产品需要的功能" data-author-key="Peng Jun" data-url="/post/视频播放产品需要的功能"></div>
 	
 </section>
 
@@ -180,7 +204,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#分辨率布局的局限"><span class="toc-number">1.</span> <span class="toc-text">分辨率布局的局限</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dip和desity"><span class="toc-number">2.</span> <span class="toc-text">dip和desity</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dip"><span class="toc-number">2.1.</span> <span class="toc-text">dip</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#desity"><span class="toc-number">2.2.</span> <span class="toc-text">desity</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dp表示缓解适配压力"><span class="toc-number">3.</span> <span class="toc-text">dp表示缓解适配压力</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#没有完美解决方案"><span class="toc-number">4.</span> <span class="toc-text">没有完美解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dp也做不到的事情"><span class="toc-number">4.1.</span> <span class="toc-text">dp也做不到的事情</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建议"><span class="toc-number">4.2.</span> <span class="toc-text">建议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考资料"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基本播放功能"><span class="toc-number">1.</span> <span class="toc-text">基本播放功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本操作"><span class="toc-number">1.1.</span> <span class="toc-text">基本操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#信息提示"><span class="toc-number">1.2.</span> <span class="toc-text">信息提示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误提示"><span class="toc-number">1.3.</span> <span class="toc-text">错误提示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#支持格式"><span class="toc-number">1.4.</span> <span class="toc-text">支持格式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#播放能力"><span class="toc-number">1.5.</span> <span class="toc-text">播放能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#流媒体协议"><span class="toc-number">1.6.</span> <span class="toc-text">流媒体协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#非基本播放功能"><span class="toc-number">2.</span> <span class="toc-text">非基本播放功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#无缝切流"><span class="toc-number">2.1.</span> <span class="toc-text">无缝切流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#seekBar中的截图"><span class="toc-number">2.2.</span> <span class="toc-text">seekBar中的截图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#loading信息"><span class="toc-number">2.3.</span> <span class="toc-text">loading信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#播放配置功能"><span class="toc-number">2.4.</span> <span class="toc-text">播放配置功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#降级功能"><span class="toc-number">2.5.</span> <span class="toc-text">降级功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#缓存功能"><span class="toc-number">2.6.</span> <span class="toc-text">缓存功能</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#性能要求"><span class="toc-number">3.</span> <span class="toc-text">性能要求</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#稳定性"><span class="toc-number">3.1.</span> <span class="toc-text">稳定性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#资源消耗"><span class="toc-number">3.2.</span> <span class="toc-text">资源消耗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速响应"><span class="toc-number">3.3.</span> <span class="toc-text">快速响应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点要求"><span class="toc-number">3.4.</span> <span class="toc-text">埋点要求</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
