@@ -7,12 +7,16 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>视频播放产品埋点思路 | Pengjun&#39;s Blog</title>
+    <title>Java中SDK的基本模块和框架 | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" itemprop="description" content="视频产如何埋好点">
+    <meta name="description" content="基础模块基础模块是其他SDK模块使用的模块，一般包含下面部分
+常量主要包含版本信息和是否是Debug
+工具类根据业务场景，各个模块的公有工具类
+日志依赖工具类模块支持error，warning，info，debug几个级别的控制，可以通过系统prop来设置
+模块元信息可以表达模块id和模块信息、格式">
     
     
     
@@ -73,15 +77,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2017/03/15/视频播放产品埋点思路/" title="视频播放产品埋点思路" itemprop="url">视频播放产品埋点思路</a>
+      <a href="/2017/03/20/Java中SDK的基本模块和框架/" title="Java中SDK的基本模块和框架" itemprop="url">Java中SDK的基本模块和框架</a>
   </h1>
   <p class="article-author">By
     
       <a href="" title="Peng Jun">Peng Jun</a>
     </p>
   <p class="article-time">
-    <time datetime="2017-03-15T02:18:14.000Z" itemprop="datePublished">2017-03-15</time>
-    更新日期:<time datetime="2017-03-17T02:22:40.000Z" itemprop="dateModified">2017-03-17</time>
+    <time datetime="2017-03-20T09:31:39.000Z" itemprop="datePublished">2017-03-20</time>
+    更新日期:<time datetime="2017-03-20T09:56:17.000Z" itemprop="dateModified">2017-03-20</time>
     
   </p>
 </header>
@@ -90,53 +94,17 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#需要埋点的实体"><span class="toc-number">1.</span> <span class="toc-text">需要埋点的实体</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#埋点维度"><span class="toc-number">2.</span> <span class="toc-text">埋点维度</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本信息"><span class="toc-number">2.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#状态信息"><span class="toc-number">2.2.</span> <span class="toc-text">状态信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#行为信息"><span class="toc-number">2.3.</span> <span class="toc-text">行为信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能"><span class="toc-number">2.4.</span> <span class="toc-text">性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误"><span class="toc-number">2.5.</span> <span class="toc-text">错误</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#埋点事件"><span class="toc-number">3.</span> <span class="toc-text">埋点事件</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础模块"><span class="toc-number">1.</span> <span class="toc-text">基础模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常量"><span class="toc-number">1.1.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具类"><span class="toc-number">1.2.</span> <span class="toc-text">工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日志"><span class="toc-number">1.3.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块元信息"><span class="toc-number">1.4.</span> <span class="toc-text">模块元信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点"><span class="toc-number">1.5.</span> <span class="toc-text">埋点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常"><span class="toc-number">1.6.</span> <span class="toc-text">异常</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码架构"><span class="toc-number">2.</span> <span class="toc-text">代码架构</span></a></li></ol>
 		</div>
 		
-		<h1 id="需要埋点的实体">需要埋点的实体</h1><ul>
-<li>播放器SDK</li>
-<li>播放App</li>
-<li>媒资</li>
-<li>用户</li>
-<li>网络</li>
-<li>操作系统</li>
-<li>设备</li>
-</ul>
-<h1 id="埋点维度">埋点维度</h1><h2 id="基本信息">基本信息</h2><p>基本信息就是在起播前可以确定的信息</p>
-<ul>
-<li>播放器SDK：播放器版本</li>
-<li>播放App：App版本、App名称、客户端类型</li>
-<li>用户：用户账号</li>
-<li>网络：有线、无线</li>
-<li>操作系统：系统版本</li>
-<li>设备：设备名称、uuid，设备类型</li>
-</ul>
-<h2 id="状态信息">状态信息</h2><p>状态信息表示播放后各模块的信息</p>
-<ul>
-<li>播放器SDK：播放器类型（是否是系统播放）、硬解软解、帧率、码率</li>
-<li>播放App：App播放的页面、播放业务线，播放类型（直播、点播、轮播）</li>
-<li>媒资：媒资来源、媒资视频信息（分辨率、编码方式、封装格式、是否收费、是否试看，ip）</li>
-<li>用户：会员、非会员</li>
-<li>网络：本地网络状况</li>
-</ul>
-<h2 id="行为信息">行为信息</h2><p>行为信息表示一连串动作的信息</p>
-<ul>
-<li>播放器SDK：是否有切换播放类型</li>
-<li>播放App：是否播放广告、从哪个页面跳转播放、最终播放位置、播放暂停次数</li>
-<li>用户：浏览历史</li>
-</ul>
-<h2 id="性能">性能</h2><ul>
-<li>播放器SDK：下载速度、起播时间、切流时间、卡顿率、卡顿之前的一个http请求</li>
-<li>操作系统：内存占用、CPU信息</li>
-</ul>
-<h2 id="错误">错误</h2><p>错误码要做到模块化，每个模块有自己的模块前缀id</p>
-<ul>
-<li>播放器SDK：播放错误</li>
-<li>播放App：调用逻辑错误</li>
-<li>媒资：请求媒资错误</li>
-<li>用户：会员信息错误</li>
-</ul>
-<h1 id="埋点事件">埋点事件</h1><p>每个事件都有上下文，埋点时需带上<br>异常、OnError、正片播放开始、正片播放结束、广告播放开始、广告播放结束</p>
+		<h1 id="基础模块">基础模块</h1><p>基础模块是其他SDK模块使用的模块，一般包含下面部分</p>
+<h2 id="常量">常量</h2><p>主要包含版本信息和是否是Debug</p>
+<h2 id="工具类">工具类</h2><p>根据业务场景，各个模块的公有工具类</p>
+<h2 id="日志">日志</h2><p>依赖工具类模块<br>支持error，warning，info，debug几个级别的控制，可以通过系统prop来设置</p>
+<h2 id="模块元信息">模块元信息</h2><p>可以表达模块id和模块信息、格式化错误码</p>
+<h2 id="埋点">埋点</h2><p>依赖模块元信息模块<br>支持和app同一个key和不同key的埋点、利用不同的context来完成各个层次的埋点、支持传入模块信息埋点</p>
+<h2 id="异常">异常</h2><p>依赖源信息模块和埋点模块<br>提供异常的基础实现，包含异常信息、包含错误码接口、异常层次传递时错误码选择机制、上传异常埋点</p>
+<h1 id="代码架构">代码架构</h1><p>一般最外围是一个接口类型和工厂类，接口类实现可模块的接口，同层次impl包下面包含具体实现，model基础数据包，然后就是基础模块，基础模块内部结构一般接口、impl包、model包</p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
   
 	</div>
@@ -144,7 +112,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/MediaPlayer/">MediaPlayer</a>
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/SDK/">SDK</a>
   </div>
 
 
@@ -174,19 +142,11 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2017/03/20/Java中SDK的基本模块和框架/" title="Java中SDK的基本模块和框架">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Java中SDK的基本模块和框架</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2017/02/09/视频播放产品需要的功能/"  title="视频播放产品需要的功能">
+<a href="/2017/03/15/视频播放产品埋点思路/"  title="视频播放产品埋点思路">
  <strong>NEXT:</strong><br/> 
- <span>视频播放产品需要的功能
+ <span>视频播放产品埋点思路
 </span>
 </a>
 </div>
@@ -196,7 +156,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="视频播放产品埋点思路" data-thread-key="视频播放产品埋点思路" data-author-key="Peng Jun" data-url="/post/视频播放产品埋点思路"></div>
+	<div class="ds-thread" data-title="Java中SDK的基本模块和框架" data-thread-key="Java中SDK的基本模块和框架" data-author-key="Peng Jun" data-url="/post/Java中SDK的基本模块和框架"></div>
 	
 </section>
 
@@ -206,7 +166,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#需要埋点的实体"><span class="toc-number">1.</span> <span class="toc-text">需要埋点的实体</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#埋点维度"><span class="toc-number">2.</span> <span class="toc-text">埋点维度</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本信息"><span class="toc-number">2.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#状态信息"><span class="toc-number">2.2.</span> <span class="toc-text">状态信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#行为信息"><span class="toc-number">2.3.</span> <span class="toc-text">行为信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能"><span class="toc-number">2.4.</span> <span class="toc-text">性能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#错误"><span class="toc-number">2.5.</span> <span class="toc-text">错误</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#埋点事件"><span class="toc-number">3.</span> <span class="toc-text">埋点事件</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础模块"><span class="toc-number">1.</span> <span class="toc-text">基础模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常量"><span class="toc-number">1.1.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具类"><span class="toc-number">1.2.</span> <span class="toc-text">工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日志"><span class="toc-number">1.3.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块元信息"><span class="toc-number">1.4.</span> <span class="toc-text">模块元信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点"><span class="toc-number">1.5.</span> <span class="toc-text">埋点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常"><span class="toc-number">1.6.</span> <span class="toc-text">异常</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码架构"><span class="toc-number">2.</span> <span class="toc-text">代码架构</span></a></li></ol>
   </div>
 
 <div id="asidepart">
