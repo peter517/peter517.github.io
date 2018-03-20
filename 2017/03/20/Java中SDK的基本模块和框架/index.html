@@ -12,11 +12,7 @@
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" content="基础模块基础模块是其他SDK模块使用的模块，一般包含下面部分
-常量主要包含版本信息和是否是Debug
-工具类根据业务场景，各个模块的公有工具类
-日志依赖工具类模块支持error，warning，info，debug几个级别的控制，可以通过系统prop来设置
-模块元信息可以表达模块id和模块信息、格式">
+    <meta name="description" itemprop="description" content="如何设计一个好的JavaSDK框架">
     
     
     
@@ -85,7 +81,7 @@
     </p>
   <p class="article-time">
     <time datetime="2017-03-20T09:31:39.000Z" itemprop="datePublished">2017-03-20</time>
-    更新日期:<time datetime="2017-03-20T09:56:17.000Z" itemprop="dateModified">2017-03-20</time>
+    更新日期:<time datetime="2017-05-08T02:52:36.000Z" itemprop="dateModified">2017-05-08</time>
     
   </p>
 </header>
@@ -94,17 +90,21 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础模块"><span class="toc-number">1.</span> <span class="toc-text">基础模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常量"><span class="toc-number">1.1.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具类"><span class="toc-number">1.2.</span> <span class="toc-text">工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日志"><span class="toc-number">1.3.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块元信息"><span class="toc-number">1.4.</span> <span class="toc-text">模块元信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点"><span class="toc-number">1.5.</span> <span class="toc-text">埋点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常"><span class="toc-number">1.6.</span> <span class="toc-text">异常</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码架构"><span class="toc-number">2.</span> <span class="toc-text">代码架构</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础模块"><span class="toc-number">1.</span> <span class="toc-text">基础模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常量"><span class="toc-number">1.1.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具类"><span class="toc-number">1.2.</span> <span class="toc-text">工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日志"><span class="toc-number">1.3.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块元信息"><span class="toc-number">1.4.</span> <span class="toc-text">模块元信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点"><span class="toc-number">1.5.</span> <span class="toc-text">埋点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常"><span class="toc-number">1.6.</span> <span class="toc-text">异常</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">1.7.</span> <span class="toc-text">配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码架构"><span class="toc-number">2.</span> <span class="toc-text">代码架构</span></a></li></ol>
 		</div>
 		
 		<h1 id="基础模块">基础模块</h1><p>基础模块是其他SDK模块使用的模块，一般包含下面部分</p>
 <h2 id="常量">常量</h2><p>主要包含版本信息和是否是Debug</p>
 <h2 id="工具类">工具类</h2><p>根据业务场景，各个模块的公有工具类</p>
 <h2 id="日志">日志</h2><p>依赖工具类模块<br>支持error，warning，info，debug几个级别的控制，可以通过系统prop来设置</p>
-<h2 id="模块元信息">模块元信息</h2><p>可以表达模块id和模块信息、格式化错误码</p>
-<h2 id="埋点">埋点</h2><p>依赖模块元信息模块<br>支持和app同一个key和不同key的埋点、利用不同的context来完成各个层次的埋点、支持传入模块信息埋点</p>
+<h2 id="模块元信息">模块元信息</h2><p>可以表达模块id和模块名称信息、根据模块id来格式化错误码</p>
+<h2 id="埋点">埋点</h2><p>依赖模块元信息模块<br>利用不同的context来完成各个层次的埋点、传入模块id埋点</p>
 <h2 id="异常">异常</h2><p>依赖源信息模块和埋点模块<br>提供异常的基础实现，包含异常信息、包含错误码接口、异常层次传递时错误码选择机制、上传异常埋点</p>
-<h1 id="代码架构">代码架构</h1><p>一般最外围是一个接口类型和工厂类，接口类实现可模块的接口，同层次impl包下面包含具体实现，model基础数据包，然后就是基础模块，基础模块内部结构一般接口、impl包、model包</p>
+<blockquote>
+<p>异常对于native的errorCode需要透传到app层，如果有多层异常，也要可以透传</p>
+</blockquote>
+<h2 id="配置">配置</h2><p>通过配置文件，或者设置系统属性来控制程序行为</p>
+<h1 id="代码架构">代码架构</h1><p>一般最外围是一个接口类型和工厂类，接口类实现可模块的接口，同层次impl包下面包含具体实现，model基础数据类型，然后就是依赖的模块，依赖的模块内部结构一般接口、impl包、model包</p>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
   
 	</div>
@@ -142,6 +142,14 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2017/04/25/JStorm拓扑调优/" title="JStorm拓扑调优">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  JStorm拓扑调优</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2017/03/15/视频播放产品埋点思路/"  title="视频播放产品埋点思路">
@@ -166,7 +174,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础模块"><span class="toc-number">1.</span> <span class="toc-text">基础模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常量"><span class="toc-number">1.1.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具类"><span class="toc-number">1.2.</span> <span class="toc-text">工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日志"><span class="toc-number">1.3.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块元信息"><span class="toc-number">1.4.</span> <span class="toc-text">模块元信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点"><span class="toc-number">1.5.</span> <span class="toc-text">埋点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常"><span class="toc-number">1.6.</span> <span class="toc-text">异常</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码架构"><span class="toc-number">2.</span> <span class="toc-text">代码架构</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#基础模块"><span class="toc-number">1.</span> <span class="toc-text">基础模块</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#常量"><span class="toc-number">1.1.</span> <span class="toc-text">常量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具类"><span class="toc-number">1.2.</span> <span class="toc-text">工具类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#日志"><span class="toc-number">1.3.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块元信息"><span class="toc-number">1.4.</span> <span class="toc-text">模块元信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#埋点"><span class="toc-number">1.5.</span> <span class="toc-text">埋点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常"><span class="toc-number">1.6.</span> <span class="toc-text">异常</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">1.7.</span> <span class="toc-text">配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码架构"><span class="toc-number">2.</span> <span class="toc-text">代码架构</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -209,7 +217,9 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Java/" title="Java">Java<sup>2</sup></a></li>
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>4</sup></a></li>
 		
 			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
 		
@@ -227,13 +237,13 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
 		
+			<li><a href="/tags/Thread/" title="Thread">Thread<sup>1</sup></a></li>
+		
 			<li><a href="/tags/Ubuntu/" title="Ubuntu">Ubuntu<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Unity/" title="Unity">Unity<sup>3</sup></a></li>
 		
 			<li><a href="/tags/VR/" title="VR">VR<sup>1</sup></a></li>
-		
-			<li><a href="/tags/Windows/" title="Windows">Windows<sup>2</sup></a></li>
 		
 		</ul>
 </div>
@@ -243,6 +253,14 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 <div class="categorieslist">
 <p class="asidetitle">近期文章</p>
   <ul class="entry">
+    
+      <li>
+        <a href="/2017/05/08/Java中多线程基本概念/">Java中多线程基本概念</a>
+      </li>
+    
+      <li>
+        <a href="/2017/04/25/JStorm拓扑调优/">JStorm拓扑调优</a>
+      </li>
     
       <li>
         <a href="/2017/03/20/Java中SDK的基本模块和框架/">Java中SDK的基本模块和框架</a>
@@ -256,14 +274,6 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
         <a href="/2017/02/09/视频播放产品需要的功能/">视频播放产品需要的功能</a>
       </li>
     
-      <li>
-        <a href="/2016/12/10/Unity插件编写/">Unity插件编写</a>
-      </li>
-    
-      <li>
-        <a href="/2016/12/10/Unity中自定义VR事件输入模块/">Unity中自定义VR事件输入模块</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -274,7 +284,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
     </div>
     <footer><div id="footer" >
     
-            <p class="copyright"> © 2017 
+            <p class="copyright"> © 2018 
 		
 		<a href="" target="_blank" title="Peng Jun">Peng Jun</a>
 		

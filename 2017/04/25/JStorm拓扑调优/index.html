@@ -7,12 +7,12 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>MapReduce编程思考 | Pengjun&#39;s Blog</title>
+    <title>JStorm拓扑调优 | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" itemprop="description" content="百度实习时候MapReduce编程感悟">
+    <meta name="description" itemprop="description" content="如何确定spout和bolt的个数及上下游关系">
     
     
     
@@ -73,15 +73,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/08/04/MapReduce编程思考/" title="MapReduce编程思考" itemprop="url">MapReduce编程思考</a>
+      <a href="/2017/04/25/JStorm拓扑调优/" title="JStorm拓扑调优" itemprop="url">JStorm拓扑调优</a>
   </h1>
   <p class="article-author">By
     
       <a href="" title="Peng Jun">Peng Jun</a>
     </p>
   <p class="article-time">
-    <time datetime="2015-08-04T14:44:40.000Z" itemprop="datePublished">2015-08-04</time>
-    更新日期:<time datetime="2015-10-21T07:16:37.000Z" itemprop="dateModified">2015-10-21</time>
+    <time datetime="2017-04-25T07:06:04.000Z" itemprop="datePublished">2017-04-25</time>
+    更新日期:<time datetime="2017-05-08T03:00:14.000Z" itemprop="dateModified">2017-05-08</time>
     
   </p>
 </header>
@@ -90,29 +90,27 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#实现方式"><span class="toc-number">1.</span> <span class="toc-text">实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#jar包"><span class="toc-number">1.1.</span> <span class="toc-text">jar包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hadoop流"><span class="toc-number">1.2.</span> <span class="toc-text">hadoop流</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编程思维"><span class="toc-number">2.</span> <span class="toc-text">编程思维</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#top100问题"><span class="toc-number">2.1.</span> <span class="toc-text">top100问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">2.1.1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#细节"><span class="toc-number">2.1.2.</span> <span class="toc-text">细节</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#带权random问题（取出个数不定）"><span class="toc-number">2.2.</span> <span class="toc-text">带权random问题（取出个数不定）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#去重"><span class="toc-number">2.3.</span> <span class="toc-text">去重</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路-2"><span class="toc-number">2.3.1.</span> <span class="toc-text">思路</span></a></li></ol></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#评估spout和bolt的个数"><span class="toc-number">1.</span> <span class="toc-text">评估spout和bolt的个数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#日志增速"><span class="toc-number">1.1.</span> <span class="toc-text">日志增速</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout读取能力"><span class="toc-number">1.2.</span> <span class="toc-text">spout读取能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout发送数据条数"><span class="toc-number">1.3.</span> <span class="toc-text">spout发送数据条数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt处理能力"><span class="toc-number">1.4.</span> <span class="toc-text">bolt处理能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt发送数据量"><span class="toc-number">1.5.</span> <span class="toc-text">bolt发送数据量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#优化spout和bolt吞吐量"><span class="toc-number">2.</span> <span class="toc-text">优化spout和bolt吞吐量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#上下游关系"><span class="toc-number">3.</span> <span class="toc-text">上下游关系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metrics数据监控"><span class="toc-number">4.</span> <span class="toc-text">Metrics数据监控</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#窗口聚合"><span class="toc-number">5.</span> <span class="toc-text">窗口聚合</span></a></li></ol>
 		</div>
 		
-		<p>在MapReduce框架下编写程序，最重要的是理解从map到reducer数据是如何组织的，核心的就是map到reducer的shuffle过程：</p>
-<blockquote>
-<p>每个reducer接到的数据都是按key值排序后的，并且key值相同的记录会被分配到同一个reducer里面</p>
-</blockquote>
-<p>这一过程是框架自动完成，许多实例需要用到这一特性</p>
-<h1 id="实现方式">实现方式</h1><h2 id="jar包">jar包</h2><p>在框架下利用java可以进行map和reducer端的编写，然后使用一个main类来进行运行，这里reducer只有一个，所有记录都排好序，信息集中，方便处理，会使得reducer数据很大，处理时间慢</p>
-<h2 id="hadoop流">hadoop流</h2><p>利用脚本来编写hadoop的map和reducer端，脚本的输出和输入都是来自标准输入和标准输出，这里reducer可以有多个，这里不需要主类配置参数，而是通过命令行配置参数</p>
-<p>由于有多个reducer，每个reducer中的统计的信息分散的，所以对于计算全局信息，最后需要一个computer端（单机）来整合信息</p>
-<h1 id="编程思维">编程思维</h1><p>根据shuffle过程的特性，即所有数据已经排好序，所有的相同key值记录的数据也在同一个reducer里面，这样就可以方便解决很多问题，下面是典型问题</p>
-<h2 id="top100问题">top100问题</h2><h3 id="思路">思路</h3><p>在reducer端算出top100，然后在computer端再计算一次top100（如果只有一个top）</p>
-<h3 id="细节">细节</h3><p>在reducer端计算top100时候，数据量比较大，不能把所有数据都放入内存然后排序，可以只保留100条记录的空间，利用行缓冲进行数据读取，进行堆排序</p>
-<h2 id="带权random问题（取出个数不定）">带权random问题（取出个数不定）</h2><h3 id="思路-1">思路</h3><p>在map端给每条记录分配一个随机数，然后利用shuffle机制对这些随机数排序，这就等同于把原始记录打乱了，在reducer端去取指定个数的记录</p>
-<h2 id="去重">去重</h2><h3 id="思路-2">思路</h3><p>一般的思路是把所有数据放在一个map里面，这样容易爆内存，所以只有在map端按照要去重的元素排好序，然后在reducer端利用行缓冲，记录读取相邻的两个记录，如果相邻的记录不一样，说明读到了一个新记录，然后把这个数据存下来</p>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
+		<p>写JStorm代码业务逻辑比较容易，关键是设计一个好的拓扑关系，能保证数据正常流动又不占用太多机器资源</p>
+<h1 id="评估spout和bolt的个数">评估spout和bolt的个数</h1><h2 id="日志增速">日志增速</h2><p>先查看整个拓扑输入源的日志增速，比如20G/min，特别注意处理高峰时期的日志增速，由于metric是以min为单位，后面的统计统一以min为计算单元</p>
+<h2 id="spout读取能力">spout读取能力</h2><p>计算一个spout读取日志的能力，可以通过metrics来count每分钟读取数据大小，用日志每分钟增量除以spout读取速度，这样就可以计算出总共需要多少个spout，比如一个spout可以读取速度为300M/min,那边20G/min的日志就需要8个spout来处理（多预留一些空间）</p>
+<h2 id="spout发送数据条数">spout发送数据条数</h2><p>spout发送数据量关系到下游的bolt需要多少个，可以通过查看emit的数量来估算，这里一般会比日志数量少，因为业务逻辑会过滤掉部分数据</p>
+<h2 id="bolt处理能力">bolt处理能力</h2><p>bolt处理能力可以通过执行一次bolt的execute函数的耗时来技术，比如0.5ms平均一次execute，这个bolt的处理能力是60 * 1000/0.5 = 120000条/min，如果上流数据是1200000条/min，那么需要15个bolt来处理数据</p>
+<h2 id="bolt发送数据量">bolt发送数据量</h2><p>bolt发送数据量关系到下游的bolt需要多少个，可以通过查看emit的数量来估算，这里一般会比进来的数量少，业务逻辑会过滤掉部分数据</p>
+<h1 id="优化spout和bolt吞吐量">优化spout和bolt吞吐量</h1><p>spout和bolt吞吐量表示处理数据的能力，IO操作对吞吐量影响很大，尽量在IO时进行批量IO</p>
+<h1 id="上下游关系">上下游关系</h1><p>日志处理一般通过shuffle来向下游发送数据，可以把数据平衡发到每个节点</p>
+<h1 id="Metrics数据监控">Metrics数据监控</h1><p>通过Metrics来统计count和time cost很有必要，方便问题定位和后续监控</p>
+<h1 id="窗口聚合">窗口聚合</h1><p>如果需要处理100条日志或者1分钟的日志，需要引入窗口的概念，聚合一个窗口的数据进行处理</p>
+<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/MapReduce/">MapReduce</a>
+  <span></span> <a href="/tags/JStorm/">JStorm</a><a href="/tags/Java/">Java</a>
   </div>
 
 
@@ -143,18 +141,18 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2015/08/06/Android中基于dp的UI布局适配/" title="Android中基于dp的UI布局适配">
+ <a href="/2017/05/08/Java中多线程基本概念/" title="Java中多线程基本概念">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  Android中基于dp的UI布局适配</span>
+  Java中多线程基本概念</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2015/08/04/Shell实用命令/"  title="Shell实用命令">
+<a href="/2017/03/20/Java中SDK的基本模块和框架/"  title="Java中SDK的基本模块和框架">
  <strong>NEXT:</strong><br/> 
- <span>Shell实用命令
+ <span>Java中SDK的基本模块和框架
 </span>
 </a>
 </div>
@@ -164,7 +162,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="MapReduce编程思考" data-thread-key="MapReduce编程思考" data-author-key="Peng Jun" data-url="/post/MapReduce编程思考"></div>
+	<div class="ds-thread" data-title="JStorm拓扑调优" data-thread-key="JStorm拓扑调优" data-author-key="Peng Jun" data-url="/post/JStorm拓扑调优"></div>
 	
 </section>
 
@@ -174,7 +172,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#实现方式"><span class="toc-number">1.</span> <span class="toc-text">实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#jar包"><span class="toc-number">1.1.</span> <span class="toc-text">jar包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hadoop流"><span class="toc-number">1.2.</span> <span class="toc-text">hadoop流</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#编程思维"><span class="toc-number">2.</span> <span class="toc-text">编程思维</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#top100问题"><span class="toc-number">2.1.</span> <span class="toc-text">top100问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路"><span class="toc-number">2.1.1.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#细节"><span class="toc-number">2.1.2.</span> <span class="toc-text">细节</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#带权random问题（取出个数不定）"><span class="toc-number">2.2.</span> <span class="toc-text">带权random问题（取出个数不定）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">思路</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#去重"><span class="toc-number">2.3.</span> <span class="toc-text">去重</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#思路-2"><span class="toc-number">2.3.1.</span> <span class="toc-text">思路</span></a></li></ol></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#评估spout和bolt的个数"><span class="toc-number">1.</span> <span class="toc-text">评估spout和bolt的个数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#日志增速"><span class="toc-number">1.1.</span> <span class="toc-text">日志增速</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout读取能力"><span class="toc-number">1.2.</span> <span class="toc-text">spout读取能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout发送数据条数"><span class="toc-number">1.3.</span> <span class="toc-text">spout发送数据条数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt处理能力"><span class="toc-number">1.4.</span> <span class="toc-text">bolt处理能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt发送数据量"><span class="toc-number">1.5.</span> <span class="toc-text">bolt发送数据量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#优化spout和bolt吞吐量"><span class="toc-number">2.</span> <span class="toc-text">优化spout和bolt吞吐量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#上下游关系"><span class="toc-number">3.</span> <span class="toc-text">上下游关系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metrics数据监控"><span class="toc-number">4.</span> <span class="toc-text">Metrics数据监控</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#窗口聚合"><span class="toc-number">5.</span> <span class="toc-text">窗口聚合</span></a></li></ol>
   </div>
 
 <div id="asidepart">
