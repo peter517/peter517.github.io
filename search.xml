@@ -4,6 +4,12 @@
   
     
     <entry>
+      <title><![CDATA[任务调度系统设计]]></title>
+      <url>/2018/04/26/%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/</url>
+      <content type="html"><![CDATA[<h1 id="使用场景">使用场景</h1><h1 id="需要解决的问题">需要解决的问题</h1><h2 id="负载均衡">负载均衡</h2><h2 id="一个任务跑且只跑一次">一个任务跑且只跑一次</h2><h2 id="任务堆积">任务堆积</h2><h2 id="高的调度吞吐量">高的调度吞吐量</h2><h2 id="调度依赖">调度依赖</h2><h2 id="并行计算">并行计算</h2><h1 id="开源实现">开源实现</h1><h2 id="SchedulerX">SchedulerX</h2><h2 id="Quartz">Quartz</h2><font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[工作中的反思]]></title>
       <url>/2018/04/19/%E5%B7%A5%E4%BD%9C%E5%8F%8D%E6%80%9D/</url>
       <content type="html"><![CDATA[<h1 id="业务理解">业务理解</h1><ul>
@@ -173,14 +179,6 @@
 <li>lock.lockInterruptibly()： 如果发现该操作已经在执行，等待执行。这时可中断正在进行的操作立刻释放锁继续下一操作</li>
 </ul>
 <font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>]]></content>
-    </entry>
-    
-    <entry>
-      <title><![CDATA[Java中多线程基本概念]]></title>
-      <url>/2017/05/08/Java%E4%B8%AD%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</url>
-      <content type="html"><![CDATA[<p>在Java中利用多线程处理问题很简单，new Thread(){}一下就好了，但是要多线程正确高效的执行，生成一个线程安全的类，还是需要清楚一下线程基本概念</p>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
-]]></content>
     </entry>
     
     <entry>

@@ -7,12 +7,12 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>Java中多线程基本概念 | Pengjun&#39;s Blog</title>
+    <title>任务调度系统设计 | Pengjun&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Peng Jun">
     
-    <meta name="description" itemprop="description" content="在处理多线程问题时需要清楚的概念">
+    <meta name="description" itemprop="description" content="如果设计一个任务调度系统">
     
     
     
@@ -73,15 +73,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2017/05/08/Java中多线程基本概念/" title="Java中多线程基本概念" itemprop="url">Java中多线程基本概念</a>
+      <a href="/2018/04/26/任务调度系统设计/" title="任务调度系统设计" itemprop="url">任务调度系统设计</a>
   </h1>
   <p class="article-author">By
     
       <a href="" title="Peng Jun">Peng Jun</a>
     </p>
   <p class="article-time">
-    <time datetime="2017-05-08T03:05:14.000Z" itemprop="datePublished">2017-05-08</time>
-    更新日期:<time datetime="2018-03-20T08:44:25.000Z" itemprop="dateModified">2018-03-20</time>
+    <time datetime="2018-04-26T02:40:58.000Z" itemprop="datePublished">2018-04-26</time>
+    更新日期:<time datetime="2018-04-26T02:53:10.000Z" itemprop="dateModified">2018-04-26</time>
     
   </p>
 </header>
@@ -90,18 +90,16 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#使用场景"><span class="toc-number">1.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#需要解决的问题"><span class="toc-number">2.</span> <span class="toc-text">需要解决的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-number">2.1.</span> <span class="toc-text">负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一个任务跑且只跑一次"><span class="toc-number">2.2.</span> <span class="toc-text">一个任务跑且只跑一次</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务堆积"><span class="toc-number">2.3.</span> <span class="toc-text">任务堆积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高的调度吞吐量"><span class="toc-number">2.4.</span> <span class="toc-text">高的调度吞吐量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调度依赖"><span class="toc-number">2.5.</span> <span class="toc-text">调度依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并行计算"><span class="toc-number">2.6.</span> <span class="toc-text">并行计算</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#开源实现"><span class="toc-number">3.</span> <span class="toc-text">开源实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SchedulerX"><span class="toc-number">3.1.</span> <span class="toc-text">SchedulerX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quartz"><span class="toc-number">3.2.</span> <span class="toc-text">Quartz</span></a></li></ol></li></ol>
 		</div>
 		
-		<p>在Java中利用多线程处理问题很简单，new Thread(){}一下就好了，但是要多线程正确高效的执行，生成一个线程安全的类，还是需要清楚一下线程基本概念</p>
-<font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>
-  
+		<h1 id="使用场景">使用场景</h1><h1 id="需要解决的问题">需要解决的问题</h1><h2 id="负载均衡">负载均衡</h2><h2 id="一个任务跑且只跑一次">一个任务跑且只跑一次</h2><h2 id="任务堆积">任务堆积</h2><h2 id="高的调度吞吐量">高的调度吞吐量</h2><h2 id="调度依赖">调度依赖</h2><h2 id="并行计算">并行计算</h2><h1 id="开源实现">开源实现</h1><h2 id="SchedulerX">SchedulerX</h2><h2 id="Quartz">Quartz</h2><font color="#FF0000">版权声明：本文为博主原创文章，转载请注明出处</font>  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Thread/">Thread</a>
+  <span></span> <a href="/tags/Architectur/">Architectur</a>
   </div>
 
 
@@ -131,19 +129,11 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2018/04/18/并发中的锁/" title="并发中的锁">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  并发中的锁</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2017/04/25/JStorm拓扑调优/"  title="JStorm拓扑调优">
+<a href="/2018/04/19/工作反思/"  title="工作中的反思">
  <strong>NEXT:</strong><br/> 
- <span>JStorm拓扑调优
+ <span>工作中的反思
 </span>
 </a>
 </div>
@@ -153,7 +143,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 	
 <section class="comment">
 	
-	<div class="ds-thread" data-title="Java中多线程基本概念" data-thread-key="Java中多线程基本概念" data-author-key="Peng Jun" data-url="/post/Java中多线程基本概念"></div>
+	<div class="ds-thread" data-title="任务调度系统设计" data-thread-key="任务调度系统设计" data-author-key="Peng Jun" data-url="/post/任务调度系统设计"></div>
 	
 </section>
 
@@ -163,7 +153,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#使用场景"><span class="toc-number">1.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#需要解决的问题"><span class="toc-number">2.</span> <span class="toc-text">需要解决的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-number">2.1.</span> <span class="toc-text">负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一个任务跑且只跑一次"><span class="toc-number">2.2.</span> <span class="toc-text">一个任务跑且只跑一次</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#任务堆积"><span class="toc-number">2.3.</span> <span class="toc-text">任务堆积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高的调度吞吐量"><span class="toc-number">2.4.</span> <span class="toc-text">高的调度吞吐量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调度依赖"><span class="toc-number">2.5.</span> <span class="toc-text">调度依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并行计算"><span class="toc-number">2.6.</span> <span class="toc-text">并行计算</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#开源实现"><span class="toc-number">3.</span> <span class="toc-text">开源实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SchedulerX"><span class="toc-number">3.1.</span> <span class="toc-text">SchedulerX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quartz"><span class="toc-number">3.2.</span> <span class="toc-text">Quartz</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
@@ -198,6 +188,8 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
 		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
 			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
 		
 			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
@@ -210,7 +202,7 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
 		
-			<li><a href="/tags/Java/" title="Java">Java<sup>5</sup></a></li>
+			<li><a href="/tags/Java/" title="Java">Java<sup>4</sup></a></li>
 		
 			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
 		
@@ -232,8 +224,6 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
 		
 			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
 		
-			<li><a href="/tags/Thread/" title="Thread">Thread<sup>1</sup></a></li>
-		
 		</ul>
 </div>
 
@@ -244,15 +234,15 @@ document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static
   <ul class="entry">
     
       <li>
+        <a href="/2018/04/26/任务调度系统设计/">任务调度系统设计</a>
+      </li>
+    
+      <li>
         <a href="/2018/04/19/工作反思/">工作中的反思</a>
       </li>
     
       <li>
         <a href="/2018/04/18/并发中的锁/">并发中的锁</a>
-      </li>
-    
-      <li>
-        <a href="/2017/05/08/Java中多线程基本概念/">Java中多线程基本概念</a>
       </li>
     
       <li>
