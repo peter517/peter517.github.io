@@ -1,0 +1,467 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" content="title: 用GYP搭建跨平台编译工程date: 2018-06-22 13:57:15tags: [GYP]
+description: 介绍GYP的基本功能以及和CMake的比较
+写的一手好代码固然难得，代码写好后可以方便在各个平台完成编译部署，也需要找到好的工具，GYP就是其中一个
+GYP类似">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2023/02/21/工程/GYP来搭建跨平台编译工程/" title="" itemprop="url"></a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2023-02-21T07:22:24.000Z" itemprop="datePublished">2023-02-21</time>
+    Updated:<time datetime="2023-02-21T07:22:24.000Z" itemprop="dateModified">2023-02-21</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GYP-Vs-CMake"><span class="toc-number">1.</span> <span class="toc-text">GYP Vs CMake</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">简单实例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD"><span class="toc-number">3.</span> <span class="toc-text">基本功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%AE%8F"><span class="toc-number">3.1.</span> <span class="toc-text">定义宏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Predefined"><span class="toc-number">3.2.</span> <span class="toc-text">Predefined</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E4%BE%9D%E8%B5%96"><span class="toc-number">3.3.</span> <span class="toc-text">模块依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%BA%93%E4%BE%9D%E8%B5%96"><span class="toc-number">3.4.</span> <span class="toc-text">文件库依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89"><span class="toc-number">3.5.</span> <span class="toc-text">变量定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#include%E5%85%B6%E4%BB%96gypi%E6%96%87%E4%BB%B6"><span class="toc-number">3.6.</span> <span class="toc-text">include其他gypi文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E5%A4%B4%E6%96%87%E4%BB%B6%E6%90%9C%E7%B4%A2%E8%B7%AF%E5%BE%84"><span class="toc-number">3.7.</span> <span class="toc-text">包含头文件搜索路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cflag%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.8.</span> <span class="toc-text">cflag设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDE%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.9.</span> <span class="toc-text">IDE设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C"><span class="toc-number">3.10.</span> <span class="toc-text">shell脚本执行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E6%9C%89%E5%8A%9F%E8%83%BD"><span class="toc-number">4.</span> <span class="toc-text">特有功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#action"><span class="toc-number">4.1.</span> <span class="toc-text">action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#direct-dependent-settings"><span class="toc-number">4.2.</span> <span class="toc-text">direct_dependent_settings</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E9%85%8D%E7%BD%AE%E7%9A%84GYP"><span class="toc-number">5.</span> <span class="toc-text">可配置的GYP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#gyp-chromium"><span class="toc-number">6.</span> <span class="toc-text">gyp_chromium</span></a></li></ol>
+		</div>
+		
+		<p>title: 用GYP搭建跨平台编译工程<br>date: 2018-06-22 13:57:15<br>tags: [GYP]</p>
+<p>description: 介绍GYP的基本功能以及和CMake的比较</p>
+<p>写的一手好代码固然难得，代码写好后可以方便在各个平台完成编译部署，也需要找到好的工具，GYP就是其中一个</p>
+<p>GYP类似于CMake，用python脚本编写，最初用于Chromium项目，用来生成原生IDE文件（Visual Studio，Xcode），后面Google单独抽出来，通过编写GYP脚本，可以在不同平台下面生成对于的编译脚本或IDE工程，比如Unix平台下面的Makefile或Ninja，Windows平台下面的VS工程，IOS平台下面的Xcode工程，达到一键构建的目的</p>
+<p>如果你现在需要开发一套跨平台的SDK，GYP绝对是一个不错的选择</p>
+<h1 id="GYP-Vs-CMake"><a href="#GYP-Vs-CMake" class="headerlink" title="GYP Vs CMake"></a>GYP Vs CMake</h1><p>GYP的主页有一栏专门介绍两者的区别，<a target="_blank" rel="noopener" href="https://gyp.gsrc.io/docs/GypVsCMake.md">GYP vs. CMake</a></p>
+<p>下图为本人总结的GYP和CMake五个特性之间的比较：</p>
+<p>​		<img src="/%E7%94%A8GYP%E6%90%AD%E5%BB%BA%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91%E5%B7%A5%E7%A8%8B_01.png" alt="GYP_Vs_CMake"></p>
+<ul>
+<li>可读性：相比较于CMake的脚本瀑布式书写方式，GYP的书写方式类似于Json，可读性比较强</li>
+<li>扩展性：action特性可以让GYP可以整合其他编译器，让C语言和其他语言一起一键编译；GYP也可以在任何平台上面生成任何平台的编译脚本或IDE工程，这样对项目的持续集成很方便</li>
+<li>模块化：GYP以targets为书写单元，模块性很好，GYP通过dependencies属性来设置依赖的targets；CMake通过一行语句添加依赖的模块目录</li>
+<li>源文件批量添加：GYP对批量添加源文件支持不好，CMake通过aux_source_directory命令轻松添加</li>
+<li>流行度：CMake在很多成熟的项目中使用，也有很多配套的工具，GYP起步比较晚，主要用在Chromium项目上面，这块还需努力</li>
+</ul>
+<h1 id="简单实例"><a href="#简单实例" class="headerlink" title="简单实例"></a>简单实例</h1><p>下面是一个简单的GYP脚本，通过它可以在不同的平台下面生成可my_target的可执行文件</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="string">&#x27;targets&#x27;</span>: [</span><br><span class="line">     &#123;</span><br><span class="line">       <span class="string">&#x27;target_name&#x27;</span>: <span class="string">&#x27;my_target&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;executable&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;sources&#x27;</span>: [</span><br><span class="line">         <span class="string">&#x27;main.cc&#x27;</span>,</span><br><span class="line">       ],</span><br><span class="line">     &#125;,</span><br><span class="line">   ],</span><br><span class="line"> &#125;,</span><br></pre></td></tr></table></figure>
+<p>通过下面的命令生成编译脚本，其中 –depth指定工程的根目录，gyp会根据不同的平台选择生成哪种编译文件或IDE</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">gyp <span class="attribute">--depth</span>=. test.gyp</span><br></pre></td></tr></table></figure>
+
+<p>如果要指定生成编译脚本类型，比如xcode，如下</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">gyp <span class="attribute">--depth</span>=. -f xcode test.gyp</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h1><p>跟CMake这种跨平台脚本生成工具一样，GYP提供一个编译脚本所需要的基本功能</p>
+<h2 id="定义宏"><a href="#定义宏" class="headerlink" title="定义宏"></a>定义宏</h2><p>定义C中的宏，如下所示：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;defines&#x27;</span>: [</span><br><span class="line">        <span class="string">&#x27;DEFINE_FOO&#x27;</span>,</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+
+<h2 id="Predefined"><a href="#Predefined" class="headerlink" title="Predefined"></a>Predefined</h2><p>gyp定义了许多默认变量，比如通过OS变量判断当前操作系统平台，如下所示：</p>
+<figure class="highlight lasso"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;conditions&#x27;</span>: <span class="meta">[</span></span><br><span class="line">          <span class="meta">[</span><span class="string">&#x27;OS==&quot;linux&quot;&#x27;</span>, &#123;</span><br><span class="line">            <span class="params">...</span></span><br><span class="line">          <span class="meta">]</span>,</span><br><span class="line">          <span class="meta">[</span><span class="string">&#x27;OS==&quot;win&quot;&#x27;</span>, &#123;</span><br><span class="line">            <span class="params">...</span></span><br><span class="line">          &#125;, &#123;OS != <span class="string">&quot;win&quot;</span>,</span><br><span class="line">            <span class="params">...</span></span><br><span class="line">          &#125;<span class="meta">]</span></span><br><span class="line">	],</span><br></pre></td></tr></table></figure>
+<p>除了OS变量，PRODUCT_DIR变量表示编译生成文件路径，DEPTH表示文件执行路径</p>
+<h2 id="模块依赖"><a href="#模块依赖" class="headerlink" title="模块依赖"></a>模块依赖</h2><p>依赖其他GYP里面的target，如下所示，bar为bar.gyp里面的一个target_name：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&#x27;targets&#x27;</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">&#x27;target_name&#x27;</span>: <span class="string">&#x27;my_target&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;type&#x27;</span>: <span class="string">&#x27;executable&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;sources&#x27;</span>: [</span><br><span class="line">        <span class="string">&#x27;main.cc&#x27;</span>,</span><br><span class="line">      ],</span><br><span class="line">      <span class="string">&#x27;dependencies&#x27;</span>: [</span><br><span class="line">    	  <span class="string">&#x27;&lt;(DEPTH)/bar/bar.gyp:bar&#x27;</span>,</span><br><span class="line">  	],</span><br><span class="line">    &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="文件库依赖"><a href="#文件库依赖" class="headerlink" title="文件库依赖"></a>文件库依赖</h2><p>如果有些库不是在gyp框架内编译的，可以指定库的文件路径进行依赖</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;link_settings&#x27;</span>: &#123;</span><br><span class="line">	<span class="string">&#x27;libraries&#x27;</span>: [</span><br><span class="line">		<span class="string">&#x27;-Wl,-L&lt;(DEPTH)/third_party/libpng/ -lpng&#x27;</span>,</span><br><span class="line">		<span class="string">&#x27;/System/Library/Frameworks/Cocoa.framework&#x27;</span></span><br><span class="line">	],</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h2><p>定义变量，用来进行项目配置，如下所示：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;variables&#x27;</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;is_enable_video&#x27;</span>: <span class="string">&#x27;true&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line"><span class="string">&#x27;conditions&#x27;</span>: [</span><br><span class="line">          [<span class="string">&#x27;is_enable_video==&quot;true&quot;&#x27;</span>, &#123;</span><br><span class="line">            ...</span><br><span class="line">          ],</span><br><span class="line">    ],  </span><br></pre></td></tr></table></figure>
+
+<h2 id="include其他gypi文件"><a href="#include其他gypi文件" class="headerlink" title="include其他gypi文件"></a>include其他gypi文件</h2><p>include其他gypi文件，如下所示：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;includes&#x27;</span>: [</span><br><span class="line">     <span class="string">&#x27;&lt;(DEPTH)/build/common.gypi&#x27;</span>,</span><br><span class="line">   ],</span><br></pre></td></tr></table></figure>
+
+<h2 id="包含头文件搜索路径"><a href="#包含头文件搜索路径" class="headerlink" title="包含头文件搜索路径"></a>包含头文件搜索路径</h2><p>如下所示：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;include_dirs&#x27;</span>: [</span><br><span class="line">      <span class="string">&#x27;include&#x27;</span>,</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+
+<h2 id="cflag设置"><a href="#cflag设置" class="headerlink" title="cflag设置"></a>cflag设置</h2><p>如下所示：</p>
+<figure class="highlight prolog"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;cflags&#x27;</span>: [</span><br><span class="line">      <span class="string">&#x27;-Werror&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;-Wall&#x27;</span>,</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+
+<h2 id="IDE设置"><a href="#IDE设置" class="headerlink" title="IDE设置"></a>IDE设置</h2><p>可以对IDE进行设置，如下所示，设置xcode的VALID_ARCHS</p>
+<figure class="highlight sml"><table><tr><td class="code"><pre><span class="line"><span class="symbol">&#x27;xcode_settings&#x27;</span>: &#123;</span><br><span class="line">	<span class="symbol">&#x27;VALID_ARCHS&#x27;</span>: <span class="symbol">&#x27;armv7</span> armv7s arm64&#x27;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<h2 id="shell脚本执行"><a href="#shell脚本执行" class="headerlink" title="shell脚本执行"></a>shell脚本执行</h2><p>在脚本里面执行shell命令，如下所示，BUILD_DATE可以在代码中打印出来，用来标示编译日期</p>
+<figure class="highlight autohotkey"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;defines&quot;</span>: [</span><br><span class="line">      &#x27;BUILD_DATE=&lt;!(echo `date +<span class="variable">%Y%</span>m%d`)&#x27;</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+
+<h1 id="特有功能"><a href="#特有功能" class="headerlink" title="特有功能"></a>特有功能</h1><h2 id="action"><a href="#action" class="headerlink" title="action"></a>action</h2><p>GYP出了支持生成编译C的脚本外，还支持第三方模块执行的接口action，action在对应target build之前执行，所以target_type一般为none。action可以用GYP编译其他语言，比如用javac编译Java、用ant来Android App、用yasm来编译汇编语言等。利用这个特性，还可以用来执行单元测试，下面就是在每次编译的时候，通过为run_fun_test的action来执行单元测试out&#x2F;Release&#x2F;fun_test</p>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line"><span class="symbol">&#x27;targets</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="symbol">&#x27;target_name</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;fun_test</span>&#x27;,</span><br><span class="line">        <span class="symbol">&#x27;type</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;executable</span>&#x27;,</span><br><span class="line">        <span class="symbol">&#x27;sources</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">           <span class="symbol">&#x27;test/func_test_main.cc</span>&#x27;,</span><br><span class="line">        ],</span><br><span class="line">        <span class="symbol">&#x27;dependencies</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">          <span class="symbol">&#x27;func</span>&#x27;,</span><br><span class="line">        ],</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="symbol">&#x27;target_name</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;run_fun_test</span>&#x27;,</span><br><span class="line">        <span class="symbol">&#x27;type</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;none</span>&#x27;,</span><br><span class="line">        <span class="symbol">&#x27;dependencies</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">          <span class="symbol">&#x27;fun_test</span>&#x27;,</span><br><span class="line">        ],</span><br><span class="line">        <span class="symbol">&#x27;actions</span><span class="symbol">&#x27;:</span> [&#123;</span><br><span class="line">            <span class="symbol">&#x27;action_name</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;run_fun_test</span>&#x27;,</span><br><span class="line">                <span class="symbol">&#x27;inputs</span><span class="symbol">&#x27;:</span> [<span class="symbol">&#x27;test/func_test_main.cc</span>&#x27;,],</span><br><span class="line">                <span class="symbol">&#x27;outputs</span><span class="symbol">&#x27;:</span> [ &#x27; &#x27; ],</span><br><span class="line">                <span class="symbol">&#x27;action</span><span class="symbol">&#x27;:</span> [<span class="symbol">&#x27;bash</span>&#x27;,<span class="symbol">&#x27;-ec</span>&#x27;,<span class="symbol">&#x27;&lt;</span>(<span class="name">DEPTH</span>)/out/Release/fun_test&#x27;],</span><br><span class="line">        &#125;,],</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h2 id="direct-dependent-settings"><a href="#direct-dependent-settings" class="headerlink" title="direct_dependent_settings"></a>direct_dependent_settings</h2><p>direct_dependent_settings表示依赖这个模块的模块也自动包含这个属性，比如入unit_test这个模块依赖gtest这个模块，那么unit_test会被设置“include_dirs”这个属性，把gtest这个模块中include的绝对路径添加为头文件搜索路径</p>
+<blockquote>
+<p>direct_dependent_settings的设计让使用其他模块更加方便，被依赖模块include路径变更对其他模块没有影响</p>
+</blockquote>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line"><span class="symbol">&#x27;targets</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="symbol">&#x27;target_name</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;gtest</span>&#x27;,</span><br><span class="line">        <span class="symbol">&#x27;type</span><span class="symbol">&#x27;:</span> <span class="symbol">&#x27;static_library</span>&#x27;,</span><br><span class="line">        <span class="symbol">&#x27;include_dirs</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">            <span class="symbol">&#x27;include</span>&#x27;,</span><br><span class="line">            <span class="symbol">&#x27;.</span>&#x27;,</span><br><span class="line">        ],</span><br><span class="line">        <span class="symbol">&#x27;sources</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">            <span class="symbol">&#x27;include/gtest.h</span>&#x27;,</span><br><span class="line">            <span class="symbol">&#x27;source/gtest.cpp</span>&#x27;,</span><br><span class="line">        ],</span><br><span class="line">      <span class="symbol">&#x27;direct_dependent_settings</span><span class="symbol">&#x27;:</span> &#123;</span><br><span class="line">             <span class="symbol">&#x27;include_dirs</span><span class="symbol">&#x27;:</span> [</span><br><span class="line">              <span class="symbol">&#x27;include</span>&#x27;,</span><br><span class="line">           ]</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h1 id="可配置的GYP"><a href="#可配置的GYP" class="headerlink" title="可配置的GYP"></a>可配置的GYP</h1><p>gyp变量一般用来配置整个gyp工程，完成下面功能：</p>
+<ul>
+<li>选择哪些模块需要编译（平台不同、功能不同）</li>
+<li>定义不同宏，用来控制代码中不同逻辑</li>
+</ul>
+<p>可以通过文件定义gyp变量（一般放在gypi文件里面），也可以通过-D的方式来定义gyp变量</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">gyp <span class="attribute">--depth</span>=. test.gyp <span class="attribute">-Denable_moudle</span>=1</span><br></pre></td></tr></table></figure>
+
+<h1 id="gyp-chromium"><a href="#gyp-chromium" class="headerlink" title="gyp_chromium"></a>gyp_chromium</h1><p>Chromium项目里面对gyp进行了一些封装，开发者可以定义GYP_DEFINES、GYP_GENERATORS、GYP_CROSSCOMPILE等环境变量来控制gyp生成逻辑，如下：</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">exprot <span class="attribute">GYP_DEFINES</span>=<span class="string">&quot;target_arch=arm64&quot;</span></span><br><span class="line"><span class="built_in">export</span> <span class="attribute">GYP_GENERATORS</span>=<span class="string">&quot;xcode&quot;</span></span><br><span class="line">gyp_chromium <span class="attribute">--depth</span>=. test.gyp</span><br></pre></td></tr></table></figure>
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构？/"  title="服务端，如何设计一个易扩展、易运维的内容下发架构？">
+ <strong>NEXT:</strong><br/> 
+ <span>服务端，如何设计一个易扩展、易运维的内容下发架构？
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GYP-Vs-CMake"><span class="toc-number">1.</span> <span class="toc-text">GYP Vs CMake</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">简单实例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD"><span class="toc-number">3.</span> <span class="toc-text">基本功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E5%AE%8F"><span class="toc-number">3.1.</span> <span class="toc-text">定义宏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Predefined"><span class="toc-number">3.2.</span> <span class="toc-text">Predefined</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E4%BE%9D%E8%B5%96"><span class="toc-number">3.3.</span> <span class="toc-text">模块依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%BA%93%E4%BE%9D%E8%B5%96"><span class="toc-number">3.4.</span> <span class="toc-text">文件库依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89"><span class="toc-number">3.5.</span> <span class="toc-text">变量定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#include%E5%85%B6%E4%BB%96gypi%E6%96%87%E4%BB%B6"><span class="toc-number">3.6.</span> <span class="toc-text">include其他gypi文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%85%E5%90%AB%E5%A4%B4%E6%96%87%E4%BB%B6%E6%90%9C%E7%B4%A2%E8%B7%AF%E5%BE%84"><span class="toc-number">3.7.</span> <span class="toc-text">包含头文件搜索路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cflag%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.8.</span> <span class="toc-text">cflag设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDE%E8%AE%BE%E7%BD%AE"><span class="toc-number">3.9.</span> <span class="toc-text">IDE设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E8%84%9A%E6%9C%AC%E6%89%A7%E8%A1%8C"><span class="toc-number">3.10.</span> <span class="toc-text">shell脚本执行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E6%9C%89%E5%8A%9F%E8%83%BD"><span class="toc-number">4.</span> <span class="toc-text">特有功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#action"><span class="toc-number">4.1.</span> <span class="toc-text">action</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#direct-dependent-settings"><span class="toc-number">4.2.</span> <span class="toc-text">direct_dependent_settings</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%AF%E9%85%8D%E7%BD%AE%E7%9A%84GYP"><span class="toc-number">5.</span> <span class="toc-text">可配置的GYP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#gyp-chromium"><span class="toc-number">6.</span> <span class="toc-text">gyp_chromium</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/3D/" title="3D">3D<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Compilers/" title="Compilers">Compilers<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Computer-Science/" title="Computer Science">Computer Science<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Language/" title="Language">Language<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Object-C/" title="Object-C">Object-C<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/GYP来搭建跨平台编译工程/"></a>
+      </li>
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构？/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/04/领域知识/商务英语常用语/">商务英语常用口语表达</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/04/领域知识/计算机科学中的一些机制/">计算机科学中的一些机制</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/04/领域知识/三维重建/">三维重建基本概念</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

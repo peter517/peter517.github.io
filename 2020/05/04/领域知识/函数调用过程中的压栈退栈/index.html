@@ -1,0 +1,506 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>函数调用过程中的压栈退栈 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" content="常用的三个和栈有关的寄存器：1.EIP
+2.ESP
+3.EBP
+当调用fun函数开始时，三者的作用。
+1.EIP寄存器里存储的是CPU下次要执行的指令的地址。
+也就是调用完fun函数后，让CPU知道应该执行main函数中的printf（”函数调用结束”）语句了。
+2.EBP寄存器里存储的是是栈的栈底">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2020/05/04/领域知识/函数调用过程中的压栈退栈/" title="函数调用过程中的压栈退栈" itemprop="url">函数调用过程中的压栈退栈</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2020-05-04T13:44:44.000Z" itemprop="datePublished">2020-05-04</time>
+    Updated:<time datetime="2023-02-21T07:33:54.000Z" itemprop="dateModified">2023-02-21</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%89%E4%B8%AA%E5%92%8C%E6%A0%88%E6%9C%89%E5%85%B3%E7%9A%84%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">常用的三个和栈有关的寄存器：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%88%E5%92%8C%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">栈和寄存器的关系：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">原函数</span></a></li></ol>
+		</div>
+		
+		<h1 id="常用的三个和栈有关的寄存器："><a href="#常用的三个和栈有关的寄存器：" class="headerlink" title="常用的三个和栈有关的寄存器："></a>常用的三个和栈有关的寄存器：</h1><p>1.EIP</p>
+<p>2.ESP</p>
+<p>3.EBP</p>
+<p>当调用fun函数开始时，三者的作用。</p>
+<p>1.EIP寄存器里存储的是CPU下次要执行的指令的地址。</p>
+<p>也就是调用完fun函数后，让CPU知道应该执行main函数中的printf（”函数调用结束”）语句了。</p>
+<p>2.EBP寄存器里存储的是是栈的栈底指针，通常叫栈基址，这个是一开始进行fun()函数调用之前，由ESP传递给EBP的。（在函数调用前你可以这么理解：ESP存储的是栈顶地址，也是栈底地址。）</p>
+<p>3.ESP寄存器里存储的是在调用函数fun()之后，栈的栈顶。并且始终指向栈顶。</p>
+<h1 id="栈和寄存器的关系："><a href="#栈和寄存器的关系：" class="headerlink" title="栈和寄存器的关系："></a>栈和寄存器的关系：</h1><p>栈用来临时存放变量的值或地址，只要涉及到CPU的运算，都要有寄存器（至少有一个）才能做</p>
+<p>eax，ebx，ecx，edx就是这类常见的寄存器</p>
+<p>压栈一般是先压参数，这个是调用函数做</p>
+<p>然后才设置被调用函数的栈底地址和栈顶地址，这个是被调用函数做</p>
+<h1 id="原函数"><a href="#原函数" class="headerlink" title="原函数"></a>原函数</h1><p>int bar(int c, int d)</p>
+<p>{</p>
+<p>   int e &#x3D; c + d;</p>
+<p>   return e;</p>
+<p>}</p>
+<p>int foo(int a, int b)</p>
+<p>{</p>
+<p>   return bar(a, b);</p>
+<p>}</p>
+<p>int main(void)</p>
+<p>{</p>
+<p>   foo(2, 3);</p>
+<p>   return 0;</p>
+<p>}</p>
+<p>在栈中的位置图，和一般的栈表示不一样，位置反了过来</p>
+<p><img src="/%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%8E%8B%E6%A0%88%E9%80%80%E6%A0%88_01.png" alt="函数调用过程中的压栈退栈_01"></p>
+<p>相应的汇编代码</p>
+<p>$ gcc main.c -g</p>
+<p>$ objdump -dS a.out</p>
+<p>…</p>
+<p>08048394 <bar>:</p>
+<p>int bar(int c, int d)</p>
+<p>{</p>
+<p>8048394:   55             push  %ebp&#x2F;&#x2F;保存调用函数的栈底地址</p>
+<p>8048395:   89 e5           mov  %esp,%ebp&#x2F;&#x2F;调用函数的栈顶就是被调用函数的栈底，更改ebp的值</p>
+<p>8048397:   83 ec 10         sub  $0x10,%esp&#x2F;&#x2F;为本函数的局部变量分配空间，更改esp的值</p>
+<p>   int e &#x3D; c + d;</p>
+<p>​                      </p>
+<p>804839a:   8b 55 0c          mov  0xc(%ebp),%edx &#x2F;&#x2F;把栈中地址是以栈底为基准，偏移量+12的变量存入寄存器</p>
+<p>804839d:   8b 45 08          mov  0x8(%ebp),%eax&#x2F;&#x2F;同上</p>
+<p>80483a0:   01 d0            add   %edx,%eax&#x2F;&#x2F;相加操作</p>
+<p>80483a2:   89 45 fc          mov  %eax,-0x4(%ebp)&#x2F;&#x2F;把结果返回给本函数中的变量e</p>
+<p>   return e;</p>
+<p>​                        &#x2F;&#x2F;函数有一个int型的返回值，这个返回值是通过eax寄存器传递的</p>
+<p>80483a5:   8b 45 fc          mov  -0x4(%ebp),%eax</p>
+<p>}</p>
+<p>80483a8:   c9              leave  &#x2F;&#x2F;函数开头的push %ebp和mov %esp,%ebp的逆操作</p>
+<p>80483a9:   c3               ret   &#x2F;&#x2F;call指令的逆操作:</p>
+<p>1.现在esp所指向的栈顶保存着返回地址，把这个值恢复给eip，同时esp增加4，esp的值变成0xbff1c40c。</p>
+<p>2.修改了程序计数器eip，因此跳转到返回地址0x80483c2继续执行。</p>
+<p>080483aa <foo>:</p>
+<p>int foo(int a, int b)</p>
+<p>{                          </p>
+<p>80483aa:   55             push  %ebp&#x2F;&#x2F;同bar</p>
+<p>80483ab:   89 e5           mov  %esp,%ebp&#x2F;&#x2F;同bar</p>
+<p>80483ad:   83 ec 08         sub  $0x8,%esp&#x2F;&#x2F;同bar</p>
+<p>   return bar(a, b);</p>
+<p>​                            &#x2F;&#x2F;压入参数c</p>
+<p>80483b0:   8b 45 0c         mov  0xc(%ebp),%eax</p>
+<p>80483b3:   89 44 24 04       mov  %eax,0x4(%esp)</p>
+<p>​              </p>
+<p>​                            &#x2F;&#x2F;压入参数d</p>
+<p>80483b7:   8b 45 08         mov  0x8(%ebp),%eax</p>
+<p>80483ba:   89 04 24         mov  %eax,(%esp)</p>
+<p>80483bd:   e8 d2 ff ff ff       call    8048394 <bar>&#x2F;&#x2F;修改eip为8048394调用bar</p>
+<p>}</p>
+<p>80483c2:   c9              leave  &#x2F;&#x2F;同bar</p>
+<p>80483c3:   c3              ret    &#x2F;&#x2F;同bar</p>
+<p>080483c4 <main>:</p>
+<p>int main(void)</p>
+<p>{</p>
+<p>80483c4:   8d 4c 24 04       lea  0x4(%esp),%ecx</p>
+<p>80483c8:   83 e4 f0         and  $0xfffffff0,%esp</p>
+<p>80483cb:   ff 71 fc          pushl -0x4(%ecx)</p>
+<p>80483ce:   55             push  %ebp</p>
+<p>80483cf:   89 e5           mov  %esp,%ebp</p>
+<p>80483d1:   51             push  %ecx</p>
+<p>80483d2:   83 ec 08         sub  $0x8,%esp</p>
+<p>   foo(2, 3);</p>
+<p>​                         &#x2F;&#x2F;压缩参数a，对栈中地址是以栈底为基准，偏移量+4的地址进行赋值</p>
+<p>80483d5:   c7 44 24 04 03 00 00    movl  $0x3,0x4(%esp)</p>
+<p>80483dc:   00</p>
+<p>80483dd:   c7 04 24 02 00 00 00    movl  $0x2,(%esp)&#x2F;&#x2F;</p>
+<p>80483e4:   e8 c1 ff ff ff       call  80483aa <foo>&#x2F;&#x2F;修改eip为80483aa，调用foo</p>
+<p>   return 0;</p>
+<p>80483e9:   b8 00 00 00 00       mov  $0x0,%eax</p>
+<p>}</p>
+<p>80483ee:   83 c4 08          add  $0x8,%esp&#x2F;&#x2F;释放栈空间</p>
+<p>80483f1:   59             pop  %ecx</p>
+<p>80483f2:   5d             pop  %ebp&#x2F;&#x2F;栈底地址出栈</p>
+<p>80483f3:   8d 61 fc          lea  -0x4(%ecx),%esp</p>
+<p>80483f6:   c3             ret </p>
+<p>注：</p>
+<p>lea命令 和mov 命令操作方向跟编译器有关，有时候会是这样：</p>
+<p>mov  %esp,%ebp&#x2F;&#x2F;%ebp &#x3D; %esp</p>
+<p>lea  0x4(%esp),%ecx&#x2F;&#x2F;0x4(%esp) &#x3D; 0x4(%esp)</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Compilers/">Compilers</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2020/05/04/算法/算法中树形迭代的在代码中的两种写法/" title="算法中树形迭代的在代码中的两种写法">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  算法中树形迭代的在代码中的两种写法</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2020/03/04/工程/QT中Static Lib Build/"  title="QT中Static Lib Build">
+ <strong>NEXT:</strong><br/> 
+ <span>QT中Static Lib Build
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%89%E4%B8%AA%E5%92%8C%E6%A0%88%E6%9C%89%E5%85%B3%E7%9A%84%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">常用的三个和栈有关的寄存器：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%88%E5%92%8C%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">栈和寄存器的关系：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%9F%E5%87%BD%E6%95%B0"><span class="toc-number">3.</span> <span class="toc-text">原函数</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/3D/" title="3D">3D<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Compilers/" title="Compilers">Compilers<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Computer-Science/" title="Computer Science">Computer Science<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Language/" title="Language">Language<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Object-C/" title="Object-C">Object-C<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/GYP来搭建跨平台编译工程/"></a>
+      </li>
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构？/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/04/领域知识/商务英语常用语/">商务英语常用口语表达</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/04/领域知识/计算机科学中的一些机制/">计算机科学中的一些机制</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/04/领域知识/三维重建/">三维重建基本概念</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

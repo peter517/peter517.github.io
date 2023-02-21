@@ -83,7 +83,7 @@
     </p>
   <p class="article-time">
     <time datetime="2018-04-26T02:40:58.000Z" itemprop="datePublished">2018-04-26</time>
-    Updated:<time datetime="2019-12-10T03:42:18.000Z" itemprop="dateModified">2019-12-10</time>
+    Updated:<time datetime="2023-02-21T07:20:59.000Z" itemprop="dateModified">2023-02-21</time>
     
   </p>
 </header>
@@ -95,7 +95,14 @@
 		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">需要解决的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">2.1.</span> <span class="toc-text">负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BB%BB%E5%8A%A1%E8%B7%91%E4%B8%94%E5%8F%AA%E8%B7%91%E4%B8%80%E6%AC%A1"><span class="toc-number">2.2.</span> <span class="toc-text">一个任务跑且只跑一次</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%A0%86%E7%A7%AF"><span class="toc-number">2.3.</span> <span class="toc-text">任务堆积</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E5%90%9E%E5%90%90%E9%87%8F"><span class="toc-number">2.4.</span> <span class="toc-text">调度吞吐量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B0%83%E5%BA%A6%E4%BE%9D%E8%B5%96"><span class="toc-number">2.5.</span> <span class="toc-text">调度依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="toc-number">2.6.</span> <span class="toc-text">并行计算</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%80%E6%BA%90%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">开源实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SchedulerX"><span class="toc-number">3.1.</span> <span class="toc-text">SchedulerX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quartz"><span class="toc-number">3.2.</span> <span class="toc-text">Quartz</span></a></li></ol></li></ol>
 		</div>
 		
-		<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><h1 id="需要解决的问题"><a href="#需要解决的问题" class="headerlink" title="需要解决的问题"></a>需要解决的问题</h1><h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><h2 id="一个任务跑且只跑一次"><a href="#一个任务跑且只跑一次" class="headerlink" title="一个任务跑且只跑一次"></a>一个任务跑且只跑一次</h2><h2 id="任务堆积"><a href="#任务堆积" class="headerlink" title="任务堆积"></a>任务堆积</h2><h2 id="调度吞吐量"><a href="#调度吞吐量" class="headerlink" title="调度吞吐量"></a>调度吞吐量</h2><h2 id="调度依赖"><a href="#调度依赖" class="headerlink" title="调度依赖"></a>调度依赖</h2><h2 id="并行计算"><a href="#并行计算" class="headerlink" title="并行计算"></a>并行计算</h2><h1 id="开源实现"><a href="#开源实现" class="headerlink" title="开源实现"></a>开源实现</h1><h2 id="SchedulerX"><a href="#SchedulerX" class="headerlink" title="SchedulerX"></a>SchedulerX</h2><h2 id="Quartz"><a href="#Quartz" class="headerlink" title="Quartz"></a>Quartz</h2>  
+		<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><ul>
+<li>负载均衡<ul>
+<li>请求qps大</li>
+<li>每个任务处理时间长，占用服务机器资源多</li>
+</ul>
+</li>
+</ul>
+<h1 id="需要解决的问题"><a href="#需要解决的问题" class="headerlink" title="需要解决的问题"></a>需要解决的问题</h1><h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><h2 id="一个任务跑且只跑一次"><a href="#一个任务跑且只跑一次" class="headerlink" title="一个任务跑且只跑一次"></a>一个任务跑且只跑一次</h2><h2 id="任务堆积"><a href="#任务堆积" class="headerlink" title="任务堆积"></a>任务堆积</h2><h2 id="调度吞吐量"><a href="#调度吞吐量" class="headerlink" title="调度吞吐量"></a>调度吞吐量</h2><h2 id="调度依赖"><a href="#调度依赖" class="headerlink" title="调度依赖"></a>调度依赖</h2><h2 id="并行计算"><a href="#并行计算" class="headerlink" title="并行计算"></a>并行计算</h2><h1 id="开源实现"><a href="#开源实现" class="headerlink" title="开源实现"></a>开源实现</h1><h2 id="SchedulerX"><a href="#SchedulerX" class="headerlink" title="SchedulerX"></a>SchedulerX</h2><h2 id="Quartz"><a href="#Quartz" class="headerlink" title="Quartz"></a>Quartz</h2>  
 	</div>
 		<footer class="article-footer clearfix">
 
@@ -170,13 +177,19 @@
 	<p class="asidetitle">所有标签</p>
 		<ul class="clearfix">
 		
-			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+			<li><a href="/tags/3D/" title="3D">3D<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>2</sup></a></li>
 		
 			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
 		
 			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Compilers/" title="Compilers">Compilers<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Computer-Science/" title="Computer Science">Computer Science<sup>1</sup></a></li>
 		
 			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
 		
@@ -194,21 +207,15 @@
 		
 			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
 		
+			<li><a href="/tags/Language/" title="Language">Language<sup>1</sup></a></li>
+		
 			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
 		
 			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
 		
 			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
 		
-			<li><a href="/tags/Project-Management/" title="Project Management">Project Management<sup>1</sup></a></li>
-		
-			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
-		
-			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
-		
-			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
-		
-			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+			<li><a href="/tags/Object-C/" title="Object-C">Object-C<sup>1</sup></a></li>
 		
 		</ul>
 </div>
@@ -220,23 +227,23 @@
   <ul class="entry">
     
       <li>
+        <a href="/2023/02/21/工程/GYP来搭建跨平台编译工程/"></a>
+      </li>
+    
+      <li>
         <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构？/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
       </li>
     
       <li>
-        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+        <a href="/2021/11/04/领域知识/商务英语常用语/">商务英语常用口语表达</a>
       </li>
     
       <li>
-        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+        <a href="/2021/11/04/领域知识/计算机科学中的一些机制/">计算机科学中的一些机制</a>
       </li>
     
       <li>
-        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
-      </li>
-    
-      <li>
-        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+        <a href="/2021/08/04/领域知识/三维重建/">三维重建基本概念</a>
       </li>
     
   </ul>

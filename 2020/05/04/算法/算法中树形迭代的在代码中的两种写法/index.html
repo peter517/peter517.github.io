@@ -1,0 +1,553 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>算法中树形迭代的在代码中的两种写法 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" content="至顶向下形式如下：
+​    public void f(){
+​       &amp;#x2F;&amp;#x2F;iterative export
+​      
+​       &amp;#x2F;&amp;#x2F;do something
+​      f();
+​      f();
+​      
+​      r">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2020/05/04/算法/算法中树形迭代的在代码中的两种写法/" title="算法中树形迭代的在代码中的两种写法" itemprop="url">算法中树形迭代的在代码中的两种写法</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2020-05-04T13:44:44.000Z" itemprop="datePublished">2020-05-04</time>
+    Updated:<time datetime="2023-02-21T07:32:05.000Z" itemprop="dateModified">2023-02-21</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%B3%E9%A1%B6%E5%90%91%E4%B8%8B"><span class="toc-number">1.</span> <span class="toc-text">至顶向下</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%B3%E5%BA%95%E5%90%91%E4%B8%8A"><span class="toc-number">2.</span> <span class="toc-text">至底向上</span></a></li></ol>
+		</div>
+		
+		<h1 id="至顶向下"><a href="#至顶向下" class="headerlink" title="至顶向下"></a>至顶向下</h1><p>形式如下：</p>
+<p>​    <strong>public</strong> <strong>void</strong> f(){</p>
+<p>​       &#x2F;&#x2F;iterative export</p>
+<p>​      </p>
+<p>​       &#x2F;&#x2F;do something</p>
+<p>​      f();</p>
+<p>​      f();</p>
+<p>​      </p>
+<p>​      <strong>return</strong>;</p>
+<p>   }</p>
+<p>每次迭代会先依据父节点进行一些操作，对以后的迭代会产生一些影响，一般用在不用遍历完所有树空间的情况下</p>
+<p>例如1：</p>
+<p>判断一棵树是否被另一棵树包含—-无返回值</p>
+<p>​    <strong>public</strong> <strong>boolean</strong> isContain &#x3D; <strong>false</strong>;</p>
+<p>​    &#x2F;**</p>
+<p>​    *</p>
+<p>​    * 判断一棵树是否被另一棵树包含</p>
+<p>​    *&#x2F;</p>
+<p>​    <strong>public</strong> <strong>void</strong> search(TreeNode src, TreeNode dst){</p>
+<p>​      </p>
+<p>​       &#x2F;&#x2F;迭代出口</p>
+<p>​       <strong>if</strong> (src &#x3D;&#x3D; <strong>null</strong>){</p>
+<p>​          <strong>return</strong>;</p>
+<p>​      }</p>
+<p>​      </p>
+<p>​       &#x2F;&#x2F;是否找到结果</p>
+<p>​       <strong>if</strong>(!isContain ){</p>
+<p>​         </p>
+<p>​          isContain &#x3D; cmpTree(src, dst);</p>
+<p>​         </p>
+<p>​         search(src. leftChild, dst);</p>
+<p>​         search(src. rightChild, dst);</p>
+<p>​         </p>
+<p>​      }</p>
+<p>   }</p>
+<p>这里的cmpTree函数是用来判定两个树是否相等，如果相等，就停止后面的迭代，如果换成</p>
+<p>​       <strong>if</strong> (!isContain ){</p>
+<p>​         </p>
+<p>​         search(src. leftChild , dst);</p>
+<p>​         search(src. rightChild , dst);</p>
+<p>​         isContain &#x3D; cmpTree(src, dst);</p>
+<p>​         </p>
+<p>​      }</p>
+<p>则迭代操作控制起不到作用</p>
+<p>例2：</p>
+<p>判断两树是否相等—-有返回值</p>
+<p>​    &#x2F;**</p>
+<p>​    *</p>
+<p>​    * 判断两树是否相等</p>
+<p>​    *&#x2F;</p>
+<p>​    <strong>public</strong> <strong>boolean</strong> cmpTree(TreeNode src, TreeNode dst){</p>
+<p>​      </p>
+<p>​       &#x2F;&#x2F;迭代出口 如果同时达到叶子节点，说明两树相等</p>
+<p>​       <strong>if</strong>(src &#x3D;&#x3D; <strong>null</strong> &amp;&amp; dst &#x3D;&#x3D; <strong>null</strong>){</p>
+<p>​          <strong>return</strong> <strong>true</strong> ;</p>
+<p>​      } <strong>else</strong> <strong>if</strong> (src &#x3D;&#x3D; <strong>null</strong> || dst &#x3D;&#x3D; <strong>null</strong>){</p>
+<p>​          <strong>return</strong> <strong>false</strong> ;</p>
+<p>​      }</p>
+<p>​      </p>
+<p>​       <strong>if</strong> (src.data &#x3D;&#x3D; dst.data){</p>
+<p>​          <strong>return</strong> cmpTree(src.leftChild ,dst.leftChild) &amp;&amp; cmpTree(src.rightChild,dst.rightChild );</p>
+<p>​      } <strong>else</strong>{</p>
+<p>​          <strong>return</strong> <strong>false</strong> ;</p>
+<p>​      }</p>
+<p>   }</p>
+<p>例3：</p>
+<p>快速排序—-无返回值</p>
+<p>​    &#x2F;**</p>
+<p>​    * 划分问题空间</p>
+<p>​    *&#x2F;</p>
+<p>​    <strong>public</strong> <strong>static</strong> <strong>void</strong> quickSort(<strong>int</strong>[] data, <strong>int</strong> start, <strong>int</strong> end) {</p>
+<p>​       <strong>if</strong> (start &lt; end) {</p>
+<p>​          <strong>int</strong> standard &#x3D; <em>partition</em>(data, start, end);</p>
+<p>​          <em>quickSort</em>(data, start, standard - 1);</p>
+<p>​          <em>quickSort</em>(data, standard + 1, end);</p>
+<p>​      }</p>
+<p>   }</p>
+<p>这里的partition函数对后面的迭代产了影响</p>
+<h1 id="至底向上"><a href="#至底向上" class="headerlink" title="至底向上"></a>至底向上</h1><p>形式如下：</p>
+<p>​    <strong>public</strong> <strong>void</strong> f(){</p>
+<p>​       &#x2F;&#x2F;iterative export</p>
+<p>​      </p>
+<p>​      f();</p>
+<p>​      f();</p>
+<p>​      </p>
+<p>​       &#x2F;&#x2F;do something</p>
+<p>​      </p>
+<p>​       <strong>return</strong>;</p>
+<p>   }</p>
+<p>一般分治法都是使用的至底向上，先把问题空间分成一个一个不能再分的小空间，分别对这些小空间进行求解，父节点的求解依赖于其子节点的求解</p>
+<p>例1</p>
+<p>归并排序—-无返回值</p>
+<p>​    &#x2F;**</p>
+<p>​    * 划分问题空间</p>
+<p>​    *&#x2F;</p>
+<p>​    <strong>public</strong> <strong>static</strong> <strong>void</strong> mergeSort(<strong>int</strong>[] data, <strong>int</strong> start, <strong>int</strong> end) {</p>
+<p>​       <strong>if</strong> (start &lt; end) {</p>
+<p>​          <strong>int</strong> middle &#x3D; (start + end) &#x2F; 2;</p>
+<p>​          <em>mergeSort</em>(data, start, middle);</p>
+<p>​          <em>mergeSort</em>(data, middle + 1, end);</p>
+<p>​          <em>merge</em>(data, start, end);</p>
+<p>​      }</p>
+<p>   }</p>
+<p>这里依赖关系不明显，data[]作为参数传入，merge函数的每步求解都依赖于其子节点之前在data数组上的操作</p>
+<p>例2</p>
+<p>求数组最大值与最小值—-有返回值</p>
+<p>​    <strong>public</strong> Result search(<strong>int</strong> start, <strong>int</strong> end) {</p>
+<p>​       <strong>if</strong> (start &#x3D;&#x3D; end) {</p>
+<p>​         Result r &#x3D; <strong>new</strong> Result(data [start], data[start]);</p>
+<p>​          <strong>return</strong> r;</p>
+<p>​      }</p>
+<p>​       <strong>int</strong> mid &#x3D; (start + end) &#x2F; 2;</p>
+<p>​      Result rLeft &#x3D; search(start, mid);</p>
+<p>​      Result rRight &#x3D; search(mid + 1, end);</p>
+<p>​      </p>
+<p>​      <strong>return</strong> Result.<em>cmpResult</em>(rLeft, rRight);</p>
+<p>   }</p>
+<p>这里依赖关系就很明显，注意这段语句</p>
+<p>​           <strong>if</strong> (start &#x3D;&#x3D; end) {</p>
+<p>​         Result r &#x3D; <strong>new</strong> Result(data [start], data[start]);</p>
+<p>​          <strong>return</strong> r;</p>
+<p>​      }</p>
+<p>这里是所有叶子节点至底向上的开始，光靠</p>
+<p>​      Result rLeft &#x3D; search(start, mid);</p>
+<p>​      Result rRight &#x3D; search(mid + 1, end);</p>
+<p>这两句是不能得到初始数据的</p>
+<p>同样，看看例子3</p>
+<p>求树中两节点的最大间距—-有返回值</p>
+<p>   <strong>public</strong> <strong>int</strong> maxDistance &#x3D; 0;</p>
+<p>​    <strong>public</strong> <strong>int</strong> getDistance(TreeNode root){</p>
+<p>​      </p>
+<p>​       <strong>if</strong>(root &#x3D;&#x3D; <strong>null</strong>){</p>
+<p>​          <strong>return</strong> 0;</p>
+<p>​      }</p>
+<p>​      </p>
+<p>​       <strong>int</strong> leftDistance &#x3D; getDistance(root.leftChild );</p>
+<p>​       <strong>int</strong> rightDistance &#x3D; getDistance(root.rightChild );</p>
+<p>​      </p>
+<p>​       maxDistance &#x3D; Math.<em>max</em>( maxDistance, leftDistance + rightDistance + 1);</p>
+<p>​      </p>
+<p>​       <strong>return</strong> Math.<em>max</em>(leftDistance + 1, rightDistance + 1);</p>
+<p>​      </p>
+<p>   }</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Algorithm/">Algorithm</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2021/08/04/领域知识/三维重建/" title="三维重建基本概念">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  三维重建基本概念</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2020/05/04/领域知识/函数调用过程中的压栈退栈/"  title="函数调用过程中的压栈退栈">
+ <strong>NEXT:</strong><br/> 
+ <span>函数调用过程中的压栈退栈
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%B3%E9%A1%B6%E5%90%91%E4%B8%8B"><span class="toc-number">1.</span> <span class="toc-text">至顶向下</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%B3%E5%BA%95%E5%90%91%E4%B8%8A"><span class="toc-number">2.</span> <span class="toc-text">至底向上</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/3D/" title="3D">3D<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Compilers/" title="Compilers">Compilers<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Computer-Science/" title="Computer Science">Computer Science<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Language/" title="Language">Language<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Object-C/" title="Object-C">Object-C<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/GYP来搭建跨平台编译工程/"></a>
+      </li>
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构？/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/04/领域知识/商务英语常用语/">商务英语常用口语表达</a>
+      </li>
+    
+      <li>
+        <a href="/2021/11/04/领域知识/计算机科学中的一些机制/">计算机科学中的一些机制</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/04/领域知识/三维重建/">三维重建基本概念</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+
