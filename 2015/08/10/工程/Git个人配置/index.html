@@ -83,7 +83,7 @@
     </p>
   <p class="article-time">
     <time datetime="2015-08-10T06:18:28.000Z" itemprop="datePublished">2015-08-10</time>
-    Updated:<time datetime="2018-06-22T08:21:00.000Z" itemprop="dateModified">2018-06-22</time>
+    Updated:<time datetime="2023-02-21T07:41:12.883Z" itemprop="dateModified">2023-02-21</time>
     
   </p>
 </header>
@@ -95,7 +95,8 @@
 		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BF%AB%E6%8D%B7%E9%94%AE%E9%85%8D%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">快捷键配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git%E8%87%AA%E5%B8%A6alias%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">Git自带alias配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89alias%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.</span> <span class="toc-text">自定义alias配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8F%90%E7%A4%BA%E7%AC%A6%E5%90%8E%E9%9D%A2%E6%98%BE%E7%A4%BAGit%E5%88%86%E6%94%AF"><span class="toc-number">2.</span> <span class="toc-text">在命令行提示符后面显示Git分支</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix"><span class="toc-number">2.1.</span> <span class="toc-text">Unix</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.2.</span> <span class="toc-text">OSX</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#meld%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">meld配置</span></a></li></ol>
 		</div>
 		
-		<h1 id="快捷键配置"><a href="#快捷键配置" class="headerlink" title="快捷键配置"></a>快捷键配置</h1><h2 id="Git自带alias配置"><a href="#Git自带alias配置" class="headerlink" title="Git自带alias配置"></a>Git自带alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global alias.st status</span><br><span class="line">git config --global alias.co checkout</span><br><span class="line">git config --global alias.ci commit</span><br><span class="line">git config --global alias.br branch</span><br></pre></td></tr></table></figure>
+		<hr>
+<h1 id="快捷键配置"><a href="#快捷键配置" class="headerlink" title="快捷键配置"></a>快捷键配置</h1><h2 id="Git自带alias配置"><a href="#Git自带alias配置" class="headerlink" title="Git自带alias配置"></a>Git自带alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global alias.st status</span><br><span class="line">git config --global alias.co checkout</span><br><span class="line">git config --global alias.ci commit</span><br><span class="line">git config --global alias.br branch</span><br></pre></td></tr></table></figure>
 <h2 id="自定义alias配置"><a href="#自定义alias配置" class="headerlink" title="自定义alias配置"></a>自定义alias配置</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">alias</span> gitcommit=<span class="string">&quot;git commit -m&quot;</span></span><br><span class="line"><span class="built_in">alias</span> gitlog=<span class="string">&quot;git log&quot;</span></span><br><span class="line"><span class="built_in">alias</span> gitshow=<span class="string">&quot;git show&quot;</span><span class="comment">#查看修改内容</span></span><br><span class="line"><span class="built_in">alias</span> gitcat=<span class="string">&quot;git cat-file&quot;</span></span><br><span class="line"><span class="built_in">alias</span> gitloggraph=<span class="string">&quot;git log --graph --pretty=format:&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27;&quot;</span><span class="comment">#以图形方式显示提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitinfo=<span class="string">&quot;git remote show origin&quot;</span><span class="comment">#查看仓库信息</span></span><br><span class="line"><span class="built_in">alias</span> gitshortlog=<span class="string">&quot;git shortlog --since=1.day.ago&quot;</span><span class="comment">#查看最近一天的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitweekshortlog=<span class="string">&quot;git shortlog --since=1.week.ago --author=&#x27;pengjun&#x27; | grep -v Merge | uniq&quot;</span><span class="comment">#查看最近一周pengjun的提交日志</span></span><br><span class="line"><span class="built_in">alias</span> gitfilelog=<span class="string">&quot;git log --follow -p&quot;</span><span class="comment">#查看文件的修改日志</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="在命令行提示符后面显示Git分支"><a href="#在命令行提示符后面显示Git分支" class="headerlink" title="在命令行提示符后面显示Git分支"></a>在命令行提示符后面显示Git分支</h1><p>明确当前的Git分支很重要，之前也不知道有这个功能，开发者频繁的需要查看当前分支，就觉得这个问题其他开发人员也遇到过，应该有解决办法<br>Unix环境一般是服务器，需要显示登录名和主机名</p>
@@ -230,10 +231,6 @@
   <ul class="entry">
     
       <li>
-        <a href="/2023/02/21/工程/GYP来搭建跨平台编译工程/"></a>
-      </li>
-    
-      <li>
         <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构？/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
       </li>
     
@@ -247,6 +244,10 @@
     
       <li>
         <a href="/2021/08/04/领域知识/三维重建/">三维重建基本概念</a>
+      </li>
+    
+      <li>
+        <a href="/2020/05/04/算法/算法中树形迭代的在代码中的两种写法/">算法中树形迭代的在代码中的两种写法</a>
       </li>
     
   </ul>
