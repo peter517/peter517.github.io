@@ -1,0 +1,412 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>JStorm拓扑调优 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="如何确定spout和bolt的个数及上下游关系">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/04/25/工程/JStorm拓扑调优/" title="JStorm拓扑调优" itemprop="url">JStorm拓扑调优</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2017-04-25T07:06:04.000Z" itemprop="datePublished">2017-04-25</time>
+    Updated:<time datetime="2018-06-22T08:21:07.000Z" itemprop="dateModified">2018-06-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0spout%E5%92%8Cbolt%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">评估spout和bolt的个数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%A2%9E%E9%80%9F"><span class="toc-number">1.1.</span> <span class="toc-text">日志增速</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout%E8%AF%BB%E5%8F%96%E8%83%BD%E5%8A%9B"><span class="toc-number">1.2.</span> <span class="toc-text">spout读取能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E6%9D%A1%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">spout发送数据条数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt%E5%A4%84%E7%90%86%E8%83%BD%E5%8A%9B"><span class="toc-number">1.4.</span> <span class="toc-text">bolt处理能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E9%87%8F"><span class="toc-number">1.5.</span> <span class="toc-text">bolt发送数据量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8C%96spout%E5%92%8Cbolt%E5%90%9E%E5%90%90%E9%87%8F"><span class="toc-number">2.</span> <span class="toc-text">优化spout和bolt吞吐量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8A%E4%B8%8B%E6%B8%B8%E5%85%B3%E7%B3%BB"><span class="toc-number">3.</span> <span class="toc-text">上下游关系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metrics%E6%95%B0%E6%8D%AE%E7%9B%91%E6%8E%A7"><span class="toc-number">4.</span> <span class="toc-text">Metrics数据监控</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AA%97%E5%8F%A3%E8%81%9A%E5%90%88"><span class="toc-number">5.</span> <span class="toc-text">窗口聚合</span></a></li></ol>
+		</div>
+		
+		<p>写JStorm代码业务逻辑比较容易，关键是设计一个好的拓扑关系，能保证数据正常流动又不占用太多机器资源</p>
+<h1 id="评估spout和bolt的个数"><a href="#评估spout和bolt的个数" class="headerlink" title="评估spout和bolt的个数"></a>评估spout和bolt的个数</h1><h2 id="日志增速"><a href="#日志增速" class="headerlink" title="日志增速"></a>日志增速</h2><p>先查看整个拓扑输入源的日志增速，比如20G&#x2F;min，特别注意处理高峰时期的日志增速，由于metric是以min为单位，后面的统计统一以min为计算单元</p>
+<h2 id="spout读取能力"><a href="#spout读取能力" class="headerlink" title="spout读取能力"></a>spout读取能力</h2><p>计算一个spout读取日志的能力，可以通过metrics来count每分钟读取数据大小，用日志每分钟增量除以spout读取速度，这样就可以计算出总共需要多少个spout，比如一个spout可以读取速度为300M&#x2F;min,那边20G&#x2F;min的日志就需要8个spout来处理（多预留一些空间）</p>
+<h2 id="spout发送数据条数"><a href="#spout发送数据条数" class="headerlink" title="spout发送数据条数"></a>spout发送数据条数</h2><p>spout发送数据量关系到下游的bolt需要多少个，可以通过查看emit的数量来估算，这里一般会比日志数量少，因为业务逻辑会过滤掉部分数据</p>
+<h2 id="bolt处理能力"><a href="#bolt处理能力" class="headerlink" title="bolt处理能力"></a>bolt处理能力</h2><p>bolt处理能力可以通过执行一次bolt的execute函数的耗时来技术，比如0.5ms平均一次execute，这个bolt的处理能力是60 * 1000&#x2F;0.5 &#x3D; 120000条&#x2F;min，如果上流数据是1200000条&#x2F;min，那么需要15个bolt来处理数据</p>
+<h2 id="bolt发送数据量"><a href="#bolt发送数据量" class="headerlink" title="bolt发送数据量"></a>bolt发送数据量</h2><p>bolt发送数据量关系到下游的bolt需要多少个，可以通过查看emit的数量来估算，这里一般会比进来的数量少，业务逻辑会过滤掉部分数据</p>
+<h1 id="优化spout和bolt吞吐量"><a href="#优化spout和bolt吞吐量" class="headerlink" title="优化spout和bolt吞吐量"></a>优化spout和bolt吞吐量</h1><p>spout和bolt吞吐量表示处理数据的能力，IO操作对吞吐量影响很大，尽量在IO时进行批量IO</p>
+<h1 id="上下游关系"><a href="#上下游关系" class="headerlink" title="上下游关系"></a>上下游关系</h1><p>日志处理一般通过shuffle来向下游发送数据，可以把数据平衡发到每个节点</p>
+<h1 id="Metrics数据监控"><a href="#Metrics数据监控" class="headerlink" title="Metrics数据监控"></a>Metrics数据监控</h1><p>通过Metrics来统计count和time cost很有必要，方便问题定位和后续监控</p>
+<h1 id="窗口聚合"><a href="#窗口聚合" class="headerlink" title="窗口聚合"></a>窗口聚合</h1><p>如果需要处理100条日志或者1分钟的日志，需要引入窗口的概念，聚合一个窗口的数据进行处理</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/JStorm/">JStorm</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2018/04/18/工程/并发中的锁/" title="并发中的锁">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  并发中的锁</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/03/20/工程/Java中SDK的基本模块和框架/"  title="Java中SDK的基本模块和框架">
+ <strong>NEXT:</strong><br/> 
+ <span>Java中SDK的基本模块和框架
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%84%E4%BC%B0spout%E5%92%8Cbolt%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">评估spout和bolt的个数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%A2%9E%E9%80%9F"><span class="toc-number">1.1.</span> <span class="toc-text">日志增速</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout%E8%AF%BB%E5%8F%96%E8%83%BD%E5%8A%9B"><span class="toc-number">1.2.</span> <span class="toc-text">spout读取能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spout%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E6%9D%A1%E6%95%B0"><span class="toc-number">1.3.</span> <span class="toc-text">spout发送数据条数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt%E5%A4%84%E7%90%86%E8%83%BD%E5%8A%9B"><span class="toc-number">1.4.</span> <span class="toc-text">bolt处理能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bolt%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE%E9%87%8F"><span class="toc-number">1.5.</span> <span class="toc-text">bolt发送数据量</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8C%96spout%E5%92%8Cbolt%E5%90%9E%E5%90%90%E9%87%8F"><span class="toc-number">2.</span> <span class="toc-text">优化spout和bolt吞吐量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8A%E4%B8%8B%E6%B8%B8%E5%85%B3%E7%B3%BB"><span class="toc-number">3.</span> <span class="toc-text">上下游关系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Metrics%E6%95%B0%E6%8D%AE%E7%9B%91%E6%8E%A7"><span class="toc-number">4.</span> <span class="toc-text">Metrics数据监控</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AA%97%E5%8F%A3%E8%81%9A%E5%90%88"><span class="toc-number">5.</span> <span class="toc-text">窗口聚合</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

@@ -1,0 +1,685 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>用Antlr4解决复杂逻辑配置问题 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="用Antlr4定义DSL语言 解决复杂逻辑配置问题">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/05/23/工程/用Antlr4解决复杂逻辑配置问题/" title="用Antlr4解决复杂逻辑配置问题" itemprop="url">用Antlr4解决复杂逻辑配置问题</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2018-05-23T09:51:32.000Z" itemprop="datePublished">2018-05-23</time>
+    Updated:<time datetime="2019-12-10T03:42:38.000Z" itemprop="dateModified">2019-12-10</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">现有方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RuleEngine%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">RuleEngine接口</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">一个例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%E9%AA%8C%E8%AF%81"><span class="toc-number">4.1.</span> <span class="toc-text">语法验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%A7%84%E5%88%99"><span class="toc-number">4.2.</span> <span class="toc-text">执行规则</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RuleEngine%E8%AF%AD%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">RuleEngine语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.</span> <span class="toc-text">基本类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E5%8F%82%E6%95%B0%E8%BF%90%E7%AE%97"><span class="toc-number">5.2.</span> <span class="toc-text">模板参数运算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.3.</span> <span class="toc-text">运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.3.1.</span> <span class="toc-text">算法运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.3.2.</span> <span class="toc-text">字符串运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.3.</span> <span class="toc-text">Set运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#List%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.4.</span> <span class="toc-text">List运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Map%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.5.</span> <span class="toc-text">Map运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Collection%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.6.</span> <span class="toc-text">Collection运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.7.</span> <span class="toc-text">关系运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.8.</span> <span class="toc-text">逻辑运算</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">工程配置</span></a></li></ol>
+		</div>
+		
+		<h1 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h1><h1 id="现有方案"><a href="#现有方案" class="headerlink" title="现有方案"></a>现有方案</h1><h1 id="RuleEngine接口"><a href="#RuleEngine接口" class="headerlink" title="RuleEngine接口"></a>RuleEngine接口</h1><h1 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h1><h2 id="语法验证"><a href="#语法验证" class="headerlink" title="语法验证"></a>语法验证</h2><p>check方法可以用来验证“$testDoubleVar &lt; -0.1”这条规则语法书写是否正确， </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">RulesEngine rulesEngine = RulesEngineFactory.createRulesEngine(new RulesEngineListener() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public RulesEngineRenderValue onRuleRenderRequest(String key) &#123;</span><br><span class="line">          return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">try &#123;</span><br><span class="line">     bool isSuccess = rulesEngine.check(&quot;$testDoubleVar &lt; -0.1 &quot;);</span><br><span class="line">&#125; catch (ReException e) &#123;</span><br><span class="line">     e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="执行规则"><a href="#执行规则" class="headerlink" title="执行规则"></a>执行规则</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//输入参数key对应的value</span><br><span class="line">Map&lt;String, Object&gt; map = new HashMap();</span><br><span class="line">map.put(&quot;key1&quot;, &quot;123&quot;);</span><br><span class="line">map.put(&quot;key2&quot;, &quot;android&quot;);</span><br><span class="line"></span><br><span class="line">//创建引擎，实现参数key对应value的查询方法</span><br><span class="line">RulesEngine rulesEngine = RulesEngineFactory.createRulesEngine(new RulesEngineListener() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public RulesEngineRenderValue onRuleRenderRequest(String key) &#123;</span><br><span class="line">        RulesEngineRenderValue value = new RulesEngineRenderValue();</span><br><span class="line">        value.setObject(map.get(key));//所有value要经过RulesEngineRenderValue转化</span><br><span class="line">        return value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//输入规则基本信息</span><br><span class="line">RulesEngineParam param = new RulesEngineParam();</span><br><span class="line">param.setTemplateRule(&quot;$key1 == \&quot;123\&quot; and $key2 == \&quot;android\&quot;&quot;);</span><br><span class="line">param.setAppInfo(&quot;Unit Test&quot;);</span><br><span class="line">param.setRuleId(UUID.randomUUID().toString());</span><br><span class="line"></span><br><span class="line">//执行规则</span><br><span class="line">try &#123;</span><br><span class="line">    Object object = rulesEngine.execute(UUID.randomUUID().toString(), param);</span><br><span class="line">&#125; catch (RulesEngineException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="RuleEngine语法"><a href="#RuleEngine语法" class="headerlink" title="RuleEngine语法"></a>RuleEngine语法</h1><h2 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>整型</td>
+<td>数字整型</td>
+<td>1000</td>
+<td>取值范围与Java中Long一致</td>
+</tr>
+<tr>
+<td>浮点型</td>
+<td>数字整型浮点型</td>
+<td>3.1</td>
+<td>取值范围与Java中Double长整型一致</td>
+</tr>
+<tr>
+<td>字符串</td>
+<td>字符串变量</td>
+<td>“1234abcd”</td>
+<td></td>
+</tr>
+<tr>
+<td>布尔类型</td>
+<td>表示true或者false</td>
+<td>true</td>
+<td></td>
+</tr>
+<tr>
+<td>模板参数类型</td>
+<td>表示一个参数</td>
+<td>$ctype</td>
+<td>参数需要调用方通过API传入</td>
+</tr>
+<tr>
+<td>Set</td>
+<td>表示一组变量，每个变量唯一</td>
+<td>{“a”, “b”}</td>
+<td></td>
+</tr>
+<tr>
+<td>List</td>
+<td>表示一组变量，每个变量不唯一</td>
+<td>[“a”, “b”]</td>
+<td></td>
+</tr>
+<tr>
+<td>Map</td>
+<td>表示一组key，value对</td>
+<td>{ “1”&#x3D;”3” , “2”&#x3D;”3” , “3”&#x3D;”3” }</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="模板参数运算"><a href="#模板参数运算" class="headerlink" title="模板参数运算"></a>模板参数运算</h2><table>
+<thead>
+<tr>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$testStringVar &#x3D;&#x3D; “1”</td>
+<td>返回结果依赖$testStringVar的取值</td>
+</tr>
+</tbody></table>
+<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><h3 id="算法运算符"><a href="#算法运算符" class="headerlink" title="算法运算符"></a>算法运算符</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+</td>
+<td>加法</td>
+<td>2 + 3</td>
+<td>返回5</td>
+</tr>
+<tr>
+<td>-</td>
+<td>减发</td>
+<td>3 - 2</td>
+<td>返回1</td>
+</tr>
+<tr>
+<td>*</td>
+<td>乘法</td>
+<td>3.0 * 2</td>
+<td>返回6.0</td>
+</tr>
+<tr>
+<td>&#x2F;</td>
+<td>除法</td>
+<td>5 &#x2F; 2</td>
+<td>返回2.5</td>
+</tr>
+</tbody></table>
+<h3 id="字符串运算符"><a href="#字符串运算符" class="headerlink" title="字符串运算符"></a>字符串运算符</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>contains</td>
+<td>包含</td>
+<td>“1234” contains “123”</td>
+<td>返回true</td>
+</tr>
+<tr>
+<td>matches</td>
+<td>正则匹配，和Java String中的match方法一样</td>
+<td>“abcdef” matches “abcd.*”</td>
+<td>返回true</td>
+</tr>
+</tbody></table>
+<h3 id="Set运算"><a href="#Set运算" class="headerlink" title="Set运算"></a>Set运算</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>contains by</td>
+<td>字符串是否被Set中元素包含</td>
+<td>“abcdef”  contains by { “abcdefg” , “bcdef” }</td>
+<td>“abcdefg” contains “abcdef”, 返回true</td>
+</tr>
+<tr>
+<td>contains one of</td>
+<td>字符串是否包含Set中的元素</td>
+<td>“abcdefg”  contains one of { “abcde” , “bcdeff” }</td>
+<td>“abcdefg” contains “abcde”, 返回true</td>
+</tr>
+<tr>
+<td>matches by</td>
+<td>字符串是否被Set中元素matches</td>
+<td>“abcde.*” matches by { “abcdef” , “bcdef” }</td>
+<td>“abcdef” matches “abcde.*” 返回true</td>
+</tr>
+<tr>
+<td>matches one of</td>
+<td>字符串是否matches Set中的元素</td>
+<td>“abcde” matches one of { “abcd.<em>“ , “bcdef.</em>“ }</td>
+<td>“abcde” matches “abcd.*” 返回true</td>
+</tr>
+<tr>
+<td>&#x3D;&#x3D;</td>
+<td>两个Set是相等</td>
+<td>{ “abcdef” , “bcdef” } &#x3D;&#x3D; { “abcdef” , “bcdef” }</td>
+<td>返回true</td>
+</tr>
+<tr>
+<td>in</td>
+<td>数值是否在Set中</td>
+<td>“abcdef” in { “abcdef” , “bcdef” }</td>
+<td>返回true</td>
+</tr>
+<tr>
+<td>not in</td>
+<td>数值是Set中</td>
+<td>“abcdef” not in { “abcdef” , “bcdef” }</td>
+<td>返回true</td>
+</tr>
+</tbody></table>
+<h3 id="List运算"><a href="#List运算" class="headerlink" title="List运算"></a>List运算</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count in</td>
+<td>返回List元素的个数</td>
+<td>12 count in [ 12 , 12 , 1 ] &#x3D;&#x3D; 2</td>
+<td>返回true</td>
+</tr>
+</tbody></table>
+<h3 id="Map运算"><a href="#Map运算" class="headerlink" title="Map运算"></a>Map运算</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>key in</td>
+<td>返回元素是否在map的key中</td>
+<td>“1” key in { “1”&#x3D;”3” , “2”&#x3D;”3” , “3”&#x3D;”3” }</td>
+<td>返回true</td>
+</tr>
+</tbody></table>
+<h3 id="Collection运算"><a href="#Collection运算" class="headerlink" title="Collection运算"></a>Collection运算</h3><p>Collection包含Set、List、Map</p>
+<table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>size of</td>
+<td>返回Collection大小</td>
+<td>size of [ 12 , 12 , 1 ] &#x3D;&#x3D; 3</td>
+<td>返回true</td>
+</tr>
+</tbody></table>
+<h3 id="关系运算"><a href="#关系运算" class="headerlink" title="关系运算"></a>关系运算</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+</table>
+<blockquote>
+<p>| 大于 | 2 &gt; 3 | 返回false<br>&#x3D; | 大于等于 | 3 &gt;&#x3D; 2 | 返回true<br>&lt; | 小于 | 3.0 &lt; 2 | 返回false<br>&lt;&#x3D; | 小于等于 | 5 &lt;&#x3D; 2 | 返回false<br>&#x3D;&#x3D; | 等于 | 5 &#x3D;&#x3D; 2 | 返回false<br>!&#x3D; | 不等于 | 5 !&#x3D; 2 | 返回true </p>
+</blockquote>
+<h3 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h3><table>
+<thead>
+<tr>
+<th>运算符类型</th>
+<th>说明</th>
+<th>例子</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>and</td>
+<td>并</td>
+<td>（-6 +5.4 &gt; 6.1 -3） and 5 &gt; 4</td>
+<td>返回false</td>
+</tr>
+<tr>
+<td>or</td>
+<td>或</td>
+<td>(3 &lt; 2 or 5 &lt; 4) or (3 &gt; 2 and 5 &gt; 4)</td>
+<td>返回true</td>
+</tr>
+<tr>
+<td>not</td>
+<td>取反</td>
+<td>not(3 &gt; 2)</td>
+<td>返回false</td>
+</tr>
+</tbody></table>
+<h1 id="工程配置"><a href="#工程配置" class="headerlink" title="工程配置"></a>工程配置</h1><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.ali.wy.madai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>rules-engine<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0.4-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.antlr<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>antlr4-runtime<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.7<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- middleware logger provided --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.taobao.middleware<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logger.api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-lang<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-lang<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.6.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Tools/">Tools</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2018/06/22/工程/用GYP搭建跨平台编译工程/" title="用GYP搭建跨平台编译工程">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  用GYP搭建跨平台编译工程</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2018/04/26/工程/任务调度系统设计/"  title="任务调度系统设计">
+ <strong>NEXT:</strong><br/> 
+ <span>任务调度系统设计
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">现有方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RuleEngine%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">RuleEngine接口</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">一个例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E6%B3%95%E9%AA%8C%E8%AF%81"><span class="toc-number">4.1.</span> <span class="toc-text">语法验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%A7%84%E5%88%99"><span class="toc-number">4.2.</span> <span class="toc-text">执行规则</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RuleEngine%E8%AF%AD%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">RuleEngine语法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.</span> <span class="toc-text">基本类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E5%8F%82%E6%95%B0%E8%BF%90%E7%AE%97"><span class="toc-number">5.2.</span> <span class="toc-text">模板参数运算</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.3.</span> <span class="toc-text">运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.3.1.</span> <span class="toc-text">算法运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">5.3.2.</span> <span class="toc-text">字符串运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.3.</span> <span class="toc-text">Set运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#List%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.4.</span> <span class="toc-text">List运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Map%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.5.</span> <span class="toc-text">Map运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Collection%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.6.</span> <span class="toc-text">Collection运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.7.</span> <span class="toc-text">关系运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="toc-number">5.3.8.</span> <span class="toc-text">逻辑运算</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E9%85%8D%E7%BD%AE"><span class="toc-number">6.</span> <span class="toc-text">工程配置</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

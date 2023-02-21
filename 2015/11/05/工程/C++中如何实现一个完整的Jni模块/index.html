@@ -1,0 +1,437 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>C++中如何实现一个完整的Jni模块 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="实现一个Jni模块的基本思路">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/11/05/工程/C++中如何实现一个完整的Jni模块/" title="C++中如何实现一个完整的Jni模块" itemprop="url">C++中如何实现一个完整的Jni模块</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-11-05T02:27:41.000Z" itemprop="datePublished">2015-11-05</time>
+    Updated:<time datetime="2018-07-23T06:37:48.000Z" itemprop="dateModified">2018-07-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNI-OnLoad"><span class="toc-number">1.1.</span> <span class="toc-text">JNI_OnLoad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegisterNatives"><span class="toc-number">1.2.</span> <span class="toc-text">RegisterNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAC%E5%B1%82%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">创建C层实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C%E5%B1%82%E5%9B%9E%E8%B0%83"><span class="toc-number">1.4.</span> <span class="toc-text">C层回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.</span> <span class="toc-text">Java层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%83%E7%94%A8Jni%E6%A8%A1%E5%9D%97"><span class="toc-number">2.</span> <span class="toc-text">调用Jni模块</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E9%87%8A%E6%94%BE"><span class="toc-number">3.</span> <span class="toc-text">资源释放</span></a></li></ol>
+		</div>
+		
+		<p>在<a target="_blank" rel="noopener" href="http://peter517.github.io/2015/08/20/%E5%BC%80%E5%8F%91%E4%B8%AD%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E4%BA%8B%E6%83%85/#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%94%9F%E8%AF%AD%E8%A8%80">开发中容易忽略的事情</a>文章中有提到，对于客户端开发，复用程度最高的还是C语言，但C语言实现的功能在Java语言环境中要通过Jni来调用，Jni基本实现比较简单，但是要做稳定还要考虑很多因素，比如实例管理、资源的释放、多线程处理，本文主要讨论设计一套有<strong>实例管理</strong>的完整JNI模块</p>
+<h1 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h1><h2 id="JNI-OnLoad"><a href="#JNI-OnLoad" class="headerlink" title="JNI_OnLoad"></a>JNI_OnLoad</h2><p>C层加载动态库时调用的第一个函数就是JNI_OnLoad，JNI_OnLoad可以获得JavaVM是全局变量，通过JavaVM可以拿到JNIEnv来进行Jni常见操作（比如FindClass），不同的Jni模块共享同一个JavaVM。</p>
+<p>可以有一个工具模块，来管理JavaVM，同时在不同线程使用JNIEnv时封装调用AttachCurrentThread和DetachCurrentThread的逻辑，其他Jni模块依赖这个工具模块来使用JNIEnv。<br>一般在在JNI_OnLoad时进行RegisterNatives操作，具体代码如下，NativeTest里面的initNativeMethods方法会调用RegisterNatives</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">extern</span> “C” <span class="function">JNIEXPORT jint <span class="title">JNI_OnLoad</span><span class="params">(JavaVM* vm, <span class="type">void</span>* reserved)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!NativeTest::<span class="built_in">initNativeMethods</span>()) &#123;</span><br><span class="line">        <span class="keyword">return</span> JNI_ERR;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> JNI_VERSION_1_6;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="RegisterNatives"><a href="#RegisterNatives" class="headerlink" title="RegisterNatives"></a>RegisterNatives</h2><p><strong>强烈建议大家不要用静态方法注册，方法名和包名要保持一致，如果你只提供一个简单的c层jni封装，别人集成的话只能按照你指定的包名集成</strong></p>
+<p>通过RegisterNatives方法可以把Java层对应类的方法和C层对应的函数绑定起来，java_class代表Java层的对应类的class信息，所以这个绑定是函数元信息跟函数元信息的绑定，不涉及到具体实例</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">jint <span class="title">RegisterNatives</span><span class="params">(jclass java_class, JNINativeMethod method, jint methodLen)</span></span></span><br></pre></td></tr></table></figure>
+<p>具体代码实例如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">NativeTest::initNativeMethods</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    JNINativeMethod nativeFunctions[] =</span><br><span class="line">    &#123;</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;createNativeTest&quot;</span>,</span><br><span class="line">            <span class="string">&quot;(Lcom/test/TestCallback;)J&quot;</span>,</span><br><span class="line">            (<span class="type">void</span>*) &amp;NativeTest::createNativeTest</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;destroyNativeTest&quot;</span>,</span><br><span class="line">            <span class="string">&quot;(J)I&quot;</span>,</span><br><span class="line">            (<span class="type">void</span>*) &amp;NativeTest::destroyNativeTest</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="string">&quot;start&quot;</span>,</span><br><span class="line">            <span class="string">&quot;(J)I&quot;</span>,</span><br><span class="line">            (<span class="type">void</span>*) &amp;NativeTest::terminate</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">    env-&gt;<span class="built_in">RegisterNatives</span>(<span class="string">&quot;com/test/NativeTest&quot;</span>,</span><br><span class="line">                    nativeFunctions,</span><br><span class="line">                    <span class="built_in">sizeof</span>(nativeFunctions)/<span class="built_in">sizeof</span>(nativeFunctions[<span class="number">0</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>JNINativeMethod类型主要包括三个元素，依次为：Java层对应的方法名、Java层方法名的签名，C层对应的方法，比如 “createNativeTest”、”(Lcom&#x2F;test&#x2F;TestCallback;)J”、(void*) &amp;NativeTest::createNativeTest</p>
+<blockquote>
+<p>com&#x2F;test&#x2F; 对应java的包名com.test</p>
+</blockquote>
+<h2 id="创建C层实例"><a href="#创建C层实例" class="headerlink" title="创建C层实例"></a>创建C层实例</h2><p><strong>JNI功能是Java层的一个函数到C层的一个函数的映射，不是一个Java层的类实例和C层类实例的一一对应</strong><br><strong>，所以Java类和C层的类都应该是static的</strong>，当需要使用C层的一个实例时，需要在Java层保持C层的一个实例地址，所有操作都是基于这个实例，具体代码如下，通过createNativeTest来创建一个实例，同时传入了一个回调类TestCb，用来在Test方法完成某项功能后进行回调。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">jlong <span class="title">NativeTest::createNativeTest</span><span class="params">(JNIEnv* env, jclass cls,jobject jobject_test_callback)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    TestCb* test_cb = <span class="keyword">new</span> <span class="built_in">TestCb</span>(env,jobject_test_callback);</span><br><span class="line">    Test* test = <span class="keyword">new</span> <span class="built_in">Test</span>(test_cb);</span><br><span class="line">    <span class="keyword">if</span>(test == <span class="literal">NULL</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;<span class="type">intptr_t</span>&gt;(test);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">jint <span class="title">NativeTest::destroyNativeTest</span><span class="params">(JNIEnv* env, jclass cls,jlong test_address)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Test* test = <span class="built_in">reinterpret_cast</span>&lt;Test*&gt;(test_address);</span><br><span class="line">    <span class="keyword">if</span> (test == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span> test;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把实例地址返回给Java层，Java层在调用其他方法时，比如start方法，需要把这个作为参数传入，通过reinterpret_cast强转为对应的类型，再进行相应的调用，如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function">jint <span class="title">NativeTest::start</span><span class="params">(JNIEnv* env, jclass cls,jlong test_address)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Test* test = <span class="built_in">reinterpret_cast</span>&lt;Test*&gt;(test_address);</span><br><span class="line">    <span class="keyword">if</span> (test == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> test-&gt;<span class="built_in">start</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="C层回调"><a href="#C层回调" class="headerlink" title="C层回调"></a>C层回调</h2><p>Java层调用了一个C的接口，C里面给Java一个回调是很常见的业务，具体代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">TestCb::<span class="built_in">TestCb</span>(JNIEnv* env, jobject jobject_callback)</span><br><span class="line">&#123;</span><br><span class="line">    jobject_callback_global_ = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="literal">NULL</span> != jobject_callback)</span><br><span class="line">    &#123;</span><br><span class="line">        jclass jclass_callback = env-&gt;<span class="built_in">GetObjectClass</span>(jobject_callback);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">NULL</span> != jclass_callback)</span><br><span class="line">        &#123;</span><br><span class="line">            jobject_callback_global_ =  env-&gt;<span class="built_in">NewGlobalRef</span>(jobject_callback);</span><br><span class="line">            jclass_callback_global_ = (jclass) env-&gt;<span class="built_in">NewGlobalRef</span>(jclass_callback);;</span><br><span class="line">            env-&gt;<span class="built_in">DeleteLocalRef</span>(jclass_callback);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">TestCb::~<span class="built_in">TestCb</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (jobject_callback_global_)</span><br><span class="line">    &#123;</span><br><span class="line">        env-&gt;<span class="built_in">DeleteGlobalRef</span>(jobject_callback_global_);</span><br><span class="line">        jobject_callback_global_ = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (jclass_callback_global_)</span><br><span class="line">    &#123;</span><br><span class="line">        env-&gt;<span class="built_in">DeleteGlobalRef</span>(jclass_callback_global_);</span><br><span class="line">        jclass_callback_global_ = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>TestCb类里面保存了从Java层传入的对象指针jobject_callback，在构造函数中将其转化成全局的指针jobject_callback_global_和对应的类信息对象jclass_callback_global_，在Test类中进行回调时，通过jobject_callback_global_获取jmethodID，通过jclass_callback_global_找到对应的对象完成回调，如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">TestCb::onTest</span><span class="params">(<span class="type">long</span> value)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    jlong j_value = (jlong) value;</span><br><span class="line">    jmethodID jmethod =env-&gt;<span class="built_in">GetMethodID</span>(jclass_callback_global_, <span class="string">&quot;onTest&quot;</span>, <span class="string">&quot;(J)V&quot;</span>);</span><br><span class="line">    env-&gt;<span class="built_in">CallVoidMethod</span>(jobject_callback_global_, jmethod,j_value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Java层实现"><a href="#Java层实现" class="headerlink" title="Java层实现"></a>Java层实现</h2><p>Java层的类主要是对C层实例的封装，让使用者感觉不到是C的实现，代码如下，在构造函数的时候调用createNativeTest来保存C层的指针，调用start方法时把nativeAddress传到C层，通过terminate方法来释放对应的C层指针</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"></span><br><span class="line"><span class="comment">//NativeTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NativeTest</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> <span class="variable">nativeAddress</span> <span class="operator">=</span> <span class="number">0L</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">TestCallback</span> <span class="variable">testCallback</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TestCallback</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">create</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="number">0L</span> != <span class="built_in">this</span>.nativeAddress) &#123;</span><br><span class="line">            <span class="built_in">this</span>.destroy();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">this</span>.nativeAddress = createNativeTest(<span class="built_in">this</span>.testCallback);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0L</span> != <span class="built_in">this</span>.nativeAddress;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NativeTest</span><span class="params">()</span> &#123;</span><br><span class="line">        create();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">start</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> start(<span class="built_in">this</span>.nativeAddress);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">terminate</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">ret</span> <span class="operator">=</span> terminate(<span class="built_in">this</span>.nativeAddress);</span><br><span class="line">        <span class="keyword">return</span> destroy();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">destroy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">nativeAddressTemp</span> <span class="operator">=</span> <span class="built_in">this</span>.nativeAddress;</span><br><span class="line">        <span class="built_in">this</span>.nativeAddress = <span class="number">0L</span>;</span><br><span class="line">        <span class="keyword">return</span> destroyNativeTest(nativeAddressTemp);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="type">long</span> <span class="title function_">createNativeTest</span><span class="params">(TestCallback callback)</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="type">int</span> <span class="title function_">destroyNativeTest</span><span class="params">(<span class="type">long</span> nativeAddress)</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="type">int</span> <span class="title function_">start</span><span class="params">(<span class="type">long</span> nativeAddress)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>回调类TestCallback是给C层调用的，在NativeTest初始化的时候把回调地址传给C层，TestCallback可以作为一个接口，这样更改回调实现时就不用更改C层代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestCallback</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onTest</span><span class="params">(<span class="type">long</span> value)</span>&#123;</span><br><span class="line">        <span class="comment">//TODO</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="调用Jni模块"><a href="#调用Jni模块" class="headerlink" title="调用Jni模块"></a>调用Jni模块</h1><p>实例化NativeTest，<strong>通过调用start和destroy来控制c层的内存初始化和释放，进行实例管理，防止内存泄露</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">NativeTest</span> <span class="variable">nativeTest</span> <span class="operator">=</span> NativeTest.createNativeTest(<span class="keyword">new</span> <span class="title class_">TestCallback</span>()&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onTest</span><span class="params">(<span class="type">long</span> value)</span>&#123;</span><br><span class="line">        <span class="comment">//TODO</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">nativeTest.start();</span><br><span class="line"><span class="comment">//TODO</span></span><br><span class="line">nativeTest.destroy();</span><br></pre></td></tr></table></figure>
+
+<h1 id="资源释放"><a href="#资源释放" class="headerlink" title="资源释放"></a>资源释放</h1><p>Jni在本地局部或全局引用没有释放，超过内存句柄限制时会导致“local reference table overflow”，jobject、jstring、jclass是常见的需要释放的类型，<strong>通过命名方式可以提醒程序员来释放相应资源</strong></p>
+<ul>
+<li>jobject类型本地局部命名以“jobject_”开头，例如：jobject_arraylist</li>
+<li>jstring类型本地局部命名以“jstring_”开头，例如：jstring_id</li>
+<li>jclass类型本地局部命名以“jclass_”开头，例如：jclass_test</li>
+</ul>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/C/">C++</a><a href="/tags/Jni/">Jni</a><a href="/tags/Java/">Java</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/11/06/工程/C++中线程级资源自动释放/" title="C++中线程级资源自动释放">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  C++中线程级资源自动释放</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/10/12/工程/C++中宏在的正确使用/"  title="C++中宏在的正确使用">
+ <strong>NEXT:</strong><br/> 
+ <span>C++中宏在的正确使用
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNI-OnLoad"><span class="toc-number">1.1.</span> <span class="toc-text">JNI_OnLoad</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RegisterNatives"><span class="toc-number">1.2.</span> <span class="toc-text">RegisterNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAC%E5%B1%82%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">创建C层实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C%E5%B1%82%E5%9B%9E%E8%B0%83"><span class="toc-number">1.4.</span> <span class="toc-text">C层回调</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%B1%82%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.</span> <span class="toc-text">Java层实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%83%E7%94%A8Jni%E6%A8%A1%E5%9D%97"><span class="toc-number">2.</span> <span class="toc-text">调用Jni模块</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E9%87%8A%E6%94%BE"><span class="toc-number">3.</span> <span class="toc-text">资源释放</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

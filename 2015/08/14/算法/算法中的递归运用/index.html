@@ -1,0 +1,463 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>算法中的递归运用 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="递归在常见算法中的运用">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/14/算法/算法中的递归运用/" title="算法中的递归运用" itemprop="url">算法中的递归运用</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-08-14T09:22:23.000Z" itemprop="datePublished">2015-08-14</time>
+    Updated:<time datetime="2018-06-22T09:48:48.000Z" itemprop="dateModified">2018-06-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%95%E7%BA%AF%E9%80%92%E5%BD%92"><span class="toc-number">1.</span> <span class="toc-text">单纯递归</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">典型运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E6%B2%BB"><span class="toc-number">2.</span> <span class="toc-text">分治</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3-1"><span class="toc-number">2.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8-1"><span class="toc-number">2.2.</span> <span class="toc-text">典型运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B-1"><span class="toc-number">2.3.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9E%E6%BA%AF"><span class="toc-number">3.</span> <span class="toc-text">回溯</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3-2"><span class="toc-number">3.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8-2"><span class="toc-number">3.2.</span> <span class="toc-text">典型运用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="toc-number">4.</span> <span class="toc-text">动态规划</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3-3"><span class="toc-number">4.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8-3"><span class="toc-number">4.2.</span> <span class="toc-text">典型运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B-2"><span class="toc-number">4.3.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%92%E5%BD%92%E6%9E%84%E5%BB%BA%E6%9C%80%E7%BB%88%E8%A7%A3"><span class="toc-number">5.</span> <span class="toc-text">递归构建最终解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%B8%AA%E6%95%B0%E6%8D%AE"><span class="toc-number">5.1.</span> <span class="toc-text">单个数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA%E6%95%B0%E6%8D%AE"><span class="toc-number">5.2.</span> <span class="toc-text">多个数据</span></a></li></ol></li></ol>
+		</div>
+		
+		<h1 id="单纯递归"><a href="#单纯递归" class="headerlink" title="单纯递归"></a>单纯递归</h1><h2 id="主要思想"><a href="#主要思想" class="headerlink" title="主要思想"></a>主要思想</h2><p>递归是各类算法的基本动作，递归要注意以下几点：</p>
+<ul>
+<li>递归算法能设计成不返回值就不返回值，因为递归的出口一般不止一个，设计成返回值会增加复杂度</li>
+<li>如果设计成参数，那么要注意：参数如果传值，那么是每个被递归函数的私有数据，如果是传引用，那么是每个被递归函数的公有数据</li>
+</ul>
+<blockquote>
+<p>单纯的递归动作，每递归一次，问题规模进一步缩小（有时可能是放大），直到问题规模到达下界（或上界），停止递归，原路返回</p>
+</blockquote>
+<h2 id="典型运用"><a href="#典型运用" class="headerlink" title="典型运用"></a>典型运用</h2><p>斐波纳契数列</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>单纯的递归易于编码实现，但容易造成重复计算子问题（可以通过记录子问题的解来避免），比如“斐波纳契数列”的递归解法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">f</span><span class="params">(<span class="type">int</span> n)</span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">1</span> )&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span> <span class="keyword">if</span>(n == <span class="number">2</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>避免重复计算子问题改进后的斐波纳契数列：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">f</span><span class="params">(<span class="type">int</span> n)</span>&#123;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">//如果之前计算过那么直接返回</span></span><br><span class="line">      <span class="keyword">if</span> (resultArray[n - <span class="number">1</span>] != <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> resultArray[n - <span class="number">1</span>];</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">1</span> )&#123;</span><br><span class="line">            resultArray[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span> <span class="keyword">if</span>(n == <span class="number">2</span>)&#123;</span><br><span class="line">            resultArray[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//记录每次计算的解</span></span><br><span class="line">            resultArray[n - <span class="number">1</span>] = f(n - <span class="number">1</span>) + f(n - <span class="number">2</span>);</span><br><span class="line">            <span class="keyword">return</span> resultArray[n - <span class="number">1</span>];</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="分治"><a href="#分治" class="headerlink" title="分治"></a>分治</h1><h2 id="主要思想-1"><a href="#主要思想-1" class="headerlink" title="主要思想"></a>主要思想</h2><p>分治基本动作是递归，但它是把问题空间用递归的方法分为各个不相关的子问题，然后计算每个小问题，最后合并各个解,</p>
+<blockquote>
+<p>分治消除了重复计算子问题的问题，所以比较高效,分治和单纯的递归的根本区别在于解空间的划分是否有重复</p>
+</blockquote>
+<h2 id="典型运用-1"><a href="#典型运用-1" class="headerlink" title="典型运用"></a>典型运用</h2><p>归并排序，快速排序</p>
+<h2 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h2><p>分治法有两个类型:<br>所有操作都在一组数据上进行，如下，</p>
+<blockquote>
+<p>mergeSort方法的“合并一”与“合并二”没有数据交流，如归并排序</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">mergeSort</span><span class="params">(<span class="type">int</span>[] data, <span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (start &lt; end) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="type">int</span> <span class="variable">middle</span> <span class="operator">=</span> (start + end) / <span class="number">2</span>;</span><br><span class="line">            mergeSort(data, start, middle);</span><br><span class="line">            mergeSort(data, middle + <span class="number">1</span>, end);</span><br><span class="line"></span><br><span class="line">            merge(data, start, end);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如新search方法的“合并一”与“合并二”有数据交流</p>
+</blockquote>
+<p>“合并一”得到的数据要返回给”合并二”，如求数组的最大值与最小值</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Result <span class="title function_">search</span><span class="params">(<span class="type">int</span> start, <span class="type">int</span> end)</span> &#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (start == end) &#123;</span><br><span class="line">            <span class="type">Result</span> <span class="variable">r</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Result</span>(data[start], data[start]);</span><br><span class="line">            <span class="keyword">return</span> r;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="type">int</span> <span class="variable">mid</span> <span class="operator">=</span> (start + end) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">      <span class="type">Result</span> <span class="variable">rLeft</span> <span class="operator">=</span> search(start, mid);</span><br><span class="line">      <span class="type">Result</span> <span class="variable">rRight</span> <span class="operator">=</span> search(mid + <span class="number">1</span>, end);</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">return</span> Result.cmpResult(rLeft, rRight);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="回溯"><a href="#回溯" class="headerlink" title="回溯"></a>回溯</h1><h2 id="主要思想-2"><a href="#主要思想-2" class="headerlink" title="主要思想"></a>主要思想</h2><p>回溯的基本动作是递归，把问题解想象成一个树状空间，</p>
+<blockquote>
+<p>用递归的方法，深度搜索遍历整棵树；最适合使用回溯法的是在整个树状空间中，存在从根节点到某叶子节点的完整路径的解；回溯法会先完成整个左子树递归后，再进行右子树递归，当对第一个右子树进行递归的时候，整个函数完整的执行了一遍**</p>
+</blockquote>
+<p>利用剪枝技术，回溯法可以得到较好的效果</p>
+<p>回溯法和单纯的递归区别在于：</p>
+<ul>
+<li>“单纯的递归”递归到叶子节点时候就进行原路返回</li>
+<li>“回溯法”递归到叶子节点时返回到叶子节点的父节点，如果该父节点还有其他分支，那么对其他分支依次进行递归操作</li>
+</ul>
+<p>所以回溯法中有一个操作要注意，</p>
+<blockquote>
+<p>即是由叶子节点时返回到该叶子节点的父节点时，要把状态恢复到父节点将要递归到子节点前的状态</p>
+</blockquote>
+<h2 id="典型运用-2"><a href="#典型运用-2" class="headerlink" title="典型运用"></a>典型运用</h2><p>八皇后问题</p>
+<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><h2 id="主要思想-3"><a href="#主要思想-3" class="headerlink" title="主要思想"></a>主要思想</h2><blockquote>
+<p>动态规划虽然在语言层面上没有用到递归，但是其最优子结构的公式是通过递归的思想构建的，其递归用在解空间上，适合于解有公共子问题的问题，把公共子问题的解保存在一个表中，解其他子问题时候需要时进行查询</p>
+</blockquote>
+<p>对于“斐波纳契数列”，其迭代的解法近似可以看成是一种动态规划，相对于递归解法，没有重复计算一些子问题，有更高的效率；动态规划通过遍历已计算出的最优子问题的表，来构建最优解</p>
+<blockquote>
+<p>因为动态规划的每一步都需要遍历全部或者部分的子空间解，递归只是对上一步解的固定模式的应用</p>
+</blockquote>
+<h2 id="典型运用-3"><a href="#典型运用-3" class="headerlink" title="典型运用"></a>典型运用</h2><p>0-1背包，最长非连续公共子序列</p>
+<h2 id="实例-2"><a href="#实例-2" class="headerlink" title="实例"></a>实例</h2><p>“斐波纳契数列”的迭代解法只是单纯的读表，所以只能说是近似的动态规划：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">f</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (n == <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            resultArray[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">            resultArray[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">2</span>; i &lt; n; i++) &#123;</span><br><span class="line">                  resultArray[i] = resultArray[i - <span class="number">1</span>] + resultArray[i - <span class="number">2</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> resultArray[n - <span class="number">1</span>];</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="递归构建最终解"><a href="#递归构建最终解" class="headerlink" title="递归构建最终解"></a>递归构建最终解</h1><h2 id="单个数据"><a href="#单个数据" class="headerlink" title="单个数据"></a>单个数据</h2><ul>
+<li>全局变量:八皇后问题，计算解的数量</li>
+<li>函数参数：最长非连续公共子序列，计算最长非连续公共子序列</li>
+<li>返回值：斐波纳契数，计算总和</li>
+</ul>
+<h2 id="多个数据"><a href="#多个数据" class="headerlink" title="多个数据"></a>多个数据</h2><p>需要对递归的各个分支得到数据进行对比来构建最终的解，把各个分支得到的解放进一个列表中，然后根据最优判断条件对这个列表进行遍历，判断出最优解。比如“最长连续公共子序列问题”</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Algorithm/">Algorithm</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/20/管理/开发中容易忽略的事情/" title="开发中容易忽略的事情">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  开发中容易忽略的事情</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/08/10/工程/ELF文件反编译工具/"  title="ELF文件反编译工具">
+ <strong>NEXT:</strong><br/> 
+ <span>ELF文件反编译工具
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%95%E7%BA%AF%E9%80%92%E5%BD%92"><span class="toc-number">1.</span> <span class="toc-text">单纯递归</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8"><span class="toc-number">1.2.</span> <span class="toc-text">典型运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E6%B2%BB"><span class="toc-number">2.</span> <span class="toc-text">分治</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3-1"><span class="toc-number">2.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8-1"><span class="toc-number">2.2.</span> <span class="toc-text">典型运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B-1"><span class="toc-number">2.3.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9E%E6%BA%AF"><span class="toc-number">3.</span> <span class="toc-text">回溯</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3-2"><span class="toc-number">3.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8-2"><span class="toc-number">3.2.</span> <span class="toc-text">典型运用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="toc-number">4.</span> <span class="toc-text">动态规划</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E6%80%9D%E6%83%B3-3"><span class="toc-number">4.1.</span> <span class="toc-text">主要思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E8%BF%90%E7%94%A8-3"><span class="toc-number">4.2.</span> <span class="toc-text">典型运用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B-2"><span class="toc-number">4.3.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%92%E5%BD%92%E6%9E%84%E5%BB%BA%E6%9C%80%E7%BB%88%E8%A7%A3"><span class="toc-number">5.</span> <span class="toc-text">递归构建最终解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%B8%AA%E6%95%B0%E6%8D%AE"><span class="toc-number">5.1.</span> <span class="toc-text">单个数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA%E6%95%B0%E6%8D%AE"><span class="toc-number">5.2.</span> <span class="toc-text">多个数据</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

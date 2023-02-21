@@ -1,0 +1,451 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Qt中Windows端应用工程搭建 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="利用qmake、nsis、sparkle、工具开发可发布的Windows客户端">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/28/工程/Qt中Windows端应用工程搭建/" title="Qt中Windows端应用工程搭建" itemprop="url">Qt中Windows端应用工程搭建</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-11-28T09:28:09.000Z" itemprop="datePublished">2016-11-28</time>
+    Updated:<time datetime="2018-07-17T09:49:05.000Z" itemprop="dateModified">2018-07-17</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">链接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Debug-or-Release"><span class="toc-number">2.1.</span> <span class="toc-text">Debug or Release</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96SDK%E9%9B%86%E6%88%90"><span class="toc-number">2.2.</span> <span class="toc-text">其他SDK集成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NSIS%E5%BA%94%E7%94%A8%E6%89%93%E5%8C%85"><span class="toc-number">3.</span> <span class="toc-text">NSIS应用打包</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Page%E5%92%8CUninstPage"><span class="toc-number">3.1.1.</span> <span class="toc-text">Page和UninstPage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BF%BB%E9%A1%B5"><span class="toc-number">3.1.2.</span> <span class="toc-text">翻页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.1.3.</span> <span class="toc-text">生命周期</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell%E9%A3%8E%E6%A0%BC"><span class="toc-number">3.2.</span> <span class="toc-text">Shell风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">3.2.1.</span> <span class="toc-text">基本信息配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.2.</span> <span class="toc-text">系统函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.3.</span> <span class="toc-text">自定义函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%87%E7%BC%96%E9%A3%8E%E6%A0%BC"><span class="toc-number">3.3.</span> <span class="toc-text">汇编风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E4%BA%92%E6%96%A5"><span class="toc-number">3.3.1.</span> <span class="toc-text">判断互斥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6%E5%8F%8A%E5%85%B6%E6%B3%A8%E5%86%8C%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.3.2.</span> <span class="toc-text">创建组件及其注册事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E8%81%94%E5%8A%A8"><span class="toc-number">3.3.3.</span> <span class="toc-text">组件联动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E7%BB%84%E4%BB%B6"><span class="toc-number">3.3.4.</span> <span class="toc-text">隐藏组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kill%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.3.5.</span> <span class="toc-text">Kill进程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7"><span class="toc-number">4.</span> <span class="toc-text">在线升级</span></a></li></ol>
+		</div>
+		
+		<h1 id="工程建立"><a href="#工程建立" class="headerlink" title="工程建立"></a>工程建立</h1><p><a target="_blank" rel="noopener" href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#%E5%B7%A5%E7%A8%8B%E5%BB%BA%E7%AB%8B">Qt中PC端应用工程搭建</a></p>
+<h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><h2 id="Debug-or-Release"><a href="#Debug-or-Release" class="headerlink" title="Debug or Release"></a>Debug or Release</h2><p>Window App在编译Debug or Release模式时会找对应的Qt包，QtCored.dll是Debug需要的，QtCore.dll是Release需要的，Debug的库命名方式后面多了一个d，在应用打包环境需要注意</p>
+<h2 id="其他SDK集成"><a href="#其他SDK集成" class="headerlink" title="其他SDK集成"></a>其他SDK集成</h2><ul>
+<li>OpenCV编译出来的版本一般有两个维度，除了常见的CPU位数，还有VS版本，开发App和打包阶段需要把App的VS环境和CPU位数考虑进去</li>
+<li>当集成许多SDK时，保证每个SDK都统一成Debug版本或者Release版本</li>
+</ul>
+<h1 id="NSIS应用打包"><a href="#NSIS应用打包" class="headerlink" title="NSIS应用打包"></a>NSIS应用打包</h1><p>NSIS是Windows上面的开源打包工具，用类似汇编和Shell混合的语言来构建一个安装程序，支持c、c++语言实现的插件，功能很全。</p>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>NSIS以每个页面为单元构建一个安装包，开发者在对应页面中完成相应代码，NSIS用;代表注释</p>
+<h3 id="Page和UninstPage"><a href="#Page和UninstPage" class="headerlink" title="Page和UninstPage"></a>Page和UninstPage</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Page</span> <span class="literal">custom</span> WelcomePage</span><br><span class="line"><span class="keyword">Page</span> <span class="literal">custom</span> InstallPage</span><br><span class="line"><span class="keyword">Page</span> <span class="literal">custom</span> FinishPage</span><br><span class="line"></span><br><span class="line"><span class="keyword">UninstPage</span> <span class="literal">custom</span> un.WelecomPage</span><br><span class="line"><span class="keyword">UninstPage</span> <span class="literal">custom</span> un.UnInstallPage</span><br><span class="line"><span class="keyword">UninstPage</span> <span class="literal">custom</span> un.FinishPage</span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> <span class="title function_">WelcomePage</span></span><br><span class="line">    <span class="comment">;TODO</span></span><br><span class="line">End</span><br></pre></td></tr></table></figure>
+
+<h3 id="翻页"><a href="#翻页" class="headerlink" title="翻页"></a>翻页</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Function</span> <span class="title function_">Next_Page</span></span><br><span class="line">  <span class="keyword">IntCmp</span> <span class="variable">$R9</span> <span class="number">0</span> <span class="number">0</span> Move Move</span><br><span class="line">    <span class="keyword">StrCmp</span> <span class="variable">$R9</span> <span class="string">&quot;X&quot;</span> <span class="number">0</span> Move</span><br><span class="line">      <span class="keyword">StrCpy</span> <span class="variable">$R9</span> <span class="string">&quot;120&quot;</span></span><br><span class="line">  Move:</span><br><span class="line">  <span class="keyword">SendMessage</span> <span class="variable">$HWNDPARENT</span> <span class="string">&quot;0x408&quot;</span> <span class="string">&quot;<span class="variable">$R9</span>&quot;</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>官方例子</p>
+</blockquote>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>.onInit –&gt; .onGUIInit –&gt; Pages –&gt;  un.onInit –&gt; un.onGUIInit  –&gt; un.Pages</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator">!</span><span class="keyword">define</span> MUI_CUSTOMFUNCTION_GUIINIT onGUIInit</span><br><span class="line"><span class="operator">!</span><span class="keyword">define</span> MUI_CUSTOMFUNCTION_UNGUIINIT un.onGUIInit</span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> .onInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> .onGUIInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> un.onInit</span><br><span class="line"><span class="keyword">End</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> un.onGUIInit</span><br><span class="line"><span class="keyword">End</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Shell风格"><a href="#Shell风格" class="headerlink" title="Shell风格"></a>Shell风格</h2><p>NSIS从瀑布上执行流程，脚本中只有两个基本概念，变量和函数，和Shell很类似，变量从来源上分为系统变量、UI变量、用户自定义变量，函数分为系统函数和自定义函数</p>
+<h3 id="基本信息配置"><a href="#基本信息配置" class="headerlink" title="基本信息配置"></a>基本信息配置</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Name</span> <span class="string">&quot;YourAppName&quot;</span></span><br><span class="line"><span class="keyword">OutFile</span> <span class="string">&quot;Your-Setup.exe&quot;</span></span><br><span class="line"><span class="keyword">InstallDir</span> <span class="string">&quot;YourInstallDir&quot;</span></span><br><span class="line"><span class="keyword">XPStyle</span> <span class="literal">on</span></span><br><span class="line"><span class="keyword">RequestExecutionLevel</span> <span class="literal">admin</span> <span class="comment">;要求系统权限执行</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>NSIS框架会读取这些信息来配置安装包</p>
+</blockquote>
+<h3 id="系统函数"><a href="#系统函数" class="headerlink" title="系统函数"></a>系统函数</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CreateDirectory</span> <span class="variable">$YourDir</span><span class="comment">; 创建目录</span></span><br><span class="line"><span class="keyword">Exec</span> YourApp.exe <span class="comment">; 运行文件</span></span><br><span class="line"><span class="keyword">ExecShell</span> <span class="string">&quot;open&quot;</span> Your_URL <span class="comment">; 打开网页</span></span><br><span class="line"><span class="keyword">CreateShortCut</span> <span class="variable">$YourShortCut</span><span class="comment">; 创建快捷方式</span></span><br><span class="line"><span class="keyword">SendMessage</span> <span class="variable">$Pb_Uninstall</span> <span class="variable">$&#123;PBM_SETPOS&#125;</span> <span class="number">80</span> <span class="number">0</span> <span class="comment">;更新进度条</span></span><br><span class="line"><span class="keyword">DetailPrint</span> <span class="string">&quot;WindowsVersion:&quot;</span><span class="comment">; 打印日志</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>$Pb_Uninstall是组件变量，${PBM_SETPOS} 是系统变量，与UI组件交互一般用SendMessage方法</p>
+</blockquote>
+<h3 id="自定义函数"><a href="#自定义函数" class="headerlink" title="自定义函数"></a>自定义函数</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Function</span> <span class="title function_">Your_Method</span></span><br><span class="line">    <span class="comment">;TODO</span></span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Function</span> <span class="title function_">SomPage_Method</span></span><br><span class="line">    <span class="keyword">Call</span> Your_Method</span><br><span class="line"><span class="keyword">FunctionEnd</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="汇编风格"><a href="#汇编风格" class="headerlink" title="汇编风格"></a>汇编风格</h2><p>通过Pop和Push命令和系统、第三方插件方法进行数据交互，很汇编的写法，常用Pop方法获取系统调用结果。</p>
+<h3 id="判断互斥"><a href="#判断互斥" class="headerlink" title="判断互斥"></a>判断互斥</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"> <span class="params">System</span>::<span class="keyword">Call</span> <span class="string">&#x27;kernel32::CreateMutex(i 0, i 0, t &quot;<span class="variable">$&#123;INSTALL_NAME&#125;</span>&quot;) ?e&#x27;</span></span><br><span class="line"><span class="keyword">Pop</span> <span class="variable">$R0</span></span><br><span class="line"><span class="keyword">StrCmp</span> <span class="variable">$R0</span> <span class="number">0</span> +<span class="number">3</span></span><br><span class="line"> <span class="keyword">MessageBox</span> <span class="params">MB_OK</span> <span class="string">&quot;Already Running!&quot;</span></span><br><span class="line"> <span class="keyword">Abort</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Pop命令获取System::Call的结果，存放到$R0里面</p>
+</blockquote>
+<h3 id="创建组件及其注册事件"><a href="#创建组件及其注册事件" class="headerlink" title="创建组件及其注册事件"></a>创建组件及其注册事件</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"> <span class="variable">$&#123;NSD_CreateButton&#125;</span> <span class="number">454</span> <span class="number">13</span> <span class="number">14</span> <span class="number">14</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="keyword">Pop</span> <span class="variable">$Bt_CloseDialog</span></span><br><span class="line"><span class="keyword">GetFunctionAddress</span> <span class="variable">$3</span> OnClick_CloseDialog <span class="comment">; 获取自定义OnClick_CloseDialog方法的地址</span></span><br><span class="line"><span class="title function_">SkinBtn::onClick</span> <span class="variable">$Bt_CloseDialog</span> <span class="variable">$3</span> <span class="comment">;把OnClick_CloseDialog设置为SkinBtn::onClick的响应事件</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>${NSD_CreateButton}里面存放一个创建UI的方法</p>
+</blockquote>
+<h3 id="组件联动"><a href="#组件联动" class="headerlink" title="组件联动"></a>组件联动</h3><p>NSIS中很多组件的效果需要开发人员完成，例如下面的Checkbox效果，通过Checkbox来控制某个按钮是否可以点击，</p>
+<figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"> <span class="variable">$&#123;IF&#125;</span> <span class="variable">$IS_AgreeLicence</span> == <span class="number">1</span></span><br><span class="line">	<span class="keyword">IntOp</span> <span class="variable">$IS_AgreeLicence</span> <span class="variable">$IS_AgreeLicence</span> - <span class="number">1</span></span><br><span class="line">	<span class="keyword">EnableWindow</span> <span class="variable">$Bt_Install</span> <span class="number">0</span> <span class="comment">;disable Bt_Install 组件</span></span><br><span class="line">	<span class="keyword">StrCpy</span> <span class="variable">$1</span> <span class="variable">$Cb_AgreeLicence</span></span><br><span class="line">	<span class="keyword">Call</span> SkinBtn_UnChecked <span class="comment">; 调用自定义方法并传入Checkbox组件</span></span><br><span class="line"><span class="variable">$&#123;ELSE&#125;</span></span><br><span class="line">	<span class="keyword">IntOp</span> <span class="variable">$IS_AgreeLicence</span> <span class="variable">$IS_AgreeLicence</span> + <span class="number">1</span></span><br><span class="line">	<span class="keyword">EnableWindow</span> <span class="variable">$Bt_Install</span> <span class="number">1</span></span><br><span class="line">	<span class="keyword">StrCpy</span> <span class="variable">$1</span> <span class="variable">$Cb_AgreeLicence</span> <span class="comment">; enable Bt_Install 组件</span></span><br><span class="line">	<span class="keyword">Call</span> SkinBtn_Checked <span class="comment">; 调用自定义方法并传入Checkbox组件</span></span><br><span class="line"><span class="variable">$&#123;EndIf&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="隐藏组件"><a href="#隐藏组件" class="headerlink" title="隐藏组件"></a>隐藏组件</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GetDlgItem</span> <span class="variable">$0</span> <span class="variable">$HWNDPARENT</span> <span class="number">1034</span></span><br><span class="line"><span class="keyword">ShowWindow</span> <span class="variable">$0</span> <span class="variable">$&#123;SW_HIDE&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>$HWNDPARENT和${SW_HIDE}是系统变量</p>
+</blockquote>
+<h3 id="Kill进程"><a href="#Kill进程" class="headerlink" title="Kill进程"></a>Kill进程</h3><figure class="highlight nsis"><table><tr><td class="code"><pre><span class="line"><span class="keyword">StrCpy</span> <span class="variable">$0</span> <span class="string">&quot;YourAppName&quot;</span></span><br><span class="line"><span class="title function_">KillProc::KillProcesses</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把AppName放入$0中，KillProc::KillProcesses从$0里取参数</p>
+</blockquote>
+<h1 id="在线升级"><a href="#在线升级" class="headerlink" title="在线升级"></a>在线升级</h1><p><a target="_blank" rel="noopener" href="http://peter517.github.io/2016/11/28/Qt%E4%B8%ADPC%E7%AB%AF%E5%BA%94%E7%94%A8%E5%B7%A5%E7%A8%8B%E6%90%AD%E5%BB%BA/#%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7">Qt中PC端应用工程搭建</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Qt/">Qt</a><a href="/tags/Windows/">Windows</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/12/10/工程/Unity中自定义VR事件输入模块/" title="Unity中自定义VR事件输入模块">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Unity中自定义VR事件输入模块</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/11/28/工程/Qt中PC端应用工程搭建/"  title="Qt中PC端应用工程搭建">
+ <strong>NEXT:</strong><br/> 
+ <span>Qt中PC端应用工程搭建
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5"><span class="toc-number">2.</span> <span class="toc-text">链接</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Debug-or-Release"><span class="toc-number">2.1.</span> <span class="toc-text">Debug or Release</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96SDK%E9%9B%86%E6%88%90"><span class="toc-number">2.2.</span> <span class="toc-text">其他SDK集成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NSIS%E5%BA%94%E7%94%A8%E6%89%93%E5%8C%85"><span class="toc-number">3.</span> <span class="toc-text">NSIS应用打包</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84"><span class="toc-number">3.1.</span> <span class="toc-text">架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Page%E5%92%8CUninstPage"><span class="toc-number">3.1.1.</span> <span class="toc-text">Page和UninstPage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BF%BB%E9%A1%B5"><span class="toc-number">3.1.2.</span> <span class="toc-text">翻页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.1.3.</span> <span class="toc-text">生命周期</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell%E9%A3%8E%E6%A0%BC"><span class="toc-number">3.2.</span> <span class="toc-text">Shell风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">3.2.1.</span> <span class="toc-text">基本信息配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.2.</span> <span class="toc-text">系统函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.3.</span> <span class="toc-text">自定义函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%87%E7%BC%96%E9%A3%8E%E6%A0%BC"><span class="toc-number">3.3.</span> <span class="toc-text">汇编风格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E4%BA%92%E6%96%A5"><span class="toc-number">3.3.1.</span> <span class="toc-text">判断互斥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6%E5%8F%8A%E5%85%B6%E6%B3%A8%E5%86%8C%E4%BA%8B%E4%BB%B6"><span class="toc-number">3.3.2.</span> <span class="toc-text">创建组件及其注册事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E8%81%94%E5%8A%A8"><span class="toc-number">3.3.3.</span> <span class="toc-text">组件联动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E7%BB%84%E4%BB%B6"><span class="toc-number">3.3.4.</span> <span class="toc-text">隐藏组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kill%E8%BF%9B%E7%A8%8B"><span class="toc-number">3.3.5.</span> <span class="toc-text">Kill进程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7"><span class="toc-number">4.</span> <span class="toc-text">在线升级</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

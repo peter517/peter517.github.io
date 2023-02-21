@@ -1,0 +1,694 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Java类模板 约束验证 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="介绍java-object-field-check库，利用Java注解定义一个模板，表示类属性标准，验证Json或者类实例是否符合要求">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/12/12/工程/Java类模板 约束验证/" title="Java类模板 约束验证" itemprop="url">Java类模板 约束验证</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-12-12T07:08:50.000Z" itemprop="datePublished">2015-12-12</time>
+    Updated:<time datetime="2018-05-23T09:42:53.000Z" itemprop="dateModified">2018-05-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">现有方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java-object-field-check%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">java-object-field-check接口</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">一个例子</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E6%B3%A8%E8%A7%A3%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.</span> <span class="toc-text">Java注解类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Field"><span class="toc-number">5.1.</span> <span class="toc-text">Field</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.1.</span> <span class="toc-text">String类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boolean%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.2.</span> <span class="toc-text">Boolean类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Number%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.3.</span> <span class="toc-text">Number类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JsonObject%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.4.</span> <span class="toc-text">JsonObject类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JsonArray%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.5.</span> <span class="toc-text">JsonArray类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Method"><span class="toc-number">5.2.</span> <span class="toc-text">Method</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JsonCheckRule"><span class="toc-number">5.2.1.</span> <span class="toc-text">JsonCheckRule</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ObjectCheckRule"><span class="toc-number">5.2.2.</span> <span class="toc-text">ObjectCheckRule</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java-object-field-check%E5%B7%A5%E7%A8%8B%E4%BE%9D%E8%B5%96"><span class="toc-number">6.</span> <span class="toc-text">java-object-field-check工程依赖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text"></span></a></li></ol>
+		</div>
+		
+		<h1 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h1><p>在许多服务中，需要对客户端传入的字段进行验证，比如下面这个API请求为一个Json串</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span><span class="string">&quot;1.0.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;student&quot;</span><span class="punctuation">:</span><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span><span class="string">&quot;Jack&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;age&quot;</span><span class="punctuation">:</span><span class="number">18</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;hobby&quot;</span><span class="punctuation">:</span><span class="string">&quot;basketball&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>对参数有如下要求:</p>
+<ul>
+<li>key为“version”对应一个版本号，不能为空</li>
+<li>key为“student”对应的value是一个Json对象</li>
+<li>key为“name”的value对应是String类型</li>
+<li>key为“age”的value对应是Integer类型，且不能为负数</li>
+<li>key为“hobby”的value对应是String类型，但允许为空</li>
+</ul>
+<p>一般的会把这些约束写到代码中，这样，代码里面出现很多if else语句，十分冗余和难以维护，Json对象t代表整个结构体，如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (!jsonObject.containsKey(<span class="string">&quot;version&quot;</span>) || jsonObject.getString(<span class="string">&quot;version&quot;</span>).equals(<span class="string">&quot;&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;version can&#x27;t be empty&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (!jsonObject.containsKey(<span class="string">&quot;student&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;name can&#x27;t be empty&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (!studentJsonObject.containsKey(<span class="string">&quot;name&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;name can&#x27;t be empty&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (!studentJsonObject.containsKey(<span class="string">&quot;age&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;name can&#x27;t be empty&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(!studentJsonObject.getInteger(<span class="string">&quot;age&quot;</span>) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Exception</span>(<span class="string">&quot;age can&#x27;t be &lt; 0&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这时候，就可以利用Java注解定义一个模板，表示类属性约束，验证Json是否符合要求，java-object-field-check这个库就是用来解决这个问题</p>
+<h1 id="现有方案"><a href="#现有方案" class="headerlink" title="现有方案"></a>现有方案</h1><p>Java中有很多开源的validator，比如：</p>
+<ul>
+<li><p>Apache中的<a target="_blank" rel="noopener" href="http://commons.apache.org/proper/commons-validator/">commons-validator</a>，通过XML来验证Bean的属性约束</p>
+</li>
+<li><p>J2EE中的<a target="_blank" rel="noopener" href="http://docs.oracle.com/javaee/6/tutorial/doc/gircz.html">Bean Validation</a>，提供一种注解的方案来验证Bean的属性约束</p>
+</li>
+<li><p>Android的<a target="_blank" rel="noopener" href="https://developer.android.com/studio/write/annotations?hl=zh-CN">android.support.annotation</a>，一种注解的平台定制化方案，比如有对方法有权限类的注解，RequiresPermission</p>
+<p>​</p>
+</li>
+</ul>
+<p>java-object-field-check也是通过注解的方案来验证Bean的属性约束，它支持通过验证Json对象得到类实例，也支持通过验证类实例得到Json对象，优势如下：</p>
+<ul>
+<li>注解种类更多，比如支持对嵌套对象、列表的支持注解</li>
+<li>功能更加丰富，比如自定义验证方法，正则表达的支持</li>
+<li>更加易于使用，一行代码进行验证，验证识别可以在异常类中获取信息</li>
+</ul>
+<h1 id="java-object-field-check接口"><a href="#java-object-field-check接口" class="headerlink" title="java-object-field-check接口"></a>java-object-field-check接口</h1><p>从上面的例子可以看出，FieldCheck的调用都是通过静态方法调用，一行代码搞定，支持验证三类参数：</p>
+<ul>
+<li>Json对象是否符合模板要求</li>
+<li>Json字符串是否符合模板要求</li>
+<li>Object实例是否符合模板要求</li>
+</ul>
+<p>所有接口如下，Class表示模板对应的类型信息：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> c the template of class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> jsonObject json object about class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the instance of class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> FieldCheckException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title function_">checkObjectByJsonObject</span><span class="params">(Class c, JSONObject jsonObject)</span> <span class="keyword">throws</span> FieldCheckException;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> c the template of class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> jsonString json string about class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the instance of class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> FieldCheckException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title function_">checkObjectByJson</span><span class="params">(Class c, String jsonString)</span> <span class="keyword">throws</span> FieldCheckException;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> object the instance of class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> json object about class</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> FieldCheckException</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> JSONObject <span class="title function_">checkObjectByInstance</span><span class="params">(Object object)</span> <span class="keyword">throws</span> FieldCheckException;</span><br></pre></td></tr></table></figure>
+
+<p>验证Object实例的代码和验证Json的代码类似，验证一个对象实例来，如果验证通过，则获得对应的Json对象，可以用在API的返回内容中</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Request</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Request</span>();</span><br><span class="line">request.name = <span class="string">&quot;Jack&quot;</span>;</span><br><span class="line">request.age = <span class="number">18</span>;</span><br><span class="line">request.hobby = <span class="string">&quot;basketball&quot;</span>;</span><br><span class="line"></span><br><span class="line">JSONObject requestJsonObject;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    requestJsonObject = FieldCheck.checkObjectByInstance(request);</span><br><span class="line">&#125; <span class="keyword">catch</span> (FieldCheckException e) &#123;</span><br><span class="line">    <span class="comment">//TODO</span></span><br><span class="line">    logger.info(<span class="string">&quot;field check error &quot;</span> + e.getInfo());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h1><p>为了解决上面的问题，我们可以定义这么一个类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Request</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@CheckString(allowEmpty = false)</span></span><br><span class="line">    <span class="keyword">private</span> String version;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@CheckObject</span></span><br><span class="line">    <span class="keyword">private</span> Student student;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Student</span>&#123;</span><br><span class="line">        <span class="meta">@CheckString</span></span><br><span class="line">        <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@CheckInteger(allowNegative = false)</span></span><br><span class="line">        <span class="keyword">private</span> Integer age;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@CheckString(allowEmpty = true)</span></span><br><span class="line">        <span class="keyword">private</span> String hobby;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getVersion</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> version;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setVersion</span><span class="params">(String version)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.version = version;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">getStudent</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> student;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setStudent</span><span class="params">(Student student)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.student = student;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>模板表示的内容为：</p>
+<ul>
+<li>注解version字段不能为空，allowEmpty &#x3D; false也可以不写，是默认值</li>
+<li>注解CheckObject表示key为“student”对应的value是一个Json对象</li>
+<li>name上的注解CheckString表示key为“name”的value对应是String类型</li>
+<li>age上的注解CheckInteger表示key为“age”的value对应是Integer类型，注解的属性allowNegative &#x3D; false表示该元素不能为负数</li>
+<li>hobby上的注解CheckString表示：key为“hobby”的value对应是String类型，注解的属性allowEmpty &#x3D; true表示可以为空</li>
+</ul>
+<p>定义好这个模板后，就可以用java-object-field-check来验证这个每个Json是否满足约束，通过工具类FieldCheck的静态方法checkObjectByJsonObject来验证。</p>
+<p>如果满足需求，则返回已从json串提取内容的类实例，否则抛出FieldCheckException异常，异常中可以打印哪个字段发生验证错误</p>
+<p>如果是Post请求，如下body为requestJsonObject，一个json对象，验证方法为：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/xxx/xxx&quot;, method = RequestMethod.POST)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="keyword">void</span> <span class="title function_">postRequest</span><span class="params">(<span class="meta">@RequestBody</span> JSONObject requestJsonObject, HttpServletResponse response)</span> &#123;</span><br><span class="line">	<span class="type">Request</span> <span class="variable">request</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">    	request = (Request) FieldCheck.checkObjectByJsonObject(Request.class, requestJsonObject);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (FieldCheckException e) &#123;</span><br><span class="line">    	<span class="comment">//TODO</span></span><br><span class="line">    	logger.info(<span class="string">&quot;field check error &quot;</span> + e.getInfo());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果是Get请求，先忽略student字段验证，如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(value = &quot;/xxx/xxx&quot;, method = RequestMethod.GET)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="keyword">void</span> <span class="title function_">getRequest</span><span class="params">(<span class="meta">@RequestParam(&quot;version&quot;)</span> String version, HttpServletResponse response)</span> &#123;</span><br><span class="line">	<span class="type">Request</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Request</span>();</span><br><span class="line">	request.setVersion(<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">    	FieldCheck.checkObjectByInstance(Request.class, request);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (FieldCheckException e) &#123;</span><br><span class="line">    	<span class="comment">//TODO</span></span><br><span class="line">    	logger.info(<span class="string">&quot;field check error &quot;</span> + e.getInfo());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Java注解类型"><a href="#Java注解类型" class="headerlink" title="Java注解类型"></a>Java注解类型</h1><p>对于不同的类型，注解属性也有一些不同</p>
+<h2 id="Field"><a href="#Field" class="headerlink" title="Field"></a>Field</h2><p>Field注解里面有一些属性，可以表示一个类型的一些常见约束</p>
+<h3 id="String类型"><a href="#String类型" class="headerlink" title="String类型"></a>String类型</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>optional</td>
+<td>boolean</td>
+<td>是否可选</td>
+<td>false</td>
+</tr>
+<tr>
+<td>allowEmpty</td>
+<td>boolean</td>
+<td>字符串内容是否可以为空</td>
+<td>false</td>
+</tr>
+<tr>
+<td>availableValue</td>
+<td>array</td>
+<td>有效值集合</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>availableLengthRange</td>
+<td>LengthRange</td>
+<td>有效长度</td>
+<td>{min &#x3D; 0,max &#x3D; Integer.MAX_VALUE}</td>
+</tr>
+<tr>
+<td>regexp</td>
+<td>Regexp</td>
+<td>匹配正则表达</td>
+<td>{value &#x3D; “”,errorInfo&#x3D;””}</td>
+</tr>
+<tr>
+<td>实例：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CheckString(availableValue = &#123;&quot;1&quot;, &quot;2&quot;&#125;,</span></span><br><span class="line"><span class="meta">             availableLengthRange = @LengthRange(min = 2, max = 4))</span></span><br><span class="line"><span class="keyword">private</span> String key0;</span><br></pre></td></tr></table></figure>
+<h3 id="Boolean类型"><a href="#Boolean类型" class="headerlink" title="Boolean类型"></a>Boolean类型</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>optional</td>
+<td>boolean</td>
+<td>是否可选</td>
+<td>false</td>
+</tr>
+<tr>
+<td>availableValue</td>
+<td>array</td>
+<td>有效值集合</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>实例：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CheckBoolean(optional = true, availableValue = &#123;true&#125;)</span></span><br><span class="line"><span class="keyword">private</span> Boolean key0;</span><br></pre></td></tr></table></figure>
+<h3 id="Number类型"><a href="#Number类型" class="headerlink" title="Number类型"></a>Number类型</h3><p>主要包括Integer、Short、Long、Float、Double，下面以Long为例子</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>optional</td>
+<td>boolean</td>
+<td>是否可选</td>
+<td>false</td>
+</tr>
+<tr>
+<td>max</td>
+<td>long</td>
+<td>最大值</td>
+<td>Long.MAX_VALUE</td>
+</tr>
+<tr>
+<td>min</td>
+<td>long</td>
+<td>最小值</td>
+<td>Long.MIN_VALUE</td>
+</tr>
+<tr>
+<td>allowNegative</td>
+<td>boolean</td>
+<td>是否可以为负数</td>
+<td>true</td>
+</tr>
+<tr>
+<td>availableValue</td>
+<td>array</td>
+<td>有效值集合</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>实例：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CheckLong(allowNegative = false, min = 1, max = 300)</span></span><br><span class="line"><span class="keyword">private</span> Long key0;</span><br></pre></td></tr></table></figure>
+<h3 id="JsonObject类型"><a href="#JsonObject类型" class="headerlink" title="JsonObject类型"></a>JsonObject类型</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>optional</td>
+<td>boolean</td>
+<td>是否可选</td>
+<td>false</td>
+</tr>
+<tr>
+<td>实例：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CheckObject</span></span><br><span class="line"><span class="keyword">private</span> Student student;</span><br></pre></td></tr></table></figure>
+<h3 id="JsonArray类型"><a href="#JsonArray类型" class="headerlink" title="JsonArray类型"></a>JsonArray类型</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>optional</td>
+<td>boolean</td>
+<td>是否可选</td>
+<td>false</td>
+</tr>
+<tr>
+<td>availableLengthRange</td>
+<td>LengthRange</td>
+<td>有效长度</td>
+<td>{min &#x3D; 0,max &#x3D; Integer.MAX_VALUE}</td>
+</tr>
+<tr>
+<td>实例：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@CheckArray(availableLengthRange = @LengthRange(min = 2, max = 4))</span></span><br><span class="line"><span class="keyword">private</span> List&lt;Student&gt; student;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>Field中的常见约束无法满足时，可以使用Method注解来自定义需求</p>
+<h3 id="JsonCheckRule"><a href="#JsonCheckRule" class="headerlink" title="JsonCheckRule"></a>JsonCheckRule</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>errorInfo</td>
+<td>String</td>
+<td>验证错误提示信息</td>
+</tr>
+<tr>
+<td>JsonCheckRule用来在验证Json或者Json字符串时，即调用checkObjectByJsonObject或者checkObjectByJson时，提供约束规则，<strong>参数必须JSONObject类型。</strong>如key1Rule方法，用来验证key1字段的合法性，输入是被解析后的整个Json对象，返回true表示验证通过，返回false表示验证失败，errorInfo用来返回错误信息。具体使用如下：</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InterObject</span> &#123;</span><br><span class="line">        <span class="meta">@CheckString</span></span><br><span class="line">        <span class="keyword">private</span> String key1;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@JsonCheckRule(errorInfo = &quot;key1 should not be 11&quot;)</span></span><br><span class="line">        <span class="keyword">public</span> Boolean <span class="title function_">key1Rule</span><span class="params">(JSONObject jsonObject)</span> <span class="keyword">throws</span> FieldCheckException &#123;</span><br><span class="line">            <span class="keyword">return</span> jsonObject.getString(<span class="string">&quot;key1&quot;</span>).equals(<span class="string">&quot;11&quot;</span>) == <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ObjectCheckRule"><a href="#ObjectCheckRule" class="headerlink" title="ObjectCheckRule"></a>ObjectCheckRule</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>errorInfo</td>
+<td>String</td>
+<td>验证错误提示信息</td>
+</tr>
+<tr>
+<td>ObjectCheckRule用来在验证Object实例时，即调用checkObjectByInstance时，提供约束规则，<strong>参数必须为空。</strong>如key2Rule方法，验证key2字段的合法性，返回true表示验证通过，返回false表示验证失败。具体使用如下：</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InterObject</span> &#123;</span><br><span class="line">        <span class="meta">@CheckString</span></span><br><span class="line">        <span class="keyword">private</span> <span class="type">String</span> <span class="variable">key2</span> <span class="operator">=</span> <span class="string">&quot;1&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@ObjectCheckRule(errorInfo = &quot;key2 should not be 12&quot;)</span></span><br><span class="line">        <span class="keyword">public</span> Boolean <span class="title function_">key2Rule</span><span class="params">()</span> <span class="keyword">throws</span> FieldCheckException &#123;</span><br><span class="line">            <span class="keyword">return</span> key2.equals(<span class="string">&quot;12&quot;</span>) == <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="java-object-field-check工程依赖"><a href="#java-object-field-check工程依赖" class="headerlink" title="java-object-field-check工程依赖"></a>java-object-field-check工程依赖</h1><p>java-object-field-check使用Java实现，已经上传至阿里Maven仓库，在工程中配置依赖即可，所有可用的版本请在<br><a target="_blank" rel="noopener" href="http://repo.alibaba-inc.com/nexus/index.html#welcome">阿里Nexus</a>上面搜索，建议使用最新版本</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.youku&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;java-object-field-check&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;1.0.4.4-SNAPSHOT&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>需要添加java-object-field-check所依赖的其他库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.1.26&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Java/">Java</a><a href="/tags/Tools/">Tools</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/09/18/工程/Unity常用第三方库/" title="Unity常用第三方库">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Unity常用第三方库</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/11/06/工程/C++中线程级资源自动释放/"  title="C++中线程级资源自动释放">
+ <strong>NEXT:</strong><br/> 
+ <span>C++中线程级资源自动释放
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">解决问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%A1%88"><span class="toc-number">2.</span> <span class="toc-text">现有方案</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java-object-field-check%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.</span> <span class="toc-text">java-object-field-check接口</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">4.</span> <span class="toc-text">一个例子</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E6%B3%A8%E8%A7%A3%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.</span> <span class="toc-text">Java注解类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Field"><span class="toc-number">5.1.</span> <span class="toc-text">Field</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.1.</span> <span class="toc-text">String类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Boolean%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.2.</span> <span class="toc-text">Boolean类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Number%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.3.</span> <span class="toc-text">Number类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JsonObject%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.4.</span> <span class="toc-text">JsonObject类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JsonArray%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.1.5.</span> <span class="toc-text">JsonArray类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Method"><span class="toc-number">5.2.</span> <span class="toc-text">Method</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JsonCheckRule"><span class="toc-number">5.2.1.</span> <span class="toc-text">JsonCheckRule</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ObjectCheckRule"><span class="toc-number">5.2.2.</span> <span class="toc-text">ObjectCheckRule</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java-object-field-check%E5%B7%A5%E7%A8%8B%E4%BE%9D%E8%B5%96"><span class="toc-number">6.</span> <span class="toc-text">java-object-field-check工程依赖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text"></span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

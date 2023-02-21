@@ -1,0 +1,441 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Qt中PC端应用工程搭建 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="Qt中PC端工程搭建、在线升级功能">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/28/工程/Qt中PC端应用工程搭建/" title="Qt中PC端应用工程搭建" itemprop="url">Qt中PC端应用工程搭建</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-11-28T09:13:14.000Z" itemprop="datePublished">2016-11-28</time>
+    Updated:<time datetime="2018-07-17T07:12:00.000Z" itemprop="dateModified">2018-07-17</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#YourApp-pro"><span class="toc-number">1.1.</span> <span class="toc-text">YourApp.pro</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UI"><span class="toc-number">1.1.2.</span> <span class="toc-text">UI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#c-%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.3.</span> <span class="toc-text">c++配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mac-Resources"><span class="toc-number">1.1.4.</span> <span class="toc-text">Mac Resources</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Qt%E7%94%9F%E6%88%90%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.5.</span> <span class="toc-text">Qt生成文件配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YourApp-qrc"><span class="toc-number">1.2.</span> <span class="toc-text">YourApp.qrc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YourApp-ui"><span class="toc-number">1.3.</span> <span class="toc-text">YourApp.ui</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7"><span class="toc-number">2.</span> <span class="toc-text">在线升级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Sparkle%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.</span> <span class="toc-text">Sparkle在线升级流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sparkle%E5%A6%82%E4%BD%95%E4%BF%9D%E9%9A%9C%E5%BA%94%E7%94%A8%E5%90%88%E6%B3%95%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">Sparkle如何保障应用合法性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sparkle-xml%E6%A0%BC%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">Sparkle xml格式</span></a></li></ol></li></ol>
+		</div>
+		
+		<p>Qt作为跨平台UI开发框架，用c++实现，API也是类C的，很适合搭建一些集成Native SDK的演示环境，如果只是一些UI的原型展示，用Electron或者nwjs更快</p>
+<h1 id="工程建立"><a href="#工程建立" class="headerlink" title="工程建立"></a>工程建立</h1><p>qt建立工程的三个关键文件：</p>
+<ul>
+<li>YourApp.pro：管理工程源文件、库依赖、基本工程配置</li>
+<li>YourApp.qrc：管理资源</li>
+<li>YourApp.ui：管理布局</li>
+</ul>
+<h2 id="YourApp-pro"><a href="#YourApp-pro" class="headerlink" title="YourApp.pro"></a>YourApp.pro</h2><p>在Mac上面生成xcode工程很简单，下面一行命令就行</p>
+<figure class="highlight crmsh"><table><tr><td class="code"><pre><span class="line">qmake -<span class="keyword">spec</span> macx-xcode YourApp.pro</span><br></pre></td></tr></table></figure>
+<p>pro文件跟<a target="_blank" rel="noopener" href="http://peter517.github.io/2015/10/21/GYP%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88/">GYP</a>、CMake是一类工具，最大区别是内置QT的工程配置，重要的几个配置项：</p>
+<h3 id="基本信息"><a href="#基本信息" class="headerlink" title="基本信息"></a>基本信息</h3><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">TARGET = YourAppName <span class="comment">#App名字</span></span><br><span class="line">TEMPLATE = app <span class="comment">#App类型</span></span><br><span class="line">QT  += core gui widgets <span class="comment">#依赖的Qt库</span></span><br><span class="line">ICON = YourIcon.icns <span class="comment">#Icon路径</span></span><br><span class="line">CONFIG += YOUR_BUILD_MODE <span class="comment">#编译模式</span></span><br></pre></td></tr></table></figure>
+<h3 id="UI"><a href="#UI" class="headerlink" title="UI"></a>UI</h3><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">FORMS += YourLayout.ui <span class="comment">#布局文件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="c-配置"><a href="#c-配置" class="headerlink" title="c++配置"></a>c++配置</h3><p>GCC的写法</p>
+<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">mac&#123;</span><br><span class="line">  QMAKE_MAC_SDK = macosx10<span class="number">.11</span></span><br><span class="line">  QMAKE_MACOSX_DEPLOYMENT_TARGET = <span class="number">10.11</span></span><br><span class="line">  QMAKE_CXXFLAGS += -stdlib=libstdc++</span><br><span class="line">  QMAKE_LFLAGS += <span class="regexp">/usr/</span>lib/libstdc++<span class="number">.6</span>.dylib</span><br><span class="line">  QMAKE_INFO_PLIST = YourInfo.plist</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>仿<a target="_blank" rel="noopener" href="http://peter517.github.io/2015/10/21/GYP%E5%8F%AF%E4%BB%A5%E5%81%9A%E4%BB%80%E4%B9%88/">GYP</a>，CMake的写法</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">HEADERS += your_header.h</span><br><span class="line">SOURCES += your_c_source.cpp</span><br><span class="line">OBJECTIVE_SOURCES += your_object_c_source.cpp</span><br><span class="line">INCLUDEPATH += YOUR_INCLUDE_PATH</span><br><span class="line">LIBS += YOUR_DEPEND_LIBS</span><br></pre></td></tr></table></figure>
+
+<h3 id="Mac-Resources"><a href="#Mac-Resources" class="headerlink" title="Mac Resources"></a>Mac Resources</h3><figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line">RESOURCES += YourApp.qrc <span class="comment">#资源文件</span></span><br><span class="line">RESFILES.files = files_add_to_resource_dir <span class="comment">#需要加入资源目录的问题件</span></span><br><span class="line">RESFILES.path = Contents/Resources</span><br><span class="line">QMAKE_BUNDLE_DATA += RESFILES</span><br></pre></td></tr></table></figure>
+
+<h3 id="Qt生成文件配置"><a href="#Qt生成文件配置" class="headerlink" title="Qt生成文件配置"></a>Qt生成文件配置</h3><p>qt在xcode运行时会根据layout文件生成对应的代码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">QT_RUN_GENERATE_FILE_DIR = ./qt-run-generate-files  <span class="comment">#指定生成代码目录</span></span><br><span class="line">UI_DIR +=  $<span class="variable">$QT_RUN_GENERATE_FILE_DIR</span>/ui <span class="comment">#UI代码</span></span><br><span class="line">RCC_DIR += $<span class="variable">$QT_RUN_GENERATE_FILE_DIR</span>/rc <span class="comment">#资源代码</span></span><br><span class="line">OBJECTS_DIR += YOUR_BUILD_MODE</span><br><span class="line">MOC_DIR += $<span class="variable">$QT_RUN_GENERATE_FILE_DIR</span>/YOUR_BUILD_MODE</span><br></pre></td></tr></table></figure>
+
+<h2 id="YourApp-qrc"><a href="#YourApp-qrc" class="headerlink" title="YourApp.qrc"></a>YourApp.qrc</h2><p>App中用到的资源文件需要在这里面定义，用来UI布局，如下例：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">RCC</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">qresource</span> <span class="attr">prefix</span>=<span class="string">&quot;/&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>app_images/add.png<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">qresource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">qresource</span> <span class="attr">prefix</span>=<span class="string">&quot;/value&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>en_US.qm<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span>zh_CN.qm<span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">qresource</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">RCC</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="YourApp-ui"><a href="#YourApp-ui" class="headerlink" title="YourApp.ui"></a>YourApp.ui</h2><p>这个文件是xml格式，相当于android的layout</p>
+<h1 id="在线升级"><a href="#在线升级" class="headerlink" title="在线升级"></a>在线升级</h1><p>在线升级目前开源的成熟跨平台框架是Sparkle，提供generate_keys和sign_update工具，通过xml文件信息更新来进行在线升级。</p>
+<h2 id="Sparkle在线升级流程"><a href="#Sparkle在线升级流程" class="headerlink" title="Sparkle在线升级流程"></a>Sparkle在线升级流程</h2><p>利用generate_keys生成dsa_pub.pem、dsa_priv.pem—&gt;利用sign_update用dsa_priv.pem对dmg进行签名—&gt;将签名信息、应用版本信息、下载链接更新到线上xml中—&gt;旧客户端通过检测到xml更新进行在线升级</p>
+<h2 id="Sparkle如何保障应用合法性"><a href="#Sparkle如何保障应用合法性" class="headerlink" title="Sparkle如何保障应用合法性"></a>Sparkle如何保障应用合法性</h2><p>基本思路用私钥加密，公钥解密，验证App的合法性</p>
+<ul>
+<li>使用私钥dsa_priv.pem，对App进行计算，得出结果dsaSignature — 算法1</li>
+<li>将公钥dsa_pub.pem，放入app内，可以根据它对App进行计算，结果如果为dsaSignature，则验证通过 – 算法2</li>
+</ul>
+<p>算法1和算法2是公开的，有DSA、RSA、DES等等，Sparkle的签名原理是openssl命令实现的DSA算法，验证APP的合法性</p>
+<h2 id="Sparkle-xml格式"><a href="#Sparkle-xml格式" class="headerlink" title="Sparkle xml格式"></a>Sparkle xml格式</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">rss</span> <span class="attr">version</span>=<span class="string">&quot;2.0&quot;</span> <span class="attr">xmlns:sparkle</span>=<span class="string">&quot;http://www.andymatuschak.org/xml-namespaces/sparkle&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">xmlns:dc</span>=<span class="string">&quot;http://purl.org/dc/elements/1.1/&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">channel</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">item</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">description</span>&gt;</span></span><br><span class="line">				&lt;![CDATA[</span><br><span class="line">            &lt;h3&gt;&lt;/h3&gt; &lt;pre&gt; your_update_log &lt;/pre&gt;</span><br><span class="line">            ]]&gt;</span><br><span class="line">			<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">enclosure</span> <span class="attr">url</span>=<span class="string">&quot;your_app_download_url&quot;</span></span></span><br><span class="line"><span class="tag">			           <span class="attr">sparkle:version</span>=<span class="string">&quot;20161123&quot;</span></span></span><br><span class="line"><span class="tag">			           <span class="attr">sparkle:shortVersionString</span>=<span class="string">&quot;1.1.0&quot;</span></span></span><br><span class="line"><span class="tag">			           <span class="attr">sparkle:dsaSignature</span>=<span class="string">&quot;dsaSignature&quot;</span></span></span><br><span class="line"><span class="tag">			           <span class="attr">type</span>=<span class="string">&quot;application/octet-stream&quot;</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">channel</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rss</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>dsaSignature就是通过dsa_priv.pem + App生成的数字签名<br>sparkle客户端通过version和shortVersionString来判断是否要升级</p>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Qt/">Qt</a><a href="/tags/Mac/">Mac</a><a href="/tags/Windows/">Windows</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/11/28/工程/Qt中Windows端应用工程搭建/" title="Qt中Windows端应用工程搭建">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Qt中Windows端应用工程搭建</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/11/26/工程/Qt中Mac端应用工程搭建/"  title="Qt中Mac端应用工程搭建">
+ <strong>NEXT:</strong><br/> 
+ <span>Qt中Mac端应用工程搭建
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B7%A5%E7%A8%8B%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.</span> <span class="toc-text">工程建立</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#YourApp-pro"><span class="toc-number">1.1.</span> <span class="toc-text">YourApp.pro</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.1.</span> <span class="toc-text">基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UI"><span class="toc-number">1.1.2.</span> <span class="toc-text">UI</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#c-%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.3.</span> <span class="toc-text">c++配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mac-Resources"><span class="toc-number">1.1.4.</span> <span class="toc-text">Mac Resources</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Qt%E7%94%9F%E6%88%90%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.5.</span> <span class="toc-text">Qt生成文件配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YourApp-qrc"><span class="toc-number">1.2.</span> <span class="toc-text">YourApp.qrc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YourApp-ui"><span class="toc-number">1.3.</span> <span class="toc-text">YourApp.ui</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7"><span class="toc-number">2.</span> <span class="toc-text">在线升级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Sparkle%E5%9C%A8%E7%BA%BF%E5%8D%87%E7%BA%A7%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.</span> <span class="toc-text">Sparkle在线升级流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sparkle%E5%A6%82%E4%BD%95%E4%BF%9D%E9%9A%9C%E5%BA%94%E7%94%A8%E5%90%88%E6%B3%95%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">Sparkle如何保障应用合法性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sparkle-xml%E6%A0%BC%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">Sparkle xml格式</span></a></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

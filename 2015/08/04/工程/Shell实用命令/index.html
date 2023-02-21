@@ -1,0 +1,468 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Shell实用命令 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="平时用的比较多的shell命令">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/04/工程/Shell实用命令/" title="Shell实用命令" itemprop="url">Shell实用命令</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-08-04T01:31:19.000Z" itemprop="datePublished">2015-08-04</time>
+    Updated:<time datetime="2018-06-22T08:21:23.000Z" itemprop="dateModified">2018-06-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%8D%A0%E7%94%A8CPU%E6%9C%80%E5%A4%A7%E7%9A%8410%E4%B8%AA%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">查看占用CPU最大的10个进程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E6%9F%90%E4%B8%AA%E6%97%B6%E9%97%B4%E7%82%B9%E8%BF%90%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">2.</span> <span class="toc-text">在某个时间点运行命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E6%9F%90%E4%B8%AA%E7%9B%AE%E5%BD%95%E4%B8%8B%E9%9D%A2%E6%9C%80%E5%A4%A7%E7%9A%8410%E4%B8%AA%E6%96%87%E4%BB%B6%E6%88%96%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">3.</span> <span class="toc-text">显示某个目录下面最大的10个文件或文件夹</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%8C%87%E5%AE%9A%E7%BD%91%E7%BB%9C%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF"><span class="toc-number">4.</span> <span class="toc-text">查看指定网络端口服务是否开启</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#awk%E4%B8%BB%E8%A6%81%E5%AF%B9%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E8%BF%9B%E8%A1%8C%E7%BB%9F%E8%AE%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">5.</span> <span class="toc-text">awk主要对文件内容进行统计操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%8410%E4%B8%AA%E5%91%BD%E4%BB%A4"><span class="toc-number">6.</span> <span class="toc-text">输出最常用的10个命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD%E7%AC%A6%E5%90%88%E6%9D%A1%E4%BB%B6%E7%9A%84%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C"><span class="toc-number">7.</span> <span class="toc-text">对指定文件夹中符合条件的文件进行操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E7%99%BB%E9%99%86%E8%BF%9C%E7%A8%8B%E6%9C%BA%E5%99%A8%E8%80%8C%E8%BF%9B%E8%A1%8C%E8%BF%9C%E7%A8%8B%E6%93%8D%E4%BD%9C"><span class="toc-number">8.</span> <span class="toc-text">不登陆远程机器而进行远程操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%BA%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="toc-number">9.</span> <span class="toc-text">查看机器信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A5%E5%88%97%E4%B8%BA%E5%8D%95%E4%BD%8D%E6%8A%BD%E5%8F%96%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="toc-number">10.</span> <span class="toc-text">以列为单位抽取文件内容</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E7%9A%84%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%96%87%E4%BB%B6%E5%90%8D%E7%9A%84%E6%9F%A5%E6%89%BE"><span class="toc-number">11.</span> <span class="toc-text">文件内容的查找与文件名的查找</span></a></li></ol>
+		</div>
+		
+		<h1 id="查看占用CPU最大的10个进程"><a href="#查看占用CPU最大的10个进程" class="headerlink" title="查看占用CPU最大的10个进程"></a>查看占用CPU最大的10个进程</h1><figure class="highlight coq"><table><tr><td class="code"><pre><span class="line">$ ps au | <span class="type">awk</span> &#x27;NR&gt;<span class="number">1</span> &#123;print&#125;&#x27;| <span class="type">sort</span> -nrk +<span class="number">3</span> | <span class="type">awk</span> &#x27;&#123;print $<span class="number">3</span><span class="string">&quot;\t&quot;</span>$<span class="number">11</span>&#125;&#x27; | <span class="type">head</span> <span class="number">-10</span>；</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中sort中的k参数表示按照第几列来排序，有个t参数，表示按照\t分割内容，形成列</p>
+</blockquote>
+<h1 id="在某个时间点运行命令"><a href="#在某个时间点运行命令" class="headerlink" title="在某个时间点运行命令"></a>在某个时间点运行命令</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">echo</span> <span class="string">&quot;ls -l&quot;</span> | at midnight</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="显示某个目录下面最大的10个文件或文件夹"><a href="#显示某个目录下面最大的10个文件或文件夹" class="headerlink" title="显示某个目录下面最大的10个文件或文件夹"></a>显示某个目录下面最大的10个文件或文件夹</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">du</span> -sh * | <span class="built_in">sort</span> -nr | <span class="built_in">head</span> -10</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中s表示统计文件或文件夹容量总和，如果命令为du -ah *，表示统计当前目录文件和所有子目录的文件信息；与之相对的df命令用来统计硬盘容量信息</p>
+</blockquote>
+<h1 id="查看指定网络端口服务是否开启"><a href="#查看指定网络端口服务是否开启" class="headerlink" title="查看指定网络端口服务是否开启"></a>查看指定网络端口服务是否开启</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ netstat -natp <span class="string">| grep servicename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中n代表数字化，a代表所有，t代表tcp，p代表程序名,另一个查看网络服务的命令是lsof，列出系统已打开的文件，lsof -i | grep servicename，其中i表示查看所有网络服务打开的连接</p>
+</blockquote>
+<h1 id="awk主要对文件内容进行统计操作"><a href="#awk主要对文件内容进行统计操作" class="headerlink" title="awk主要对文件内容进行统计操作"></a>awk主要对文件内容进行统计操作</h1><figure class="highlight elixir"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>sed <span class="string">&#x27;s/localhost/127.0.0.1/g&#x27;</span> mysql_virtual_*.cf </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>sed与vim中命令行操作类似，主要用来对文件进行处理（p选项+正则也可以完成强大的文本内容搜索）,如可以进行文本替换,%s&#x2F;localhost&#x2F;127.0.0.1&#x2F;g,而在vim命令行中可以直接：%代表对文本中每一行都进行处理</p>
+</blockquote>
+<h1 id="输出最常用的10个命令"><a href="#输出最常用的10个命令" class="headerlink" title="输出最常用的10个命令"></a>输出最常用的10个命令</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">history</span>|awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>|awk <span class="string">&#x27;BEGIN &#123;FS=&quot;|&quot;&#125; &#123;print $1&#125;&#x27;</span>|<span class="built_in">sort</span>|<span class="built_in">uniq</span> -c|<span class="built_in">sort</span> -rn|<span class="built_in">head</span> -10</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中history历史输入命令，uniq命令会从1列（元素）变成2列（个数，元素）</p>
+</blockquote>
+<h1 id="对指定文件夹中符合条件的文件进行操作"><a href="#对指定文件夹中符合条件的文件进行操作" class="headerlink" title="对指定文件夹中符合条件的文件进行操作"></a>对指定文件夹中符合条件的文件进行操作</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ ls image/* <span class="string">| awk &#x27;NR &lt; 10 &#123;system(&quot;</span>cp <span class="string">&quot;$1&quot;</span> uploadImage<span class="string">&quot;)&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>复制10个文件</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">find image/ -name <span class="string">&quot;1*&quot;</span> -<span class="built_in">exec</span> <span class="built_in">cp</span> &#123;&#125; uploadImage \</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>对以“1”开头的文件进行复制</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">ls</span> image/* | <span class="built_in">head</span> -10 | xargs -i <span class="built_in">cp</span> &#123;&#125; uploadImage</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中-i选项告诉 xargs 用每项的名称替换 {}</p>
+</blockquote>
+<h1 id="不登陆远程机器而进行远程操作"><a href="#不登陆远程机器而进行远程操作" class="headerlink" title="不登陆远程机器而进行远程操作"></a>不登陆远程机器而进行远程操作</h1><figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">$ ssh <span class="keyword">user</span>@<span class="keyword">server</span> bash &lt; /<span class="type">path</span>/<span class="keyword">to</span>/<span class="keyword">local</span>/script.sh</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在远程机器上执行本地脚本</p>
+</blockquote>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ ssh user@host cat <span class="regexp">/path/</span>to<span class="regexp">/remotefile | diff /</span>path<span class="regexp">/to/</span>localfile -</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>比较本地和远程机器上面的两个文件</p>
+</blockquote>
+<h1 id="查看机器信息"><a href="#查看机器信息" class="headerlink" title="查看机器信息"></a>查看机器信息</h1><figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">$ dmidecode <span class="string">| grep &quot;</span>Product Name<span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看机器型号</p>
+</blockquote>
+<figure class="highlight crystal"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>getconf LONG_BIT</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看机器版本号（64位的系统中int类型还是4字节的，但是long已变成了8字节）</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> /proc/cpuinfo</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看cpu信息，其中grep “core id”表示查看cpu内核id， grep “physical id”表示查看物理cpu的id，grep “processor”表示查看逻辑处理器。多核技术和多线程技术和区别为：前者表示有多少能力，后者表示使用该能力的能力）</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> /proc/meminfo</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看内存信息</p>
+</blockquote>
+<h1 id="以列为单位抽取文件内容"><a href="#以列为单位抽取文件内容" class="headerlink" title="以列为单位抽取文件内容"></a>以列为单位抽取文件内容</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cat</span> /etc/passwd | <span class="built_in">cut</span> -f1,3 -d<span class="string">&quot;:&quot;</span></span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>利用cut命令可以对文件按照字节、字段、字符进行抽取，表示获取第一列和第三列，sed命令中1,3表示1至3列，而在cut中需要1-3来表示。awk命令也可以完成相同的内容，更复杂、更灵活； </p>
+</blockquote>
+<h1 id="文件内容的查找与文件名的查找"><a href="#文件内容的查找与文件名的查找" class="headerlink" title="文件内容的查找与文件名的查找"></a>文件内容的查找与文件名的查找</h1><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">grep -o str filename | <span class="built_in">wc</span> -l</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>文件名查找可以用经典的find命令，文件内容的查找则用grep。统计文件中出现某个字符串的个数，-o表示显示匹配的单词，而不是单词所在的行数：grep str filename</p>
+</blockquote>
+<figure class="highlight armasm"><table><tr><td class="code"><pre><span class="line">$ grep -l <span class="keyword">str</span> filenames</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>统计出现某个字符串的文件名</p>
+</blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ </span>grep -i -R --<span class="keyword">include</span>=<span class="string">&quot;*.cpp&quot;</span> <span class="string">&#x27;example&#x27;</span> </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在当前目录及其子目录所有的.cpp文件中查找字符串”example”, 不区分大小写</p>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Shell/">Shell</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/04/工程/MapReduce编程思考/" title="MapReduce编程思考">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  MapReduce编程思考</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%8D%A0%E7%94%A8CPU%E6%9C%80%E5%A4%A7%E7%9A%8410%E4%B8%AA%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">查看占用CPU最大的10个进程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%A8%E6%9F%90%E4%B8%AA%E6%97%B6%E9%97%B4%E7%82%B9%E8%BF%90%E8%A1%8C%E5%91%BD%E4%BB%A4"><span class="toc-number">2.</span> <span class="toc-text">在某个时间点运行命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E6%9F%90%E4%B8%AA%E7%9B%AE%E5%BD%95%E4%B8%8B%E9%9D%A2%E6%9C%80%E5%A4%A7%E7%9A%8410%E4%B8%AA%E6%96%87%E4%BB%B6%E6%88%96%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">3.</span> <span class="toc-text">显示某个目录下面最大的10个文件或文件夹</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%8C%87%E5%AE%9A%E7%BD%91%E7%BB%9C%E7%AB%AF%E5%8F%A3%E6%9C%8D%E5%8A%A1%E6%98%AF%E5%90%A6%E5%BC%80%E5%90%AF"><span class="toc-number">4.</span> <span class="toc-text">查看指定网络端口服务是否开启</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#awk%E4%B8%BB%E8%A6%81%E5%AF%B9%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E8%BF%9B%E8%A1%8C%E7%BB%9F%E8%AE%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">5.</span> <span class="toc-text">awk主要对文件内容进行统计操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%8410%E4%B8%AA%E5%91%BD%E4%BB%A4"><span class="toc-number">6.</span> <span class="toc-text">输出最常用的10个命令</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E6%8C%87%E5%AE%9A%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%AD%E7%AC%A6%E5%90%88%E6%9D%A1%E4%BB%B6%E7%9A%84%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E6%93%8D%E4%BD%9C"><span class="toc-number">7.</span> <span class="toc-text">对指定文件夹中符合条件的文件进行操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E7%99%BB%E9%99%86%E8%BF%9C%E7%A8%8B%E6%9C%BA%E5%99%A8%E8%80%8C%E8%BF%9B%E8%A1%8C%E8%BF%9C%E7%A8%8B%E6%93%8D%E4%BD%9C"><span class="toc-number">8.</span> <span class="toc-text">不登陆远程机器而进行远程操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%9C%BA%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="toc-number">9.</span> <span class="toc-text">查看机器信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%A5%E5%88%97%E4%B8%BA%E5%8D%95%E4%BD%8D%E6%8A%BD%E5%8F%96%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9"><span class="toc-number">10.</span> <span class="toc-text">以列为单位抽取文件内容</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E7%9A%84%E6%9F%A5%E6%89%BE%E4%B8%8E%E6%96%87%E4%BB%B6%E5%90%8D%E7%9A%84%E6%9F%A5%E6%89%BE"><span class="toc-number">11.</span> <span class="toc-text">文件内容的查找与文件名的查找</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

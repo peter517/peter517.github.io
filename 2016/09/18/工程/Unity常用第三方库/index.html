@@ -1,0 +1,416 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>Unity常用第三方库 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="Unity开发中常用的第三方库">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/09/18/工程/Unity常用第三方库/" title="Unity常用第三方库" itemprop="url">Unity常用第三方库</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2016-09-18T11:27:48.000Z" itemprop="datePublished">2016-09-18</time>
+    Updated:<time datetime="2018-06-22T08:21:35.000Z" itemprop="dateModified">2018-06-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Best-Http"><span class="toc-number">1.</span> <span class="toc-text">Best Http</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#EasyMovieTexture"><span class="toc-number">2.</span> <span class="toc-text">EasyMovieTexture</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DOTween"><span class="toc-number">3.</span> <span class="toc-text">DOTween</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.1.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NGUI"><span class="toc-number">4.</span> <span class="toc-text">NGUI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CurvedUI"><span class="toc-number">5.</span> <span class="toc-text">CurvedUI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LitJson"><span class="toc-number">6.</span> <span class="toc-text">LitJson</span></a></li></ol>
+		</div>
+		
+		<p>相对于Android、IOS，Unity第三方库都是比较少的，而且成熟度不够，下面列举几个项目中经常会用到的第三方库</p>
+<h1 id="Best-Http"><a href="#Best-Http" class="headerlink" title="Best Http"></a>Best Http</h1><p>Unity对网络的支持主要是WWW类实现的，不好用，下面通过HttpClientProxy对Best Http进行了简单的封装，过程是异步的，用到了HTTPRequest、HTTPMethods、HTTPResponse类</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">public <span class="keyword">class</span> HttpClientProxy &#123;</span><br><span class="line"></span><br><span class="line">    public delegate void <span class="constructor">OnRequestFinishedDelegate(HTTPResponse <span class="params">response</span>)</span>;</span><br><span class="line"></span><br><span class="line">    public event OnRequestFinishedDelegate OnRequestFinishedEvent;</span><br><span class="line"></span><br><span class="line">    public void send<span class="constructor">PostJson(<span class="params">string</span> <span class="params">url</span>, <span class="params">string</span> <span class="params">json</span>)</span> &#123;</span><br><span class="line">        HTTPRequest request = <span class="keyword">new</span> <span class="constructor">HTTPRequest(<span class="params">new</span> Uri(<span class="params">url</span>)</span>, HTTPMethods.Post, OnRequestFinished);</span><br><span class="line">        request.<span class="constructor">AddHeader(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json;charset=utf-8&quot;</span>)</span>;</span><br><span class="line">        request.<span class="constructor">AddHeader(<span class="string">&quot;Accept&quot;</span>, <span class="string">&quot;application/json;charset=utf-8&quot;</span>)</span>;</span><br><span class="line">        request.RawData = System.Text.Encoding.UTF8.<span class="constructor">GetBytes(<span class="params">json</span>)</span>;</span><br><span class="line">        request.<span class="constructor">Send()</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void send<span class="constructor">Get(<span class="params">string</span> <span class="params">url</span>)</span> &#123;</span><br><span class="line">        HTTPRequest request = <span class="keyword">new</span> <span class="constructor">HTTPRequest(<span class="params">new</span> Uri(<span class="params">url</span>)</span>, HTTPMethods.Get, OnRequestFinished);</span><br><span class="line">        request.<span class="constructor">Send()</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void <span class="constructor">OnRequestFinished(HTTPRequest <span class="params">request</span>, HTTPResponse <span class="params">response</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (OnRequestFinishedEvent != null) &#123;</span><br><span class="line">            <span class="constructor">OnRequestFinishedEvent(<span class="params">response</span>)</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注册了OnRequestFinishedEvent的类可以通过HTTPResponse拿到对应的信息</p>
+<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> OnGetMessageResponse(HTTPResponse response)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">Debug</span>.Log(&quot;OnGetMessageResponse&quot;);</span><br><span class="line">    <span class="keyword">if</span> (response.StatusCode != <span class="number">200</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">Debug</span>.Log(&quot;OnGetMessageResponse Failed&quot; + response.StatusCode);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    GetMessageResponse result = JsonUtility.FromJson&lt;GetMessageResponse&gt;(response.DataAsText);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="EasyMovieTexture"><a href="#EasyMovieTexture" class="headerlink" title="EasyMovieTexture"></a>EasyMovieTexture</h1><p>Unity设计目的是游戏开发，所以对视频播放支持不好，EasyMovieTexture提供移动端和PC端的SDK，接口比较简单，直接一个url就可以，或者一个放在StreamingAssets里面的视频文件名。<br>移动端都是调用原生的播放器，PC端用FFmpeg实现，还是Beta版本，移动端相对稳定一些。</p>
+<h1 id="DOTween"><a href="#DOTween" class="headerlink" title="DOTween"></a>DOTween</h1><p>DOTween用来实现3D的一些动画效果，比如一个物体从一个坐标移到另一个坐标，自己利用物理引擎实现比较麻烦。</p>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>DOTween的实现方式比较特别，利用C#的特性为现有类增加方法，比如下面这个函数，表示移动的距离，第一个参数表示为Transform类增加方法</p>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="type">static</span> Tweener <span class="title">DOMove</span> <span class="params">(<span class="keyword">this</span> Transform target, Vector3 endValue, <span class="type">float</span> duration, <span class="type">bool</span> snapping = <span class="literal">false</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>可以通过下面的调用来实现物体向下移动一个单位的动画</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">transform.<span class="constructor">DOMove(<span class="params">transform</span>.<span class="params">position</span> + Vector3.<span class="params">down</span>, 2f)</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="NGUI"><a href="#NGUI" class="headerlink" title="NGUI"></a>NGUI</h1><p>NGUI是第三方的一套UI系统，包括事件处理，由于其他插件可能是基于原生的UGUI的实现的，所以决定NGUI使用还是要比较谨慎一些</p>
+<h1 id="CurvedUI"><a href="#CurvedUI" class="headerlink" title="CurvedUI"></a>CurvedUI</h1><p>CurvedUI用来实现菜单面板的曲面效果，VR界面设计经常会是曲面风格</p>
+<h1 id="LitJson"><a href="#LitJson" class="headerlink" title="LitJson"></a>LitJson</h1><p>LitJson是C#的Json实现，完成类和Json之间的映射，Best Http里面一般会包含这个库，但一般通过JsonUtility.ToJson（Object to Json String）和JsonUtility.FromJson&lt;&gt; （Json String to Object）是UnityEngine自带的方法就可以实现基本功能</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Unity/">Unity</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/11/26/工程/Qt中Mac端应用工程搭建/" title="Qt中Mac端应用工程搭建">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Qt中Mac端应用工程搭建</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/12/12/工程/Java类模板 约束验证/"  title="Java类模板 约束验证">
+ <strong>NEXT:</strong><br/> 
+ <span>Java类模板 约束验证
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Best-Http"><span class="toc-number">1.</span> <span class="toc-text">Best Http</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#EasyMovieTexture"><span class="toc-number">2.</span> <span class="toc-text">EasyMovieTexture</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DOTween"><span class="toc-number">3.</span> <span class="toc-text">DOTween</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.1.</span> <span class="toc-text">具体实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#NGUI"><span class="toc-number">4.</span> <span class="toc-text">NGUI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CurvedUI"><span class="toc-number">5.</span> <span class="toc-text">CurvedUI</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LitJson"><span class="toc-number">6.</span> <span class="toc-text">LitJson</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+

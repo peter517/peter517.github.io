@@ -1,0 +1,475 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>ELF文件反编译工具 | Pengjun&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="Peng Jun">
+    
+    <meta name="description" itemprop="description" content="Unix、OSX、Windows平台中系统自带的反编译工具">
+    
+    
+    
+    
+    
+    <link rel="icon" href="//img/favicon.ico">
+    
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+     
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      <script src="/js/search.js"></script> 
+
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Pengjun&#39;s Blog">Pengjun&#39;s Blog</a></h1>
+				<a class="blog-motto">坚持写博客，沉淀！</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">文档列表</a></li>
+					
+					<li>
+					
+					<div id="site_search">
+   					
+					
+					</li>
+				<li>
+						<form class="search">
+    						<input type="text" id="local-search-input" name="q" results="0" placeholder="搜索" autocomplete="off" maxlength="20"/>
+  						  </form> 
+  				</li>
+  				<li>
+					<div id="local-search-result"></div>
+  					</div>
+  				</li>
+				</ul>
+			
+				</ul>
+                 </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/08/10/工程/ELF文件反编译工具/" title="ELF文件反编译工具" itemprop="url">ELF文件反编译工具</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://peter517.github.io.git" title="Peng Jun">Peng Jun</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-08-10T08:16:08.000Z" itemprop="datePublished">2015-08-10</time>
+    Updated:<time datetime="2018-06-22T08:14:36.000Z" itemprop="dateModified">2018-06-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">二进制文件格式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF"><span class="toc-number">1.1.</span> <span class="toc-text">ELF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PE"><span class="toc-number">1.2.</span> <span class="toc-text">PE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">反编译工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix-Linux-and-OSX"><span class="toc-number">2.1.</span> <span class="toc-text">Unix(Linux and OSX)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nm"><span class="toc-number">2.1.1.</span> <span class="toc-text">nm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strings"><span class="toc-number">2.1.2.</span> <span class="toc-text">strings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#file"><span class="toc-number">2.1.3.</span> <span class="toc-text">file</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#libtool"><span class="toc-number">2.1.4.</span> <span class="toc-text">libtool</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux"><span class="toc-number">2.2.</span> <span class="toc-text">Linux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#readelf"><span class="toc-number">2.2.1.</span> <span class="toc-text">readelf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#objdump"><span class="toc-number">2.2.2.</span> <span class="toc-text">objdump</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.3.</span> <span class="toc-text">OSX</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#otool"><span class="toc-number">2.3.1.</span> <span class="toc-text">otool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lipo"><span class="toc-number">2.3.2.</span> <span class="toc-text">lipo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-name-tool"><span class="toc-number">2.3.3.</span> <span class="toc-text">install_name_tool</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows"><span class="toc-number">2.4.</span> <span class="toc-text">Windows</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DUMPBIN"><span class="toc-number">2.4.1.</span> <span class="toc-text">DUMPBIN</span></a></li></ol></li></ol></li></ol>
+		</div>
+		
+		<p>ELF文件反编译工具在工程中是绝对的利器，我们通常用它来做一下几件事情：</p>
+<ul>
+<li>查找和修改二进制文件依赖的库路径</li>
+<li>查看二进制文件符号表，检查是否包涵某个函数</li>
+<li>查找二进制文件中的可打印字符串，可用来查看版本信息</li>
+<li>将多个二进制文件合并成同一个二进制文件</li>
+</ul>
+<h1 id="二进制文件格式"><a href="#二进制文件格式" class="headerlink" title="二进制文件格式"></a>二进制文件格式</h1><p>主流二进制文件格式ELF和PE，是基于COFF(Common file format)而来，根据不同的操作系统有不同的特性</p>
+<h2 id="ELF"><a href="#ELF" class="headerlink" title="ELF"></a>ELF</h2><p>**ELF(Executable And Linkable)**是Unix体系中二进制文件格式，除了执行文件，还包括*.so,*.a，*.o等文件</p>
+<h2 id="PE"><a href="#PE" class="headerlink" title="PE"></a>PE</h2><p>**PE(Portable Executable)**是Windows平台的二进制格式，，除了exe执行文件，还包括*.lib,*.dll，*.obj等文件</p>
+<h1 id="反编译工具"><a href="#反编译工具" class="headerlink" title="反编译工具"></a>反编译工具</h1><p>反编译工具主要处理对象就是ELF和PE文件，根据平台划分，主要有以下一些工具</p>
+<h2 id="Unix-Linux-and-OSX"><a href="#Unix-Linux-and-OSX" class="headerlink" title="Unix(Linux and OSX)"></a>Unix(Linux and OSX)</h2><h3 id="nm"><a href="#nm" class="headerlink" title="nm"></a>nm</h3><p>读取ELF文件中的符号表</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nm <span class="variable">$elf_filename</span> | grep <span class="variable">$method_name</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查找ELF文件是否包含方法名$method_name</p>
+</blockquote>
+<h3 id="strings"><a href="#strings" class="headerlink" title="strings"></a>strings</h3><p>读取ELF文件中的可打印的字符串表</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ strings <span class="variable">$elf_filename</span> | grep <span class="variable">$find_str</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查找ELF文件是否包含可打印的字符串$find_str </p>
+</blockquote>
+<h3 id="file"><a href="#file" class="headerlink" title="file"></a>file</h3><p>查看文件编译架构，从头文件中读取</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ file <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看ELF文件类型</p>
+</blockquote>
+<h3 id="libtool"><a href="#libtool" class="headerlink" title="libtool"></a>libtool</h3><p>libtool是对平台编译工具的封装，为不同平台提供一致接口，<a target="_blank" rel="noopener" href="http://www.gnu.org/software/libtool/manual/libtool.html">开发文档</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ libtool -static -o <span class="variable">$elf_filename</span> <span class="variable">$source_elf_filename1</span> <span class="variable">$source_elf_filename2</span> ...</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把$source_elf_filename1，$source_elf_filename2…合并为$elf_filename</p>
+</blockquote>
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="readelf"><a href="#readelf" class="headerlink" title="readelf"></a>readelf</h3><p>命令的名字就是read elf，用来读取ELF文件信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ readelf -h <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>读取elf文件头信息</p>
+</blockquote>
+<h3 id="objdump"><a href="#objdump" class="headerlink" title="objdump"></a>objdump</h3><p>objdump可以根据ELF文件来生成对应的汇编信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ objdump -x <span class="variable">$elf_filename</span> | grep NEED</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>获取ELF文件依赖的库</p>
+</blockquote>
+<h2 id="OSX"><a href="#OSX" class="headerlink" title="OSX"></a>OSX</h2><h3 id="otool"><a href="#otool" class="headerlink" title="otool"></a>otool</h3><p>与readelf类似，用来读取ELF文件信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ otool -L <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查找ELF文件依赖的库</p>
+</blockquote>
+<h3 id="lipo"><a href="#lipo" class="headerlink" title="lipo"></a>lipo</h3><p>对ELF文件进行重构</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lipo -info <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看ELF文件类型</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lipo -create <span class="variable">$elf_file_i386_name</span>.a <span class="variable">$elf_file_arm_name</span>.a -output <span class="variable">$elf_filename</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把不同平台的ELF文件合并成同一文件</p>
+</blockquote>
+<h3 id="install-name-tool"><a href="#install-name-tool" class="headerlink" title="install_name_tool"></a>install_name_tool</h3><p>用来更改ELF文件的依赖文件路径</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ install_name_tool -change <span class="variable">$elf_file_name</span> <span class="variable">$elf_file_depends_path_before</span> <span class="variable">$elf_file_depends_path_after</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>把$elf_file_name文件依赖路径由$elf_file_depends_path_before改为$elf_file_depends_path_after</p>
+</blockquote>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="DUMPBIN"><a href="#DUMPBIN" class="headerlink" title="DUMPBIN"></a>DUMPBIN</h3><p>与readelf类似，用来读取ELF文件信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; dumpbin /exports <span class="variable">$pe_file_name</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看PE文件的依赖库</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; dumpbin /all <span class="variable">$pe_file_name</span> | findstr <span class="variable">$find_str</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看PE文件中是否有可打印字符串$find_str</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&gt; dumpbin /symbols <span class="variable">$pe_file_name</span> | findstr <span class="variable">$method_name</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>查看PE文件中包含方法名$method_name</p>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/C/">C++</a><a href="/tags/Decompile/">Decompile</a><a href="/tags/ELF/">ELF</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+
+
+</div>
+</footer>
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/08/14/算法/算法中的递归运用/" title="算法中的递归运用">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  算法中的递归运用</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/08/10/工程/Ubuntu中自定义服务/"  title="Ubuntu中自定义服务">
+ <strong>NEXT:</strong><br/> 
+ <span>Ubuntu中自定义服务
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">二进制文件格式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ELF"><span class="toc-number">1.1.</span> <span class="toc-text">ELF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PE"><span class="toc-number">1.2.</span> <span class="toc-text">PE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E7%BC%96%E8%AF%91%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">反编译工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unix-Linux-and-OSX"><span class="toc-number">2.1.</span> <span class="toc-text">Unix(Linux and OSX)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nm"><span class="toc-number">2.1.1.</span> <span class="toc-text">nm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#strings"><span class="toc-number">2.1.2.</span> <span class="toc-text">strings</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#file"><span class="toc-number">2.1.3.</span> <span class="toc-text">file</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#libtool"><span class="toc-number">2.1.4.</span> <span class="toc-text">libtool</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux"><span class="toc-number">2.2.</span> <span class="toc-text">Linux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#readelf"><span class="toc-number">2.2.1.</span> <span class="toc-text">readelf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#objdump"><span class="toc-number">2.2.2.</span> <span class="toc-text">objdump</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSX"><span class="toc-number">2.3.</span> <span class="toc-text">OSX</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#otool"><span class="toc-number">2.3.1.</span> <span class="toc-text">otool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lipo"><span class="toc-number">2.3.2.</span> <span class="toc-text">lipo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-name-tool"><span class="toc-number">2.3.3.</span> <span class="toc-text">install_name_tool</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows"><span class="toc-number">2.4.</span> <span class="toc-text">Windows</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DUMPBIN"><span class="toc-number">2.4.1.</span> <span class="toc-text">DUMPBIN</span></a></li></ol></li></ol></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		
+		
+		
+		
+	</div>
+</div>
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">所有标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Architectur/" title="Architectur">Architectur<sup>1</sup></a></li>
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Concurrent/" title="Concurrent">Concurrent<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Decompile/" title="Decompile">Decompile<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ELF/" title="ELF">ELF<sup>1</sup></a></li>
+		
+			<li><a href="/tags/GYP/" title="GYP">GYP<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Git/" title="Git">Git<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JStorm/" title="JStorm">JStorm<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Java/" title="Java">Java<sup>7</sup></a></li>
+		
+			<li><a href="/tags/Jni/" title="Jni">Jni<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Mac/" title="Mac">Mac<sup>2</sup></a></li>
+		
+			<li><a href="/tags/MapReduce/" title="MapReduce">MapReduce<sup>1</sup></a></li>
+		
+			<li><a href="/tags/MediaPlayer/" title="MediaPlayer">MediaPlayer<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Qt/" title="Qt">Qt<sup>4</sup></a></li>
+		
+			<li><a href="/tags/Reflection/" title="Reflection">Reflection<sup>1</sup></a></li>
+		
+			<li><a href="/tags/SDK/" title="SDK">SDK<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Shell/" title="Shell">Shell<sup>2</sup></a></li>
+		
+			<li><a href="/tags/Software-Engineering/" title="Software Engineering">Software Engineering<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="categorieslist">
+<p class="asidetitle">Recent Posts</p>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2023/02/21/工程/服务端，如何设计一个易扩展、易运维的内容下发架构/">服务端，如何设计一个易扩展、易运维的内容下发架构？</a>
+      </li>
+    
+      <li>
+        <a href="/2019/12/10/工程/如何快速熟悉一个项目/">如何快速熟悉一个项目</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/10/工程/服务端代码架构/">服务端代码架构</a>
+      </li>
+    
+      <li>
+        <a href="/2018/08/29/领域知识/工作PPT思路/">工作PPT思路</a>
+      </li>
+    
+      <li>
+        <a href="/2018/06/23/管理/重大项目那些事/">重大项目那些事</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2023 
+		
+		<a href="http://peter517.github.io.git" target="_blank" title="Peng Jun">Peng Jun</a>
+		
+            
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-65949228-1', 'peter517.github.io');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+   <script type="text/javascript">      
+     var search_path = "search.xml";
+   if (search_path.length == 0) {
+    search_path = "search.xml";
+   }
+   var path = "/" + search_path;
+     searchFunc(path, 'local-search-input', 'local-search-result');
+   </script>
+
+
+  </body>
+</html>
+
